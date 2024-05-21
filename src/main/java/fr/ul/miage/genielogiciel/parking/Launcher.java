@@ -2,15 +2,18 @@ package fr.ul.miage.genielogiciel.parking;
 import java.util.Scanner;
 
 public class Launcher {
+
+    private static Scanner scanner;
+
     public static void main(String[] args) {
 
 
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.println("Welcome to the FastBorne!");
         System.out.println("Do you have an account? (yes/no)");
 
         String hasAccount = scanner.nextLine().trim().toLowerCase();
-        loginForm(String hasAccount);
+        loginForm(hasAccount);
 
     }
 
@@ -25,7 +28,7 @@ public class Launcher {
                 registationForm(createAccount);
             } else {
                 System.out.println("Error. You can choose only yes or no.");
-                loginForm(String hasAccount);
+                loginForm(hasAccount);
             }
         }
     }
@@ -44,7 +47,7 @@ public class Launcher {
 
             } else {
                 System.out.println("Error. You can choose only yes or no.");
-                registationForm(String createAccount);
+                registationForm(createAccount);
             }
     }
     }

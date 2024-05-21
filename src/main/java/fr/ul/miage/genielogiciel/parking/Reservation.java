@@ -1,6 +1,8 @@
+package fr.ul.miage.genielogiciel.parking;
+
 public class Reservation {
     private int idReservation;
-    private string plateNumbers;
+    private String plateNumbers;
     private int idStation;
 
     public int getIdReservation() { return idReservation; }
@@ -9,8 +11,8 @@ public class Reservation {
     public int getIdStation() { return idStation; }
     public void setIdStation(int idStation) { this.idStation = idStation; }
 
-    public string getPlateNumbers() { return plateNumbers; }
-    public void setPlateNumbers(string plateNumbers) { this.plateNumbers = plateNumbers; }
+    public String getPlateNumbers() { return plateNumbers; }
+    public void setPlateNumbers(String plateNumbers) { this.plateNumbers = plateNumbers; }
 }
 
 
