@@ -1,17 +1,17 @@
 public class ChargingStation {
 
     // === General info of charging station ===
-    private int id;
+    private int idStation;
     private boolean isDisponible;
 
-    ChargingStation(int id, boolean isDisponible) {
-        setId(id);
+    ChargingStation(int idStation, boolean isDisponible) {
+        setId(idStation);
         setDispobnible(isDisponible);
     }
 
     //    === GETTERS and SETTERS ===
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getIdStation() { return idStation; }
+    public void setIdStation(int id) { this.idStation = idStation; }
 
 
     public boolean getDisponible() { return disponible; }
