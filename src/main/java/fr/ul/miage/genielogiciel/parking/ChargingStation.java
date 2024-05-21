@@ -1,3 +1,5 @@
+package fr.ul.miage.genielogiciel.parking;
+
 public class ChargingStation {
 
     // === General info of charging station ===
@@ -5,7 +7,7 @@ public class ChargingStation {
     private boolean isDisponible;
 
     ChargingStation(int idStation, boolean isDisponible) {
-        setId(idStation);
+        setIdStation(idStation);
         setDispobnible(isDisponible);
     }
 
@@ -14,7 +16,7 @@ public class ChargingStation {
     public void setIdStation(int id) { this.idStation = idStation; }
 
 
-    public boolean getDisponible() { return disponible; }
+    public boolean getDisponible() { return isDisponible; }
     public void setDispobnible(boolean disponible) { isDisponible = disponible; }
 
 }
