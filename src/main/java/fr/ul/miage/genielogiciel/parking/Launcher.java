@@ -7,6 +7,7 @@ public class Launcher {
 
     public static void main(String[] args) {
 
+        // test of git
 
         scanner = new Scanner(System.in);
         System.out.println("Welcome to the FastBorne!");
