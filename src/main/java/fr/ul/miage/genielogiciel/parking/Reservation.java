@@ -5,6 +5,7 @@ public class Reservation {
     private String plateNumbers;
     private int idStation;
 
+
     public int getIdReservation() { return idReservation; }
     public void setIdReservation(int idReservation) { this.idReservation = idReservation; }
 
@@ -15,5 +16,3 @@ public class Reservation {
     public void setPlateNumbers(String plateNumbers) { this.plateNumbers = plateNumbers; }
 }
 
-
-// test test
