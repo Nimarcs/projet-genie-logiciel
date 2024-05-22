@@ -7,8 +7,26 @@ import fr.ul.miage.genielogiciel.parking.Reservation;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MySQLConnection implements DatabaseConnection {
+    private static final Logger LOG = Logger.getLogger(MySQLConnection.class.getName());
+
+    private MySQLBridge mySQLBridge;
+
+
+    public MySQLConnection() {
+
+        //Set of the bridge
+        mySQLBridge = new MySQLBridge();
+        mySQLBridge.initConnection();
+        if (!mySQLBridge.isConnectionSet()) {
+            LOG.severe("Failed connecting to MySQL");
+            System.exit(1);
+        }
+
+
+    }
 
     /**
      * Give back the reservation of the client at the time given
@@ -46,6 +64,18 @@ public class MySQLConnection implements DatabaseConnection {
      */
     @Override
     public Client getClient(Reservation reservation) {
+        throw new IllegalStateException("Functionnality not done yet");
+        //TODO correctly do the fonctionnality
+    }
+
+    /**
+     * Change the charging station of a reservation to the new one
+     *
+     * @param reservation        Reservation to change
+     * @param newChargingStation new charging station that will replace the old one
+     */
+    @Override
+    public void changeChargingStation(Reservation reservation, ChargingStation newChargingStation) {
         throw new IllegalStateException("Functionnality not done yet");
         //TODO correctly do the fonctionnality
     }
