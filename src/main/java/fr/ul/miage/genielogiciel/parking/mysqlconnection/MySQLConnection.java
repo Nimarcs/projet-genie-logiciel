@@ -5,6 +5,7 @@ import fr.ul.miage.genielogiciel.parking.Client;
 import fr.ul.miage.genielogiciel.parking.DatabaseConnection;
 import fr.ul.miage.genielogiciel.parking.Reservation;
 
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
@@ -38,8 +39,20 @@ public class MySQLConnection implements DatabaseConnection {
      */
     @Override
     public Reservation getReservation(Client client, LocalDateTime dateTime) {
-        throw new IllegalStateException("Functionnality not done yet");
-        //TODO correctly do the fonctionnality
+        Connection connection =mySQLBridge.getConnection();
+        try {
+            String sql = "select * " +
+                    "from parking.reservation " +
+                    "where ID_RES_CLI = ?" +
+                    "and ? between beginning and ending";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, client.getId());
+            stmt.setTimestamp(2, Timestamp.valueOf(dateTime));
+            ResultSet resultSet = stmt.executeQuery();
+        } catch (SQLException e){
+
+        }
+        return null;
     }
 
     /**

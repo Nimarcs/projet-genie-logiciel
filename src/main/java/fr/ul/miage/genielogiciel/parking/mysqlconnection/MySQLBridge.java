@@ -9,7 +9,7 @@ public class MySQLBridge {
 
     private static final Logger LOG = Logger.getLogger(MySQLBridge.class.getName());
 
-    Connection connection;
+    private Connection connection;
 
     public MySQLBridge() {
         connection = null;
