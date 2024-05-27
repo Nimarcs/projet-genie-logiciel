@@ -7,13 +7,13 @@ public class Client {
     private String adresse;
     private String phoneNumber;
     private String email;
-    private int creditCard;
+    private String creditCard;
     private String plateNumbers;
     private int reservationNumber;
     private String username;
     private String password;
 
-    public Client(String name, String surname, String adresse, String phoneNumber, String email, int creditCard, String plateNumbers, String username, String password) {
+    public Client(String name, String surname, String adresse, String phoneNumber, String email, String creditCard, String plateNumbers, String username, String password) {
        setName(name);
        setSurname(surname);
        setAdresse(adresse);
@@ -43,8 +43,8 @@ public class Client {
     public String getEmail() {return email;}
     public void setEmail(String email) { this.email = email; }
 
-    public int getCreditCard() {return creditCard;}
-    public void setCreditCard(int creditCard) { this.creditCard = creditCard; }
+    public String getCreditCard() {return creditCard;}
+    public void setCreditCard(String creditCard) { this.creditCard = creditCard; }
 
     public String getPlateNumbers() { return plateNumbers; }
     public void setPlateNumbers(String plateNumbers) { this.plateNumbers = plateNumbers; }

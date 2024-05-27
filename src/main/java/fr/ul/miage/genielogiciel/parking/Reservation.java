@@ -50,3 +50,4 @@ public class Reservation {
     public String getPlateNumbers() { return plateNumbers; }
     public void setPlateNumbers(String plateNumbers) { this.plateNumbers = plateNumbers; }
 }
+
