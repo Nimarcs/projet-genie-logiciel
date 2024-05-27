@@ -22,9 +22,9 @@ class TestChargingStation {
     @BeforeEach
     void setUp() {
         manager = new ChargingStation(1,true);
-        client = new Client("John","Smith","dfd street","+330000","sd@mail.com","1234567890123456","aa123a",null,null );
+        client = new Client("John","Smith","dfd street","+330000","sd@mail.com","1234567890123456","aa123a","username","password" );
         startTime = LocalDateTime.now();
-        endTime = startTime.plusHours(1);
+        endTime = startTime.plusHours(2);
         reservation = new Reservation(client, startTime, endTime, 10.0, 20.0);
         manager.addReservation(reservation);
     }
@@ -74,7 +74,13 @@ class TestChargingStation {
         LocalDateTime currentTime = startTime.plusMinutes(15);
         manager.processNoShowReservations(currentTime);
         assertTrue(reservation.isNoShow);
-//        assertFalse(reservation.isConfirmed);
+        assertFalse(reservation.isConfirmed);
+    }
+
+    @Test
+    void testOfferExtension() {
+        LocalDateTime currentTime = startTime.plusMinutes(5);
+        manager.offerExtension(client, currentTime);
     }
 }
 

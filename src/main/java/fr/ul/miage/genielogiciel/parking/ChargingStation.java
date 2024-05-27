@@ -80,7 +80,7 @@ public class ChargingStation {
                 double chargeAmount = calculateNormalCharge(reservation);
                 chargeClient(reservation.client, chargeAmount);
                 sendNotification(reservation.client, "You did not show up. Charged for the full reservation period of $" + chargeAmount);
-//                offerExtension(reservation, currentTime);
+                reservation.cancelReservation();
             }
         }
     }
@@ -111,10 +111,15 @@ public class ChargingStation {
     private void sendNotification(Client client, String message) {
         System.out.println("Notification to " + client.getPhoneNumber() + ": " + message);
     }
-    private void offerExtension(Reservation reservation, LocalDateTime currentTime) {
-        if (isStationAvailable(reservation, currentTime)) {
-            sendNotification(reservation.client, "Would you like to extend your reservation? Additional charges apply.");
-            // Logic to handle client's response and process the extension
+
+    public void offerExtension(Client client, LocalDateTime currentTime) {
+        for (Reservation reservation : reservations) {
+            if (reservation.client.equals(client) && !reservation.isConfirmed &&
+                currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
+                if (isStationAvailable(reservation, currentTime)) {
+                    sendNotification(reservation.client, "Would you like to extend your reservation? Additional charges apply.");
+                }
+            }
         }
     }
 
