@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.bindist.dir>${project.basedir}/bindist</project.bindist.dir>
         <project.main.classname>${project.groupId}.${project.artifactId}.Launcher</project.main.classname>
-        <project.bin.appname>hello</project.bin.appname>
+        <project.bin.appname>${project.artifactId}</project.bin.appname>
         <assertj.version>3.25.3</assertj.version>
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.11.0</mockito.version>
@@ -63,6 +63,37 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/main/fr/ul/miage/reseau/mv/Serveur.java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${project.main.classname}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
