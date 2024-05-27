@@ -26,7 +26,7 @@ public class Client {
     }
 
     public Client(){}
-
+//
 //    === GETTERS and SETTERS ===
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
