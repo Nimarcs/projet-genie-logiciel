@@ -1,5 +1,6 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import java.sql.SQLOutput;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -7,7 +8,10 @@ import java.util.Scanner;
 public class CommandLine {
 
     private static Scanner scanner;
-    private static ClientList clients = new ClientList();
+    private static ClientList clients = new ClientList(); // need to connect to database
+    private static ListChargingStation stations = new ListChargingStation(); // need to connect to database
+
+
 
 
     public void run() {
@@ -18,6 +22,7 @@ public class CommandLine {
         Client client1 = new Client();
 
         do {
+
             userChoice = welcomeMenu(scanner);
 
             switch (userChoice) {
@@ -52,20 +57,21 @@ public class CommandLine {
 
         System.out.print("Enter the number of your choice: ");
 
-        while (true) {
-            System.out.print("Enter the number of your choice: ");
-            if (input.hasNextInt()) {
-                selection = input.nextInt();
-                if (selection >= 1 && selection <= 3) {
-                    break;
-                } else {
-                    System.out.println("Invalid input. Please enter a number between 1 and 3.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a number.");
-                input.next();
-            }
-        }
+        selection = checkInputMenu(input, 3);
+//        while (true) {
+//            System.out.print("Enter the number of your choice: ");
+//            if (input.hasNextInt()) {
+//                selection = input.nextInt();
+//                if (selection >= 1 && selection <= 3) {
+//                    break;
+//                } else {
+//                    System.out.println("Invalid input. Please enter a number between 1 and 3.");
+//                }
+//            } else {
+//                System.out.println("Invalid input. Please enter a number.");
+//                input.next();
+//            }
+//        }
 
         return selection;
     }
@@ -153,26 +159,14 @@ public class CommandLine {
 //        System.out.println("4 - Find a charging station ");
 //        System.out.println("5 - Quit");
 
-        System.out.println("Please enter your immatriculation or reservation number.");
+
+        System.out.println("\nPlease enter your immatriculation or reservation number.");
         System.out.println("1 - License number");
         System.out.println("2 - Reservation number");
-        System.out.println("3 - Quit");
+        System.out.println("3 - I don't have the reservation");
+        System.out.println("4 - Back");
 
-        while (true) {
-            System.out.print("Enter the number of your choice: ");
-            if (input.hasNextInt()) {
-                selection = input.nextInt();
-                input.nextLine();
-                if (selection >= 1 && selection <= 3) {
-                    break;
-                } else {
-                    System.out.println("Invalid input. Please enter a number between 1 and 3.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a number.");
-                input.next();
-            }
-        }
+        selection =  checkInputMenu(input, 4);
 
         switch (selection) {
             case 1:
@@ -186,16 +180,25 @@ public class CommandLine {
                 String reservationNumber = input.nextLine();
                 System.out.println("Reservation number entered: " + reservationNumber);
 
+                break;
+            case 3:
+
 
 
                 break;
-            case 3:
-                System.out.println("--- Bye! ---");
+            case 4:
+                System.out.println("Returning back...  ---");
                 break;
             default:
                 System.out.println("Invalid choice. Please enter a number between 1 and 3.");
         }
+
     }
+
+
+
+
+
 
 
     public void findReservation(Scanner input){
@@ -206,12 +209,38 @@ public class CommandLine {
 
     }
 
-    public void findChargingStation(Scanner input){
-
+    public void findChargingStation(Scanner input) {
+        if (!stations.isAnyStationAvailable()) {
+            System.out.println("No charging stations are available at the moment.");
+//            return;
+        }
     }
 
     public void checkChargingStatus(Scanner input){
 
+    }
+
+
+    private int checkInputMenu(Scanner input, int maxPointsMenu){
+        int selection = -1;
+
+        while (true) {
+            System.out.print("Enter the number of your choice: ");
+            if (input.hasNextInt()) {
+                selection = input.nextInt();
+                input.nextLine();
+                if (selection >= 1 && selection <= maxPointsMenu) {
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a number between 1 and " + maxPointsMenu);
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                input.next();
+            }
+        }
+
+        return selection;
     }
 
     // regular for checking if input is valid
