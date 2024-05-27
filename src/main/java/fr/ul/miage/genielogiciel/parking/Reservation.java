@@ -6,6 +6,9 @@ public class Reservation {
     private int idStation;
 
 
+
+
+
     public int getIdReservation() { return idReservation; }
     public void setIdReservation(int idReservation) { this.idReservation = idReservation; }
 

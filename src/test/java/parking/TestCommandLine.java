@@ -9,12 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 //import org.junit.jupiter.params.ParameterizedTest;
 //import org.junit.jupiter.params.provider.CsvSource;
-//
-//import org.junit.*;
-//
+import java.io.ByteArrayInputStream;
+import java.util.Scanner;
+
+import static org.junit.jupiter.api.Assertions.*;
 //import org.mockito.Mockito;
 import fr.ul.miage.genielogiciel.parking.Launcher;
 import fr.ul.miage.genielogiciel.parking.CommandLine;
+import fr.ul.miage.genielogiciel.parking.Client;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -135,4 +137,119 @@ public class  TestCommandLine {
         assertTrue(true);
     }
 
+    // ===== TESTS for Login Form =====
+    @Test
+    @DisplayName("Successful login with valid credentials")
+    public void testLoginFormSuccess() {
+        Client client = new Client();
+        client.setUsername("validUser");
+        client.setPassword("validPassword123");
+
+        String input = "validUser\nvalidPassword123\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner = new Scanner(System.in);
+
+        CommandLine commandLine = new CommandLine();
+        boolean result = commandLine.loginForm(scanner, client);
+
+        assertTrue(result, "Login is ok");
+    }
+
+    @Test
+    @DisplayName("Failed login with invalid username")
+    public void testLoginFormInvalidUsername() {
+        Client client = new Client();
+        client.setUsername("validUser");
+        client.setPassword("validPassword123");
+
+        String input = "invalidUser\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner = new Scanner(System.in);
+
+        CommandLine commandLine = new CommandLine();
+        boolean result = commandLine.loginForm(scanner, client);
+
+        assertFalse(result, "Login failed. Bad username");
+    }
+
+    @Test
+    @DisplayName("Failed login with invalid password")
+    public void testLoginFormInvalidPassword() {
+        Client client = new Client();
+        client.setUsername("validUser");
+        client.setPassword("validPassword123");
+
+        String input = "validUser\ninvalidPassword\ninvalidPassword\ninvalidPassword\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner = new Scanner(System.in);
+
+        CommandLine commandLine = new CommandLine();
+        boolean result = commandLine.loginForm(scanner, client);
+
+        assertFalse(result, "Login failed. Bad password");
+    }
+
+
+
+    // ===== TESTS for Registration Form =====
+    @Test
+    @DisplayName("Successful registration")
+    public void testRegistrationFormSuccess() {
+        Client client = new Client();
+
+        String input = """ 
+                        John
+                        Doe
+                        123 Main St
+                        +1234567890
+                        john.doe@example.com
+                        1234567890
+                        LICENSE123
+                        johndoe
+                        securePass123
+                        """;
+
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner = new Scanner(System.in);
+
+        CommandLine commandLine = new CommandLine();
+        commandLine.registrationForm(scanner, client);
+
+        assertEquals("John", client.getName());
+        assertEquals("Doe", client.getSurname());
+        assertEquals("123 Main St", client.getAdresse());
+        assertEquals("+1234567890", client.getPhoneNumber());
+        assertEquals("john.doe@example.com", client.getEmail());
+        assertEquals(1234567890, client.getCreditCard());
+        assertEquals("LICENSE123", client.getPlateNumbers());
+        assertEquals("johndoe", client.getUsername());
+        assertEquals("securePass123", client.getPassword());
+    }
+
+    @Test
+    @DisplayName("Too many invalid input")
+    public void testRegistrationFormInvalidName() {
+        Client client = new Client();
+
+        String input = """
+                        J1
+                        Doe2
+                        123 Main St*
+                        +1234567890d
+                        j*ohn.doe@example.com
+                        1234567890ss
+                        LICENSE123*
+                        johndoe*
+                        SecurePass123*
+                        """;
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner = new Scanner(System.in);
+
+        CommandLine commandLine = new CommandLine();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            commandLine.registrationForm(scanner, client);
+        });
+
+        assertEquals("Too many invalid attempts.", exception.getMessage());
+    }
 }

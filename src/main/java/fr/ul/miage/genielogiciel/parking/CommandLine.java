@@ -77,13 +77,15 @@ public class CommandLine {
 
         System.out.println("Enter your credentials:");
 
-        String username = validInput(input, "Username: ", "^[a-zA-Z0-9._]+$", "Invalid input. Please enter a valid username (letters, numbers, ., _).");
+        String username = validInput(input, "Username: ", "^[a-zA-Z0-9._]+$", "Invalid input. Please enter a valid username (letters, numbers, ., _).", 5, 15);
+
+
 
 
         if (Objects.equals(client.getUsername(), username)) {
 
             for (int i = 0; i < 3; i++) {
-                String password = validInput(input, "Password: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid password (letters and numbers only).");
+                String password = validInput(input, "Password: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20);
                 if (Objects.equals(client.getPassword(), password)) {
                     System.out.println("Login successful!");
                     return true;
@@ -107,40 +109,33 @@ public class CommandLine {
         System.out.println("Enter your credentials");
 
         // can have only letters
-        client.setName(validInput(input, "Name: ", "^[a-zA-Z\\s]+$", "Invalid input. Please enter a valid name without numbers or special characters."));
-        client.setSurname(validInput(input, "Surname: ", "^[a-zA-Z\\s]+$", "Invalid input. Please enter a valid surname without numbers or special characters."));
+        client.setName(validInput(input, "Name: ", "^[a-zA-Z\\s]+$", "Invalid input. Please enter a valid name without numbers or special characters.", 2, 20));
+        client.setSurname(validInput(input, "Surname: ", "^[a-zA-Z\\s]+$", "Invalid input. Please enter a valid surname without numbers or special characters.", 2, 20));
 
         // can have letters and numbers
-        client.setAdresse(validInput(input, "Address: ", "^[a-zA-Z0-9\\s,]+$", "Invalid input. Please enter a valid address without special characters."));
+        client.setAdresse(validInput(input, "Address: ", "^[a-zA-Z0-9\\s,]+$", "Invalid input. Please enter a valid address without special characters.", 5, 40));
 
         // can have numbers and symbol +
-        client.setPhoneNumber(validInput(input, "Phone Number: ", "^[+]?\\d+$", "Invalid input. Please enter a valid phone number. It may contain only numbers and an optional leading +."));
+        client.setPhoneNumber(validInput(input, "Phone Number: ", "^[+]?\\d+$", "Invalid input. Please enter a valid phone number. It may contain only numbers and an optional leading +.", 10, 12));
 
         // can have numbers, letters and symbols @, ., -
-        client.setEmail(validInput(input, "Email: ", "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", "Invalid input. Please enter a valid email address."));
+        client.setEmail(validInput(input, "Email: ", "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", "Invalid input. Please enter a valid email address.", 5, 50));
 
         // Credit Card Number
-        System.out.print("Credit Card Number: ");
-        while (!input.hasNextInt()) {
-            System.out.println("Invalid input. Please enter a valid credit card number.");
-            input.next();
-            System.out.print("Credit Card Number: ");
-        }
-        client.setCreditCard(input.nextInt());
-        input.nextLine(); // clear the newline character after int input
+        String creditCard = validInput(input, "Credit Card Number: ", "^[0-9]+$", "Invalid input. Please enter a valid credit card number.", 10, 10);
+        client.setCreditCard(Integer.parseInt(creditCard));
 
         // License Plate Numbers (optional)
-        System.out.print("License Plate Numbers (optional - press enter to skip): ");
-        String plateNumbers = input.nextLine();
-        if (!plateNumbers.trim().isEmpty()) {
+        String plateNumbers = validInput(input, "License Plate Numbers (optional - press enter to skip): ", "^[a-zA-Z0-9\\s,]*$", "Invalid input. Please enter a valid license plate number.", 0, 12);
+        if (!plateNumbers.trim().isEmpty() && plateNumbers.length() >= 6) {
             client.setPlateNumbers(plateNumbers);
         }
 
         // can have letters, numbers, ., _
-        client.setUsername(validInput(input, "Username: ", "^[a-zA-Z0-9._]+$", "Invalid input. Please enter a valid username (letters, numbers, ., _)."));
+        client.setUsername(validInput(input, "Username: ", "^[a-zA-Z0-9._]+$", "Invalid input. Please enter a valid username (letters, numbers, ., _).", 5, 15));
 
         // can have only letters and numbers
-        client.setPassword(validInput(input, "Password: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid password (letters and numbers only)."));
+        client.setPassword(validInput(input, "Password: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20));
 
         System.out.println("Registration completed successfully!");
     }
@@ -151,6 +146,12 @@ public class CommandLine {
         System.out.println("\n-------------------------");
         System.out.println("         MAIN MENU         ");
         System.out.println("-------------------------");
+
+//        System.out.println("1 - Reserve a charging station ");
+//        System.out.println("2 - Check the reservation status ");
+//        System.out.println("3 - Check the charging status ");
+//        System.out.println("4 - Find a charging station ");
+//        System.out.println("5 - Quit");
 
         System.out.println("Please enter your immatriculation or reservation number.");
         System.out.println("1 - License number");
@@ -185,6 +186,8 @@ public class CommandLine {
                 String reservationNumber = input.nextLine();
                 System.out.println("Reservation number entered: " + reservationNumber);
 
+
+
                 break;
             case 3:
                 System.out.println("--- Bye! ---");
@@ -195,18 +198,39 @@ public class CommandLine {
     }
 
 
+    public void findReservation(Scanner input){
+
+    }
+
+    public void checkReservationStatus(Scanner input){
+
+    }
+
+    public void findChargingStation(Scanner input){
+
+    }
+
+    public void checkChargingStatus(Scanner input){
+
+    }
+
     // regular for checking if input is valid
-    private String validInput(Scanner input, String prompt, String regex, String errorMessage) {
+    private String validInput(Scanner input, String prompt, String regex, String errorMessage, int minLength, int maxLength) {
         String userInput;
-        while (true) {
+        int attempts = 0;
+        int maxAttempts = 3;
+
+        while (attempts < maxAttempts) {
             System.out.print(prompt);
             userInput = input.nextLine().trim();
-            if (userInput.matches(regex)) {
-                break;
+            if (userInput.length() >= minLength && userInput.length() <= maxLength && userInput.matches(regex)) {
+                return userInput;
             } else {
                 System.out.println(errorMessage);
+                attempts++;
             }
         }
-        return userInput;
+
+        throw new IllegalArgumentException("Too many invalid attempts.");
     }
 }
