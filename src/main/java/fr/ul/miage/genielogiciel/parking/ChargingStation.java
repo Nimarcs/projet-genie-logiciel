@@ -37,18 +37,20 @@ public class ChargingStation {
 
 
     public void checkIn(Client client, LocalDateTime currentTime) {
-        for (Reservation reservation : reservations) {
-            if (reservation.client.equals(client) && !reservation.isNoShow &&
-                currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
-                // Check-in successful within waiting period
-                reservation.confirmReservation();
-                chargeClient(client, calculateNormalCharge(reservation));
-                sendNotification(client, "Checked in successfully.");
-                return;
-            }
+    for (Reservation reservation : reservations) {
+        if (reservation.client.equals(client) && !reservation.isNoShow &&
+            currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
+            // Check-in successful within waiting period
+            reservation.confirmReservation();
+            chargeClient(client, calculateNormalCharge(reservation));
+            sendNotification(client, "Checked in successfully. Charged for the full reservation period.");
+            return;
         }
-        sendNotification(client, "Check-in failed or reservation not found.");
+        reservation.cancelReservation();
     }
+    sendNotification(client, "Check-in failed or reservation not found.");
+}
+
 
     public void checkOut(Client client, LocalDateTime currentTime) {
         for (Reservation reservation : reservations) {
@@ -130,30 +132,5 @@ public class ChargingStation {
     }
 
 
-
-
-    public static void main(String[] args) {
-//        test
-        Client client = new Client("chel","dds","dfd","+330000","sd@sjdn","121","aa123a" );
-
-        LocalDateTime startTime = LocalDateTime.now();
-        LocalDateTime endTime = startTime.plusHours(1);
-
-        Reservation reservation = new Reservation(client, startTime, endTime, 10.0, 20.0);
-
-        ChargingStation manager = new ChargingStation(1,true);
-        manager.addReservation(reservation);
-
-
-        //  client not showing up within the reserved slot and waiting period
-        LocalDateTime currentTime = startTime.plusMinutes(11);
-        manager.processNoShowReservations(currentTime);
-
-        //  client overstaying
-        currentTime = endTime.plusHours(2);
-        manager.checkOut(client, currentTime);
-
-
-    }
 
 }
