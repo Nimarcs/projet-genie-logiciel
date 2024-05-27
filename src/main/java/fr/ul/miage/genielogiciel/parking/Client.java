@@ -9,6 +9,7 @@ public class Client {
     private String email;
     private String creditCard;
     private String plateNumbers;
+    private int reservationNumber;
 
     public Client(String name, String surname, String adresse, String phoneNumber, String email, String creditCard, String plateNumbers) {
        setName(name);
@@ -17,7 +18,10 @@ public class Client {
        setPhoneNumber(phoneNumber);
        setEmail(email);
        setCreditCard(creditCard);
+       setPlateNumbers(plateNumbers);
     }
+
+    public Client(){}
 
 //    === GETTERS and SETTERS ===
     public String getName() { return this.name; }
@@ -40,4 +44,7 @@ public class Client {
 
     public String getPlateNumbers() { return plateNumbers; }
     public void setPlateNumbers(String plateNumbers) { this.plateNumbers = plateNumbers; }
+
+    public int getReservationNumber() { return reservationNumber; }
+    public void setReservationNumber(int reservationNumber) { this.reservationNumber = reservationNumber; }
 }

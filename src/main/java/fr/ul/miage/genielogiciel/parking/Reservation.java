@@ -5,14 +5,14 @@ import java.time.LocalDateTime;
 
 public class Reservation {
 
-    Client client;
-    LocalDateTime startTime;
-    LocalDateTime endTime;
-    boolean isOverstayed;
-    double normalRate;
-    double overstayRate;
-    boolean isConfirmed;
-    boolean isNoShow;
+    public Client client;
+    public LocalDateTime startTime;
+    public LocalDateTime endTime;
+    public boolean isOverstayed;
+    public double normalRate;
+    public double overstayRate;
+    public boolean isConfirmed;
+    public boolean isNoShow;
 
     private int idReservation;
     private String plateNumbers;
