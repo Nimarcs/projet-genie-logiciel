@@ -80,7 +80,7 @@ public class ChargingStation {
                 double chargeAmount = calculateNormalCharge(reservation);
                 chargeClient(reservation.client, chargeAmount);
                 sendNotification(reservation.client, "You did not show up. Charged for the full reservation period of $" + chargeAmount);
-                offerExtension(reservation, currentTime);
+//                offerExtension(reservation, currentTime);
             }
         }
     }
@@ -105,12 +105,10 @@ public class ChargingStation {
     }
 
     private void chargeClient(Client client, double amount) {
-        // Charging logic, e.g., process payment using debitCardNumber
         sendNotification(client, "Charged: $" + amount);
     }
 
     private void sendNotification(Client client, String message) {
-        // Send notification logic, e.g., SMS or email
         System.out.println("Notification to " + client.getPhoneNumber() + ": " + message);
     }
     private void offerExtension(Reservation reservation, LocalDateTime currentTime) {
