@@ -1,31 +1,16 @@
-package parking;
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.assertj.core.api.Assertions.assertThatThrownBy;
+package fr.ul.miage.genielogiciel.parking;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Scanner;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-//import org.junit.jupiter.params.ParameterizedTest;
-//import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
-//import org.mockito.Mockito;
-import fr.ul.miage.genielogiciel.parking.Launcher;
-import fr.ul.miage.genielogiciel.parking.CommandLine;
-import fr.ul.miage.genielogiciel.parking.Client;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-
-
 
 
 @DisplayName("I'm testing...")
-public class  TestCommandLine {
+public class TestCommandLine {
 //    private InputStream originalIn;
 
     // ===== TESTS for Welcome Menu =====
@@ -190,7 +175,6 @@ public class  TestCommandLine {
     }
 
 
-
     // ===== TESTS for Registration Form =====
     @Test
     @DisplayName("Successful registration")
@@ -198,16 +182,16 @@ public class  TestCommandLine {
         Client client = new Client();
 
         String input = """ 
-                        John
-                        Doe
-                        123 Main St
-                        +1234567890
-                        john.doe@example.com
-                        1234567890
-                        LICENSE123
-                        johndoe
-                        securePass123
-                        """;
+                John
+                Doe
+                123 Main St
+                +1234567890
+                john.doe@example.com
+                1234567890
+                LICENSE123
+                johndoe
+                securePass123
+                """;
 
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
@@ -232,23 +216,21 @@ public class  TestCommandLine {
         Client client = new Client();
 
         String input = """
-                        J1
-                        Doe2
-                        123 Main St*
-                        +1234567890d
-                        j*ohn.doe@example.com
-                        1234567890ss
-                        LICENSE123*
-                        johndoe*
-                        SecurePass123*
-                        """;
+                J1
+                Doe2
+                123 Main St*
+                +1234567890d
+                j*ohn.doe@example.com
+                1234567890ss
+                LICENSE123*
+                johndoe*
+                SecurePass123*
+                """;
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
 
         CommandLine commandLine = new CommandLine();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            commandLine.registrationForm(scanner, client);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> commandLine.registrationForm(scanner, client));
 
         assertEquals("Too many invalid attempts.", exception.getMessage());
     }
