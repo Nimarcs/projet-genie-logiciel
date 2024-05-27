@@ -11,20 +11,23 @@ public class ChargingStation {
     private int idStation;
     private boolean isDisponible;
 
-    ChargingStation(int idStation, boolean isDisponible) {
+    public List<Reservation> reservations = new ArrayList<>();
+
+
+
+    public ChargingStation(int idStation, boolean isDisponible) {
         setIdStation(idStation);
         setDispobnible(isDisponible);
     }
 
     //    === GETTERS and SETTERS ===
     public int getIdStation() { return idStation; }
-    public void setIdStation(int id) { this.idStation = idStation; }
+    public void setIdStation(int id) { this.idStation = id; }
 
 
     public boolean getDisponible() { return isDisponible; }
     public void setDispobnible(boolean disponible) { isDisponible = disponible; }
 
-    List<Reservation> reservations = new ArrayList<>();
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);

@@ -18,6 +18,7 @@ public class Client {
        setPhoneNumber(phoneNumber);
        setEmail(email);
        setCreditCard(creditCard);
+       setPlateNumbers(plateNumbers);
     }
 
     public Client(){}
