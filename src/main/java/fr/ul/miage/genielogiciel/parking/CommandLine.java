@@ -1,6 +1,8 @@
 package fr.ul.miage.genielogiciel.parking;
 
 import java.sql.SQLOutput;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -8,8 +10,9 @@ import java.util.Scanner;
 public class CommandLine {
 
     private static Scanner scanner;
-    private static ClientList clients = new ClientList(); // need to connect to database
-    private static ListChargingStation stations = new ListChargingStation(); // need to connect to database
+     // need to connect to database
+
+
 
 
 
@@ -19,7 +22,24 @@ public class CommandLine {
         System.out.println("Welcome to the FastBorne!");
         int userChoice;
         boolean successLogin;
+
+        // for testing
+        ClientList clients = new ClientList();
+
         Client client1 = new Client();
+        Client client2 = new Client("Lara", "Mara", "39 rue Paris, 54000 Nancy", "+33785546942", "test@gmail.com", "00012342", "LICENSE123", "test", "test");
+
+
+        clients.addClient(client1);
+        clients.addClient(client2);
+
+        // for testing
+        ListChargingStation chargingStations = new ListChargingStation();
+
+        chargingStations.addStation(new ChargingStation(123, true));
+        chargingStations.addStation(new ChargingStation(456, true));
+        chargingStations.addStation(new ChargingStation(789, false));
+        chargingStations.addStation(new ChargingStation(12, false));
 
         do {
 
@@ -29,7 +49,7 @@ public class CommandLine {
                 case 1:
                     successLogin = loginForm(scanner, client1);
                     if (successLogin) {
-                        mainMenu(scanner);
+                        mainMenu(scanner, chargingStations, clients);
                     }
                     break;
                 case 2:
@@ -46,6 +66,8 @@ public class CommandLine {
     }
 
     public int welcomeMenu(Scanner input) {
+
+
         int selection = -1;
 
         System.out.println("\n-------------------------");
@@ -129,16 +151,16 @@ public class CommandLine {
 
         // Credit Card Number
         String creditCard = validInput(input, "Credit Card Number: ", "^[0-9]+$", "Invalid input. Please enter a valid credit card number.", 10, 10);
-        client.setCreditCard(Integer.parseInt(creditCard));
+        client.setCreditCard(creditCard);
 
         // License Plate Numbers (optional)
-        String plateNumbers = validInput(input, "License Plate Numbers (optional - press enter to skip): ", "^[a-zA-Z0-9\\s,]*$", "Invalid input. Please enter a valid license plate number.", 0, 12);
+        String plateNumbers = validInput(input, "License Plate Numbers (optional - press enter to skip): ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid license plate number.", 0, 12);
         if (!plateNumbers.trim().isEmpty() && plateNumbers.length() >= 6) {
             client.setPlateNumbers(plateNumbers);
         }
 
         // can have letters, numbers, ., _
-        client.setUsername(validInput(input, "Username: ", "^[a-zA-Z0-9._]+$", "Invalid input. Please enter a valid username (letters, numbers, ., _).", 5, 15));
+        client.setUsername(validInput(input, "Username: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid username (letters, numbers, ., _).", 5, 15));
 
         // can have only letters and numbers
         client.setPassword(validInput(input, "Password: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20));
@@ -146,18 +168,14 @@ public class CommandLine {
         System.out.println("Registration completed successfully!");
     }
 
-    public void mainMenu(Scanner input) {
+    public void mainMenu(Scanner input, ListChargingStation chargingStations, ClientList clients) {
+
+
         int selection = -1;
 
         System.out.println("\n-------------------------");
         System.out.println("         MAIN MENU         ");
         System.out.println("-------------------------");
-
-//        System.out.println("1 - Reserve a charging station ");
-//        System.out.println("2 - Check the reservation status ");
-//        System.out.println("3 - Check the charging status ");
-//        System.out.println("4 - Find a charging station ");
-//        System.out.println("5 - Quit");
 
 
         System.out.println("\nPlease enter your immatriculation or reservation number.");
@@ -182,9 +200,8 @@ public class CommandLine {
 
                 break;
             case 3:
-
-
-
+                System.out.print("Waiting...");
+                reserveChargingStation(input, chargingStations, clients);
                 break;
             case 4:
                 System.out.println("Returning back...  ---");
@@ -196,8 +213,95 @@ public class CommandLine {
     }
 
 
+    // b2
+    private void reserveChargingStation(Scanner input, ListChargingStation chargingStations, ClientList clients) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime endTime ;
+        List<ChargingStation> availableStations = chargingStations.findAvailableStations();
 
 
+        // Un client enregistré peut être autorisé à se présenter sans réservation s'il y a actuellement des
+        // bornes de recharge disponibles.
+        if (!availableStations.isEmpty()) {
+            System.out.println("Available station found: ");
+            int i = 1;
+            int selection = -1;
+            for (ChargingStation station : availableStations) {
+                System.out.println(i + ". ID: " + station.getIdStation());
+                i++;
+            }
+
+            System.out.print("Please enter the ID of the station you want to reserve: ");
+            selection = input.nextInt();
+
+
+            ChargingStation selectedStation = chargingStations.findChargingStation(selection);
+
+            if (selectedStation != null && selectedStation.getDisponible()) {
+                System.out.print("Please enter your license number: ");
+                String licenseNumber = input.nextLine();
+
+                Client client = clients.findClientByLicense(licenseNumber);
+
+               //  Si le numéro d'immatriculation du véhicule est reconnu
+                if (client != null) {
+                    selection = -1;
+                    System.out.println("Choose what to enter: ");
+                    System.out.println("1. Expected duration ");
+                    System.out.println("2. Departure time ");
+
+                    selection = checkInputMenu(input, 3);
+
+
+                    // proposé au client de préciser la durée prévue de recharge ou l'heure de départ
+                    switch (selection) {
+                        case 1:
+                            System.out.println("Enter expected duration: ");
+                            int duration = input.nextInt();
+                            endTime = currentTime.plusHours(duration);
+
+                            break;
+                        case 2:
+                            System.out.println("Enter departure time: ");
+                            int hour = input.nextInt();
+                            endTime = currentTime.withHour(hour);
+
+                            break;
+                        default:
+                            endTime = currentTime.plusHours(1);
+                    }
+
+
+                    selectedStation.addReservation(new Reservation(client, LocalDateTime.now(), endTime));
+                } else { // le numéro d'immatriculation du véhicule n'est pas reconnu
+
+                    // le client se verra proposer de saisir son numéro de mobile
+                    System.out.print("License number not recognized. Please enter your mobile number: ");
+                    String mobileNumber = input.nextLine();
+
+                    Client client2 = clients.findByMobilePhone(mobileNumber);
+
+
+                    if (client2 != null ){
+                        System.out.print("Please enter the expected charging duration (in hours): ");
+                        int duration = input.nextInt();
+
+                        System.out.println("Temporary reservation made for mobile number " + mobileNumber + " with duration " + duration + " hours.");
+                        selectedStation.addReservation(new Reservation(client, currentTime, currentTime.plusHours(duration)));
+                    } else {
+                        System.out.println("We didn't find the account associated with thus number. Please create new one: ");
+                        welcomeMenu(input);
+                    }
+
+
+                }
+            } else {
+                System.out.println("Selected station is not available.");
+            }
+        } else {
+            System.out.println("No available stations at the moment. Please try again later.");
+        }
+    }
 
 
 
@@ -210,10 +314,6 @@ public class CommandLine {
     }
 
     public void findChargingStation(Scanner input) {
-        if (!stations.isAnyStationAvailable()) {
-            System.out.println("No charging stations are available at the moment.");
-//            return;
-        }
     }
 
     public void checkChargingStatus(Scanner input){

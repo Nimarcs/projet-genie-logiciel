@@ -123,6 +123,7 @@ public class ChargingStation {
         // Check if the station is available for the period after the waiting time
         for (Reservation res : reservations) {
             if (res != reservation && res.startTime.isBefore(currentTime.plusMinutes(10)) && res.endTime.isAfter(currentTime)) {
+                setDispobnible(false);
                 return false;
             }
         }

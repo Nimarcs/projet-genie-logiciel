@@ -27,18 +27,8 @@ public class ListChargingStation {
         return null;
     }
 
-    // check if there is any available charging station
-    public boolean isAnyStationAvailable() {
-        for (ChargingStation station : stations) {
-            if (station.getDisponible()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // get available charging station
-    public List<ChargingStation> getAvailableStations() {
+    // find available charging station
+    public List<ChargingStation> findAvailableStations() {
         List<ChargingStation> availableStations = new ArrayList<>();
         for (ChargingStation station : stations) {
             if (station.getDisponible()) {
@@ -47,4 +37,6 @@ public class ListChargingStation {
         }
         return availableStations;
     }
+
+
 }

@@ -8,6 +8,7 @@ public class Reservation {
     public Client client;
     public LocalDateTime startTime;
     public LocalDateTime endTime;
+    public int duration;
     public boolean isOverstayed;
     public double normalRate;
     public double overstayRate;
@@ -28,6 +29,32 @@ public class Reservation {
         this.isConfirmed = false;
         this.isNoShow = false;
     }
+
+    public Reservation(Client client, LocalDateTime startTime, LocalDateTime endTime) {
+
+        int difference = endTime.getHour() - startTime.getHour();
+        this.client = client;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.normalRate = 10.0 * difference;
+        this.overstayRate = 0.0;
+        this.isOverstayed = false;
+        this.isConfirmed = false;
+        this.isNoShow = false;
+    }
+
+//    public Reservation(Client client, int duration) {
+//
+//        int difference = endTime.getHour() - startTime.getHour();
+//        this.client = client;
+//        this.startTime = startTime;
+//        this.endTime = endTime;
+//        this.normalRate = 10.0 * difference;
+//        this.overstayRate = 0.0;
+//        this.isOverstayed = false;
+//        this.isConfirmed = false;
+//        this.isNoShow = false;
+//    }
 
     public void confirmReservation() {
         this.isConfirmed = true;

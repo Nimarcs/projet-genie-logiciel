@@ -22,7 +22,7 @@ class TestChargingStation {
     @BeforeEach
     void setUp() {
         manager = new ChargingStation(1,true);
-        client = new Client("John","Smith","dfd street","+330000","sd@mail.com","1234567890123456","aa123a" );
+        client = new Client("John","Smith","dfd street","+330000","sd@mail.com","1234567890123456","aa123a", "login", "pass" );
         startTime = LocalDateTime.now();
         endTime = startTime.plusHours(1);
         reservation = new Reservation(client, startTime, endTime, 10.0, 20.0);
