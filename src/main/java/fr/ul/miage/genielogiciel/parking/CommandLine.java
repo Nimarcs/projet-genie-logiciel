@@ -122,7 +122,7 @@ public class CommandLine {
         client.setEmail(validInput(input, "Email: ", "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", "Invalid input. Please enter a valid email address.", 5, 50));
 
         // Credit Card Number
-        String creditCard = validInput(input, "Credit Card Number: ", "^[0-9]+$", "Invalid input. Please enter a valid credit card number.", 10, 10);
+        String creditCard = validInput(input, "Credit Card Number: ", "^[0-9]+$", "Invalid input. Please enter a valid credit card number.", 10, 16);
         client.setCreditCard(Integer.parseInt(creditCard));
 
         // License Plate Numbers (optional)
