@@ -60,5 +60,24 @@ public class MySQLBridge {
         return connection;
     }
 
+    /**
+     * Reset the connection or init the connection if there is no working connection
+     * @return boolean at true if the connection is reset, false if something happened
+     */
+    public boolean resetConnection(){
+        try {
+            //If there is no connection yet
+            if (!isConnectionSet() || connection.isClosed()) initConnection();
+            else { //Else we close the current one and create a new one
+                connection.close();
+                initConnection();
+            }
+            return true;
+        } catch (SQLException e) {
+            LOG.severe(e.getMessage());
+            return false;
+        }
+
+    }
 
 }
