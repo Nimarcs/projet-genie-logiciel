@@ -5,10 +5,29 @@ import fr.ul.miage.genielogiciel.parking.Client;
 import fr.ul.miage.genielogiciel.parking.DatabaseConnection;
 import fr.ul.miage.genielogiciel.parking.Reservation;
 
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MySQLConnection implements DatabaseConnection {
+    private static final Logger LOG = Logger.getLogger(MySQLConnection.class.getName());
+
+    private MySQLBridge mySQLBridge;
+
+
+    public MySQLConnection() {
+
+        //Set of the bridge
+        mySQLBridge = new MySQLBridge();
+        mySQLBridge.initConnection();
+        if (!mySQLBridge.isConnectionSet()) {
+            LOG.severe("Failed connecting to MySQL");
+            System.exit(1);
+        }
+
+
+    }
 
     /**
      * Give back the reservation of the client at the time given
@@ -20,8 +39,20 @@ public class MySQLConnection implements DatabaseConnection {
      */
     @Override
     public Reservation getReservation(Client client, LocalDateTime dateTime) {
-        throw new IllegalStateException("Functionnality not done yet");
-        //TODO correctly do the fonctionnality
+        Connection connection =mySQLBridge.getConnection();
+        try {
+            String sql = "select * " +
+                    "from parking.reservation " +
+                    "where ID_RES_CLI = ?" +
+                    "and ? between beginning and ending";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, 1); //client.getId() ?
+            stmt.setTimestamp(2, Timestamp.valueOf(dateTime));
+            ResultSet resultSet = stmt.executeQuery();
+        } catch (SQLException e){
+
+        }
+        return null;
     }
 
     /**
@@ -46,6 +77,18 @@ public class MySQLConnection implements DatabaseConnection {
      */
     @Override
     public Client getClient(Reservation reservation) {
+        throw new IllegalStateException("Functionnality not done yet");
+        //TODO correctly do the fonctionnality
+    }
+
+    /**
+     * Change the charging station of a reservation to the new one
+     *
+     * @param reservation        Reservation to change
+     * @param newChargingStation new charging station that will replace the old one
+     */
+    @Override
+    public void changeChargingStation(Reservation reservation, ChargingStation newChargingStation) {
         throw new IllegalStateException("Functionnality not done yet");
         //TODO correctly do the fonctionnality
     }

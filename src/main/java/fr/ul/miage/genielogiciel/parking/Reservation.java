@@ -41,6 +41,9 @@ public class Reservation {
         this.isNoShow = true;
     }
 
+
+
+
     public int getIdReservation() { return idReservation; }
     public void setIdReservation(int idReservation) { this.idReservation = idReservation; }
 

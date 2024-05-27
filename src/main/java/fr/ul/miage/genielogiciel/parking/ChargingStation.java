@@ -59,13 +59,13 @@ public class ChargingStation {
                     reservation.isOverstayed = true;
                     double overstayCharge = calculateOverstayCharge(reservation, currentTime);
                     chargeClient(client, overstayCharge);
-                    sendNotification(client, "Checked out successfully. Charged for the full reservation period and overstay charge of $" + overstayCharge);
+                    sendNotification(client, "Charged for the full reservation period and overstay charge of $" + overstayCharge);
                 } else {
                     chargeClient(client, calculateNormalCharge(reservation));
-                    sendNotification(client, "Checked out successfully. Charged for the full reservation period.");
+                    sendNotification(client, "Charged for the full reservation period.");
                 }
                 reservation.cancelReservation();
-//                sendNotification(client, "Checked out successfully.");
+                sendNotification(client, "Checked out successfully.");
 
                 return;
             }
@@ -112,7 +112,6 @@ public class ChargingStation {
         System.out.println("Notification to " + client.getPhoneNumber() + ": " + message);
     }
     private void offerExtension(Reservation reservation, LocalDateTime currentTime) {
-        // Check if the station is available for extension
         if (isStationAvailable(reservation, currentTime)) {
             sendNotification(reservation.client, "Would you like to extend your reservation? Additional charges apply.");
             // Logic to handle client's response and process the extension
@@ -120,7 +119,6 @@ public class ChargingStation {
     }
 
     private boolean isStationAvailable(Reservation reservation, LocalDateTime currentTime) {
-        // Check if the station is available for the period after the waiting time
         for (Reservation res : reservations) {
             if (res != reservation && res.startTime.isBefore(currentTime.plusMinutes(10)) && res.endTime.isAfter(currentTime)) {
                 return false;
@@ -128,7 +126,5 @@ public class ChargingStation {
         }
         return true;
     }
-
-
 
 }

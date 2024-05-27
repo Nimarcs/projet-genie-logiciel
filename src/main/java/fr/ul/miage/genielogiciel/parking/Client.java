@@ -10,8 +10,10 @@ public class Client {
     private String creditCard;
     private String plateNumbers;
     private int reservationNumber;
+    private String username;
+    private String password;
 
-    public Client(String name, String surname, String adresse, String phoneNumber, String email, String creditCard, String plateNumbers) {
+    public Client(String name, String surname, String adresse, String phoneNumber, String email, String creditCard, String plateNumbers, String username, String password) {
        setName(name);
        setSurname(surname);
        setAdresse(adresse);
@@ -19,6 +21,8 @@ public class Client {
        setEmail(email);
        setCreditCard(creditCard);
        setPlateNumbers(plateNumbers);
+       setUsername(username);
+       setPassword(password);
     }
 
     public Client(){}
@@ -47,4 +51,10 @@ public class Client {
 
     public int getReservationNumber() { return reservationNumber; }
     public void setReservationNumber(int reservationNumber) { this.reservationNumber = reservationNumber; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }
