@@ -13,15 +13,14 @@ import java.util.logging.Logger;
 public class MySQLConnection implements DatabaseConnection {
     private static final Logger LOG = Logger.getLogger(MySQLConnection.class.getName());
 
-    private MySQLBridge mySQLBridge;
+    private final MySQLBridge mySQLBridge;
 
 
     public MySQLConnection() {
 
         //Set of the bridge
         mySQLBridge = new MySQLBridge();
-        mySQLBridge.initConnection();
-        if (!mySQLBridge.isConnectionSet()) {
+        if (!mySQLBridge.initConnection()) {
             LOG.severe("Failed connecting to MySQL");
             System.exit(1);
         }
