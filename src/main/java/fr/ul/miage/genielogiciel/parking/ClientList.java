@@ -14,18 +14,14 @@ public class ClientList {
        clients.add(client);
    }
 
-   public Client findClientByLicense(String numberLicense){
+
+   public Client findClientByUsername(String username){
        for (Client client: clients){
-           if (client.getPlateNumbers().equals(numberLicense)) return client;
+           if (client.getUsername().equals(username)) return client;
        }
        return null;
    }
 
-//    public Client findClientByReservation(String numberReservation){
-//        for (Client client: clients){
-//            if (client.get) return client;
-//        }
-//        return null;
-//    }
+
 
 }

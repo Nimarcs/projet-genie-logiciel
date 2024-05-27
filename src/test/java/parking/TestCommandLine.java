@@ -2,27 +2,29 @@ package parking;
 //import static org.assertj.core.api.Assertions.assertThat;
 //import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import fr.ul.miage.genielogiciel.parking.Launcher;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Scanner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 //import org.junit.jupiter.params.ParameterizedTest;
 //import org.junit.jupiter.params.provider.CsvSource;
 //
 //import org.junit.*;
 //
 //import org.mockito.Mockito;
+import fr.ul.miage.genielogiciel.parking.Launcher;
+import fr.ul.miage.genielogiciel.parking.CommandLine;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Scanner;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-//import static org.mockito.Mockito.*;
 
-@DisplayName("I'm testing if..")
-public class TestLauncher {
-    private InputStream originalIn;
+
+
+@DisplayName("I'm testing...")
+public class  TestCommandLine {
+//    private InputStream originalIn;
 
     // ===== TESTS for Welcome Menu =====
     @Test
@@ -33,8 +35,8 @@ public class TestLauncher {
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
 
-        var l = new Launcher();
-        int choice = l.welcomeMenu(scanner);
+        var cl = new CommandLine();
+        int choice = cl.welcomeMenu(scanner);
 
         assertEquals(1, choice);
     }
@@ -45,7 +47,8 @@ public class TestLauncher {
         String input = "abc\n4\n2\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
-        int choice = Launcher.welcomeMenu(scanner);
+        var cl = new CommandLine();
+        int choice = cl.welcomeMenu(scanner);
         assertEquals(2, choice);
     }
 
@@ -55,7 +58,8 @@ public class TestLauncher {
         String input = "5\n1\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
-        int choice = Launcher.welcomeMenu(scanner);
+        var cl = new CommandLine();
+        int choice = cl.welcomeMenu(scanner);
         assertEquals(1, choice);
     }
 
@@ -65,7 +69,8 @@ public class TestLauncher {
         String input = "-5\n2\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
-        int choice = Launcher.welcomeMenu(scanner);
+        var cl = new CommandLine();
+        int choice = cl.welcomeMenu(scanner);
         assertEquals(2, choice);
     }
 
@@ -75,23 +80,21 @@ public class TestLauncher {
         String input = "3\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
-
-        Launcher.welcomeMenu(scanner);
+        var cl = new CommandLine();
+        cl.welcomeMenu(scanner);
 
         assertTrue(true);
     }
 
-
-// ===== TESTS for Main Menu =====
-
+    // ===== TESTS for Main Menu =====
     @Test
     @DisplayName("Valid license number (Main Menu)")
     public void testMainMenu1() {
         String input = "1\nlicense123\n3\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
-
-        Launcher.mainMenu(scanner);
+        var cl = new CommandLine();
+        cl.mainMenu(scanner);
 
         assertTrue(true);
     }
@@ -102,8 +105,8 @@ public class TestLauncher {
         String input = "2\nreservation123\n3\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
-
-        Launcher.mainMenu(scanner);
+        var cl = new CommandLine();
+        cl.mainMenu(scanner);
 
         assertTrue(true);
     }
@@ -114,8 +117,8 @@ public class TestLauncher {
         String input = "invalid\n4\n1\nlicense123\n3\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
-
-        Launcher.mainMenu(scanner);
+        var cl = new CommandLine();
+        cl.mainMenu(scanner);
 
         assertTrue(true);
     }
@@ -126,8 +129,8 @@ public class TestLauncher {
         String input = "3\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner = new Scanner(System.in);
-
-        Launcher.mainMenu(scanner);
+        var cl = new CommandLine();
+        cl.mainMenu(scanner);
 
         assertTrue(true);
     }
