@@ -46,7 +46,7 @@ public class MySQLConnection implements DatabaseConnection {
                     "where ID_RES_CLI = ?" +
                     "and ? between beginning and ending";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, client.getId());
+            stmt.setInt(1, 1); //client.getId() ?
             stmt.setTimestamp(2, Timestamp.valueOf(dateTime));
             ResultSet resultSet = stmt.executeQuery();
         } catch (SQLException e){
