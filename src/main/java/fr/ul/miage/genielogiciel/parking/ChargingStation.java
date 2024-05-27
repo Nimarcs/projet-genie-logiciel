@@ -128,6 +128,7 @@ public class ChargingStation {
     private boolean isStationAvailable(Reservation reservation, LocalDateTime currentTime) {
         for (Reservation res : reservations) {
             if (res != reservation && res.startTime.isBefore(currentTime.plusMinutes(10)) && res.endTime.isAfter(currentTime)) {
+                setDispobnible(false);
                 return false;
             }
         }

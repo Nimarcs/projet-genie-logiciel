@@ -23,5 +23,29 @@ public class ClientList {
    }
 
 
+    public Client findClientByLicense(String license){
+        for (Client client: clients){
+            if (client.getPlateNumbers().equals(license)) return client;
+        }
+        return null;
+    }
+
+    public Client findByMobilePhone(String phoneNumber) {
+        String normalizedPhoneNumber = normalizePhoneNumber(phoneNumber);
+        for (Client client : clients) {
+            if (client.getPhoneNumber().equals(normalizedPhoneNumber)) {
+                return client;
+            }
+        }
+        return null;
+    }
+
+    private String normalizePhoneNumber(String phoneNumber) {
+        return phoneNumber.replaceAll("[^\\d+]", "");
+    }
+
+
+
+
 
 }
