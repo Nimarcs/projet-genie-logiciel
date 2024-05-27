@@ -81,7 +81,10 @@ class TestChargingStation {
     void testOfferExtension() {
         LocalDateTime currentTime = startTime.plusMinutes(5);
         manager.offerExtension(client, currentTime);
+        //TODO check that extension is proposed
     }
+
+
 }
 
 

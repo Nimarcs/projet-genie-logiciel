@@ -118,10 +118,12 @@ public class ChargingStation {
                 currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
                 if (isStationAvailable(reservation, currentTime)) {
                     sendNotification(reservation.client, "Would you like to extend your reservation? Additional charges apply.");
+                    //TODO  add logic for client interaction with offer
                 }
             }
         }
     }
+
 
     private boolean isStationAvailable(Reservation reservation, LocalDateTime currentTime) {
         for (Reservation res : reservations) {
