@@ -3,23 +3,49 @@ package fr.ul.miage.genielogiciel.parking;
 import java.util.ArrayList;
 import java.util.List;
 
-// list of charging stations
+/**
+ * List of {@link ChargingStation} in the parking system.
+ * <p> Provides methods:
+ * <ul>
+ *   <li>{@link ListChargingStation#addStation(ChargingStation)} - add charging station to the list</li>
+ *   <li>{@link ListChargingStation#findChargingStation(int)} - find charging station by ID </li>
+ *      <li>{@link ListChargingStation#findAvailableStations()} - find all available charging station in the parking</li>
+ * </ul>
+ *</p>
+ *
+ * @since 1.0
+ */
 
 public class ListChargingStation {
 
-    private List<ChargingStation> stations;
+    private final List<ChargingStation> stations;
 
+    /**
+     * Create a new list of charging stations.
+     * Initialize an empty list of stations.
+     */
     public ListChargingStation () {
         stations = new ArrayList<>();
     }
 
-    // add to the list charging station
+
+    /**
+     * Add a charging station to the list
+     *
+     * @param station the charging station to be added
+     */
     public void addStation(ChargingStation station) {
         stations.add(station);
     }
 
 
-    // find charging station by id
+    /**
+     * Find a charging station by its ID
+     *
+     * @param idStation the ID of the charging station to search for
+     * @return the charging station with the specified ID, or null if not found
+     * @see ChargingStation#getIdStation()
+     */
     public ChargingStation findChargingStation(int idStation){
         for (ChargingStation station: stations){
             if (station.getIdStation() == idStation) return station;
@@ -27,7 +53,12 @@ public class ListChargingStation {
         return null;
     }
 
-    // find available charging station
+    /**
+     * Finds all available charging stations.
+     *
+     * @return a list of available charging stations
+     * @see ChargingStation#getDisponible()
+     */
     public List<ChargingStation> findAvailableStations() {
         List<ChargingStation> availableStations = new ArrayList<>();
         for (ChargingStation station : stations) {

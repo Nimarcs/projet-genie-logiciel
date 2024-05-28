@@ -360,6 +360,8 @@ public class TestCommandLine {
     @Test
     @DisplayName("[REGISTRATION FORM] 8. Invalid card license number")
     public void testRegistrationForm8() {
+
+        // TODO fix the card license number input
         Client client = new Client();
 
         String input = """
@@ -387,6 +389,9 @@ public class TestCommandLine {
     @Test
     @DisplayName("[REGISTRATION FORM] 9. Invalid username")
     public void testRegistrationForm9() {
+
+        // TODO fix the username input
+
         Client client = new Client();
 
         String input = """
@@ -413,6 +418,10 @@ public class TestCommandLine {
 
     @Test
     @DisplayName("[REGISTRATION FORM] 10. Invalid password")
+
+    // TODO fix the password input
+
+
     public void testRegistrationForm10() {
         Client client = new Client();
 
