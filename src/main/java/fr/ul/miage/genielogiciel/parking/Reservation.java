@@ -3,6 +3,9 @@ package fr.ul.miage.genielogiciel.parking;
 import java.time.LocalDateTime;
 //import java.util.Date;
 
+/**
+ * Represents a reservation for a charging station.
+ */
 public class Reservation {
 
     public Client client;
@@ -19,6 +22,15 @@ public class Reservation {
     private String plateNumbers;
     private int idStation;
 
+    /**
+     * Constructs a new Reservation with the specified client, start time, end time, normal rate, and overstay rate.
+     *
+     * @param client the client making the reservation
+     * @param startTime the start time of the reservation
+     * @param endTime the end time of the reservation
+     * @param normalRate the normal rate for the reservation
+     * @param overstayRate the rate for overstaying the reservation
+     */
     public Reservation(Client client, LocalDateTime startTime, LocalDateTime endTime, double normalRate, double overstayRate) {
         this.client = client;
         this.startTime = startTime;
@@ -30,6 +42,13 @@ public class Reservation {
         this.isNoShow = false;
     }
 
+    /**
+     * Constructs a new Reservation with the specified client, start time, and end time.
+     *
+     * @param client the client making the reservation
+     * @param startTime the start time of the reservation
+     * @param endTime the end time of the reservation
+     */
     public Reservation(Client client, LocalDateTime startTime, LocalDateTime endTime) {
 
         int difference = endTime.getHour() - startTime.getHour();
@@ -56,18 +75,29 @@ public class Reservation {
 //        this.isNoShow = false;
 //    }
 
+
+    /**
+     * Confirms the reservation.
+     */
     public void confirmReservation() {
         this.isConfirmed = true;
     }
 
+    /**
+     * Cancels the reservation.
+     */
     public void cancelReservation() {
         this.isConfirmed = false;
     }
 
+    /**
+     * Marks the reservation as a no-show.
+     */
     public void markNoShow() {
         this.isNoShow = true;
     }
 
+    // === GETTERS and SETTERS ===
     public int getIdReservation() { return idReservation; }
     public void setIdReservation(int idReservation) { this.idReservation = idReservation; }
 
