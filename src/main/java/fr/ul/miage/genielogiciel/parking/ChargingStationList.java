@@ -7,16 +7,16 @@ import java.util.List;
  * List of {@link ChargingStation} in the parking system.
  * <p> Provides methods:
  * <ul>
- *   <li>{@link ListChargingStation#addStation(ChargingStation)} - add charging station to the list</li>
- *   <li>{@link ListChargingStation#findChargingStation(int)} - find charging station by ID </li>
- *      <li>{@link ListChargingStation#findAvailableStations()} - find all available charging station in the parking</li>
+ *   <li>{@link ChargingStationList#addStation(ChargingStation)} - add charging station to the list</li>
+ *   <li>{@link ChargingStationList#findChargingStation(int)} - find charging station by ID </li>
+ *      <li>{@link ChargingStationList#findAvailableStations()} - find all available charging station in the parking</li>
  * </ul>
  *</p>
  *
  * @since 1.0
  */
 
-public class ListChargingStation {
+public class ChargingStationList {
 
     private final List<ChargingStation> stations;
 
@@ -24,7 +24,7 @@ public class ListChargingStation {
      * Create a new list of charging stations.
      * Initialize an empty list of stations.
      */
-    public ListChargingStation () {
+    public ChargingStationList() {
         stations = new ArrayList<>();
     }
 

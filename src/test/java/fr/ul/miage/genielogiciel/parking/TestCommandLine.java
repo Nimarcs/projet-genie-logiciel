@@ -1,9 +1,6 @@
 package fr.ul.miage.genielogiciel.parking;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,33 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.util.Scanner;
-
 import static org.junit.jupiter.api.Assertions.*;
 //import org.mockito.Mockito;
 
 
-import fr.ul.miage.genielogiciel.parking.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-
-import fr.ul.miage.genielogiciel.parking.Client;
-
-import fr.ul.miage.genielogiciel.parking.CommandLine;
-import fr.ul.miage.genielogiciel.parking.ListChargingStation;
-
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
-
 
 
 @DisplayName("I'm testing...")
@@ -459,7 +434,7 @@ public class TestCommandLine {
         Scanner scanner = new Scanner(System.in);
 
         ClientList clients = new ClientList();
-        ListChargingStation chargingStations = new ListChargingStation();
+        ChargingStationList chargingStations = new ChargingStationList();
 
         var cl = new CommandLine();
         cl.mainMenu(scanner, chargingStations, clients);
@@ -476,7 +451,7 @@ public class TestCommandLine {
         Scanner scanner = new Scanner(System.in);
 
         ClientList clients = new ClientList();
-        ListChargingStation chargingStations = new ListChargingStation();
+        ChargingStationList chargingStations = new ChargingStationList();
 
         var cl = new CommandLine();
         cl.mainMenu(scanner, chargingStations, clients);
@@ -493,7 +468,7 @@ public class TestCommandLine {
         Scanner scanner = new Scanner(System.in);
 
         ClientList clients = new ClientList();
-        ListChargingStation chargingStations = new ListChargingStation();
+        ChargingStationList chargingStations = new ChargingStationList();
 
         var cl = new CommandLine();
         cl.mainMenu(scanner, chargingStations, clients);
@@ -510,7 +485,7 @@ public class TestCommandLine {
         Scanner scanner = new Scanner(System.in);
 
         ClientList clients = new ClientList();
-        ListChargingStation chargingStations = new ListChargingStation();
+        ChargingStationList chargingStations = new ChargingStationList();
 
         var cl = new CommandLine();
         cl.mainMenu(scanner, chargingStations, clients);
@@ -531,7 +506,7 @@ public class TestCommandLine {
         clients.addClient(new Client("Lara", "Mara", "39 rue Paris, 54000 Nancy", "+33785546942", "test@gmail.com", "00012342", "LICENSE123", "test", "test"));
 
 
-        ListChargingStation chargingStations = new ListChargingStation();
+        ChargingStationList chargingStations = new ChargingStationList();
         chargingStations.addStation(new ChargingStation(123, true));
 
         var cl = new CommandLine();
@@ -552,7 +527,7 @@ public class TestCommandLine {
         ClientList clients = new ClientList();
         clients.addClient(new Client("Lara", "Mara", "39 rue Paris, 54000 Nancy", "+33785546942", "test@gmail.com", "00012342", "LICENSE123", "test", "test"));
 
-        ListChargingStation chargingStations = new ListChargingStation();
+        ChargingStationList chargingStations = new ChargingStationList();
         chargingStations.addStation(new ChargingStation(123, true));
 
 
@@ -586,7 +561,7 @@ public class TestCommandLine {
         ClientList clients = new ClientList();
         clients.addClient(new Client("Lara", "Mara", "39 rue Paris, 54000 Nancy", "+33785546942", "test@gmail.com", "00012342", "LICENSE123", "test", "test"));
 
-        ListChargingStation chargingStations = new ListChargingStation();
+        ChargingStationList chargingStations = new ChargingStationList();
         chargingStations.addStation(new ChargingStation(123, true));
 
 

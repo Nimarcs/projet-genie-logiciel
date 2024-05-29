@@ -21,6 +21,7 @@ import java.util.ArrayList;
  * @since 1.0
  */
 
+// TODO Add check if user with the same email and username already exist
 public class ClientList {
 
    private final List<Client> clients;
