@@ -13,7 +13,7 @@ Pour installer le projet lancer le commande : mvn package
 
 Ce projet nécessite également une connexion à une base de données. Si la base de données n'est pas connecté le projet se contentera de continuer en local uniquement  
 Pour mettre en place la base de donnée il vous faudra une base de donnée mySQL (Xampp pourra vous être utile) avec un schéma "parking"
-Il faudra également un utilisateur genielogiciel avec le mot de passe parkinggenie.  
+Il faudra par ailleurs définir un utilisateur dans votre base de donnée qui aura les accès nécessaires puis noter son nom d'utilisateur et son mot de passe dans un fichier .env à la racine du projet. Un fichier .env.template est là pour vous aider à remplir le fichier .env.
 Vous devez ensuite lancer le script sql/mySQL_init.sql sur ce schema.
 
 # Execution
