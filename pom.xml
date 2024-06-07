@@ -157,7 +157,9 @@
                 <version>3.2.5</version>
                 <configuration>
                     <excludes>
-                        <exclude/>
+                        <excludes>
+                            mysqlconnection/*
+                        </excludes>
                     </excludes>
                 </configuration>
             </plugin>
