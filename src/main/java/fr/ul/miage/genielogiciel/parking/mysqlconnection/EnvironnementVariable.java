@@ -26,16 +26,16 @@ public class EnvironnementVariable {
      * @throws IOException in case of a failure in the reading
      */
     public void load() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("./.env"));
-        String line = bufferedReader.readLine();
-        while (line != null) {
-            int indexOfEqual = line.indexOf('=');
-            String key = line.substring(0, indexOfEqual);
-            String value = line.substring(indexOfEqual + 1);
-            envVariable.put(key, value);
-            line = bufferedReader.readLine();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("./.env"))) {
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                int indexOfEqual = line.indexOf('=');
+                String key = line.substring(0, indexOfEqual);
+                String value = line.substring(indexOfEqual + 1);
+                envVariable.put(key, value);
+                line = bufferedReader.readLine();
+            }
         }
-        bufferedReader.close();
     }
 
     /**
