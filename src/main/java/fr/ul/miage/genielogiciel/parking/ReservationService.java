@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class ReservationService {
 
+    private final ReservationManager reservationManager = new ReservationManager();
+
     public void reserveChargingStation(Scanner input, ChargingStationList chargingStations, ClientList clients) {
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime endTime;
@@ -57,7 +59,8 @@ public class ReservationService {
                             endTime = currentTime.plusHours(1);
                     }
 
-                    selectedStation.addReservation(new Reservation(client, LocalDateTime.now(), endTime));
+                    Reservation reservation = new Reservation(client, LocalDateTime.now(), endTime);
+                    reservationManager.addReservation(selectedStation, reservation);
                 } else {
                     System.out.print("License number not recognized. Please enter your mobile number: ");
                     String mobileNumber = input.nextLine();
@@ -69,10 +72,11 @@ public class ReservationService {
                         int duration = input.nextInt();
 
                         System.out.println("Temporary reservation made for mobile number " + mobileNumber + " with duration " + duration + " hours.");
-                        selectedStation.addReservation(new Reservation(client2, currentTime, currentTime.plusHours(duration)));
+                        Reservation reservation = new Reservation(client2, currentTime, currentTime.plusHours(duration));
+                        reservationManager.addReservation(selectedStation, reservation);
                     } else {
                         System.out.println("We didn't find the account associated with this number. Please create a new one: ");
-                        new CommandLine().run(input, client, clients, chargingStations);
+                        new CommandLine().run(input, client2, clients, chargingStations);
                     }
                 }
             } else {
@@ -82,7 +86,6 @@ public class ReservationService {
             System.out.println("No available stations at the moment. Please try again later.");
         }
     }
-
 
     private int checkInputMenu(Scanner input, int maxPointsMenu) {
         int selection = -1;
@@ -106,4 +109,3 @@ public class ReservationService {
         return selection;
     }
 }
-
