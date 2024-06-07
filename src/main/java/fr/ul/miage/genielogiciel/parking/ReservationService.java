@@ -119,7 +119,7 @@ public class ReservationService {
             reservationManager.addReservation(selectedStation, reservation);
         } else {
             System.out.println("We didn't find the account associated with this number. Please create a new one: ");
-            new CommandLine().run(input, client2, clients, chargingStations);
+            new CommandLine().run(input, null, clients, chargingStations);
         }
     }
 
