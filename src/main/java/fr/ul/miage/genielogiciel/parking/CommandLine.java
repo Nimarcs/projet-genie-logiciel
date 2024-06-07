@@ -20,20 +20,15 @@ public class CommandLine {
             userChoice = menuService.welcomeMenu(scanner);
 
             switch (userChoice) {
-                case 1:
+                case 1 -> {
                     successLogin = clientService.loginForm(scanner, client);
                     if (successLogin) {
                         menuService.mainMenu(scanner, chargingStations, clients, reservationService, reservations);
                     }
-                    break;
-                case 2:
-                    clientService.registrationForm(scanner, client);
-                    break;
-                case 3:
-                    System.out.println("--- Bye! ---");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please enter a number between 1 and 3.");
+                }
+                case 2 -> clientService.registrationForm(scanner, client);
+                case 3 -> System.out.println("--- Bye! ---");
+                default -> System.out.println("Invalid choice. Please enter a number between 1 and 3.");
             }
         } while (userChoice != 3);
 
