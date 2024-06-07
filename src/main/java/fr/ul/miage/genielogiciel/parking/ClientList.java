@@ -94,4 +94,29 @@ public class ClientList {
         return null;
     }
 
+    public Client findClientByReservationNumber(String reservNumber) {
+        for (Client client : clients) {
+            if (client.getPhoneNumber().equals(reservNumber)) {
+                return client;
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * Find a client by their reservation number.
+     *
+     * @param reservationNumber the reservation number to search for
+     * @return the client with the specified reservation number, or null if not found
+     * @see Client#getReservationNumber()
+     */
+//    public Client findClientByReservationNumber(String reservationNumber) {
+//        for (Client client : clients) {
+//            if (client.getReservationNumber().equals(reservationNumber)) {
+//                return client;
+//            }
+//        }
+//        return null;
+//    }
 }

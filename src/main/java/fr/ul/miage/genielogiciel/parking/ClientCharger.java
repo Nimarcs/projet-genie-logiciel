@@ -13,7 +13,6 @@ public class ClientCharger {
      * @param amount the amount to charge
      */
     public void chargeClient(Client client, double amount) {
-        // TODO add logic to charge client if needed
         System.out.println("Charged: $" + amount);
     }
 

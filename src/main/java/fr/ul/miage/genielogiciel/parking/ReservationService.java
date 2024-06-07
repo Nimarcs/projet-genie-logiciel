@@ -87,6 +87,27 @@ public class ReservationService {
         }
     }
 
+    public void handleLateArrival(Scanner input, ChargingStationList chargingStations, ClientList clients) {
+        System.out.print("Please enter your license number: ");
+        String licenseNumber = input.nextLine();
+
+        Client client = clients.findClientByLicense(licenseNumber);
+
+        if (client != null) {
+            LocalDateTime currentTime = LocalDateTime.now();
+            ChargingStation station = chargingStations.findChargingStationByClient(client);
+            if (station != null) {
+                reservationManager.handleLateArrival(station, client, currentTime, input);
+            } else {
+                System.out.println("No active reservation found for this client.");
+            }
+        } else {
+            System.out.println("Client not found.");
+        }
+    }
+
+
+
     private int checkInputMenu(Scanner input, int maxPointsMenu) {
         int selection = -1;
 

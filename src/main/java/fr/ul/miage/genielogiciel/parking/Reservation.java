@@ -62,18 +62,14 @@ public class Reservation {
         this.isNoShow = false;
     }
 
-//    public Reservation(Client client, int duration) {
-//
-//        int difference = endTime.getHour() - startTime.getHour();
-//        this.client = client;
-//        this.startTime = startTime;
-//        this.endTime = endTime;
-//        this.normalRate = 10.0 * difference;
-//        this.overstayRate = 0.0;
-//        this.isOverstayed = false;
-//        this.isConfirmed = false;
-//        this.isNoShow = false;
-//    }
+    /**
+     * Sets the end time of the reservation.
+     *
+     * @param newEndTime the new end time of the reservation
+     */
+    public void setEndTime(LocalDateTime newEndTime) {
+        this.endTime = newEndTime;
+    }
 
 
     /**

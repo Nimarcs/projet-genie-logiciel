@@ -9,6 +9,8 @@ public class CommandLine {
         ClientService clientService = new ClientService();
         MenuService menuService = new MenuService();
         ReservationService reservationService = new ReservationService();
+        reservationList reservations = new reservationList();
+
 
         System.out.println("Welcome to the FastBorne!");
         int userChoice;
@@ -21,7 +23,7 @@ public class CommandLine {
                 case 1:
                     successLogin = clientService.loginForm(scanner, client);
                     if (successLogin) {
-                        menuService.mainMenu(scanner, chargingStations, clients, reservationService);
+                        menuService.mainMenu(scanner, chargingStations, clients, reservationService, reservations);
                     }
                     break;
                 case 2:

@@ -70,4 +70,20 @@ public class ChargingStationList {
     }
 
 
+    /**
+     * Finds the charging station that has a reservation for the given client.
+     *
+     * @param client the client to find the charging station for
+     * @return the charging station with a reservation for the client, or null if not found
+     */
+    public ChargingStation findChargingStationByClient(Client client) {
+        for (ChargingStation station : stations) {
+            for (Reservation reservation : station.reservations) {
+                if (reservation.client.equals(client) && reservation.isConfirmed) {
+                    return station;
+                }
+            }
+        }
+        return null; // No station found for the given client
+    }
 }

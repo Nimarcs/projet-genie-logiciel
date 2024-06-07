@@ -3,6 +3,7 @@ package fr.ul.miage.genielogiciel.parking;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ReservationManager {
 
@@ -101,4 +102,37 @@ public class ReservationManager {
             }
         }
     }
+
+    /**
+     * Handles a late arrival of a client.
+     *
+     * @param client the client who arrived late
+     * @param currentTime the current time
+     */
+    public void handleLateArrival(ChargingStation station, Client client, LocalDateTime currentTime, Scanner input) {
+        for (Reservation reservation : reservations) {
+            if (reservation.client.equals(client) && currentTime.isAfter(reservation.startTime.plusMinutes(10))) {
+                System.out.println("You have arrived beyond the waiting period after the start of your booked period.");
+
+                System.out.print("Please enter how many hours you plan to stay: ");
+                int additionalHours = input.nextInt();
+                input.nextLine();
+
+                LocalDateTime newEndTime = currentTime.plusHours(additionalHours);
+
+                if (station.isStationAvailableDuringInterval(station, currentTime, newEndTime)) {
+                    reservation.setEndTime(newEndTime);
+                    double newChargeAmount = clientCharger.calculateNormalCharge(reservation);
+                    clientCharger.chargeClient(client, newChargeAmount);
+                    clientNotifier.sendNotification(client, "Your vehicle has been recharged from the beginning of your initial reservation until the end of your newly booked slot.");
+                } else {
+                    clientNotifier.sendNotification(client, "No available charging stations during your desired interval.");
+                }
+
+                return;
+            }
+        }
+        clientNotifier.sendNotification(client, "Late arrival handling failed or reservation not found.");
+    }
+
 }

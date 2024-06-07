@@ -47,4 +47,14 @@ public class ChargingStation {
         }
         return true;
     }
+
+    public boolean isStationAvailableDuringInterval(ChargingStation station, LocalDateTime start, LocalDateTime end) {
+        for (Reservation reservation : reservations) {
+            if (reservation.startTime.isBefore(end) && reservation.endTime.isAfter(start)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

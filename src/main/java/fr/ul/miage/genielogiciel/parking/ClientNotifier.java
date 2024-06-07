@@ -11,7 +11,6 @@ public class ClientNotifier {
      */
     public void sendNotification(Client client, String message) {
         System.out.println("Notification to " + client.getPhoneNumber() + ": " + message);
-        // TODO add logic to send notification to a client if needed
     }
 
 }

@@ -11,15 +11,16 @@ public class ClientService {
         System.out.println("-------------------------");
 
         System.out.println("Enter your credentials:");
-        System.out.println(client.getUsername());
-        String username = validInput(input, "Username: ", "^[a-zA-Z0-9._]+$", "Invalid input. Please enter a valid username (letters, numbers, ., _).", 4, 15);
+        System.out.println("Expected username: " + client.getUsername());
 
-
-
+        // Use a less restrictive regex to capture all alphanumeric usernames
+        String username = validInput(input, "Username: ", "^[a-zA-Z0-9._]+$",
+                "Invalid input. Please enter a valid username (letters, numbers, ., _).", 4, 15);
 
         if (Objects.equals(client.getUsername(), username)) {
             for (int i = 0; i < 3; i++) {
-                String password = validInput(input, "Password: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20);
+                String password = validInput(input, "Password: ", "^[a-zA-Z0-9]+$",
+                        "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20);
                 if (Objects.equals(client.getPassword(), password)) {
                     System.out.println("Login successful!");
                     return true;

@@ -26,8 +26,6 @@ public class Launcher {
         clients.addClient(client1);
         clients.addClient(client2);
 
-
-
         ChargingStationList chargingStations = new ChargingStationList();
 
         chargingStations.addStation(new ChargingStation(123, true));
