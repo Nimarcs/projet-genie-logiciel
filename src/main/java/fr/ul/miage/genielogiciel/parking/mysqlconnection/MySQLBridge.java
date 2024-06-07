@@ -1,5 +1,6 @@
 package fr.ul.miage.genielogiciel.parking.mysqlconnection;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,9 +32,11 @@ public class MySQLBridge {
      */
     public boolean initConnection() {
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/parking?user=genielogiciel&password=parkinggenie");
+            EnvironnementVariable environnementVariable = new EnvironnementVariable();
+            environnementVariable.load();
+            connection = DriverManager.getConnection(String.format("jdbc:mysql://localhost:3306/parking?user=%s&password=%s", environnementVariable.get("DATABASE_USER"), environnementVariable.get("DATABASE_USERPASS")));
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             LOG.severe(e.getMessage());
             return false;
         }
