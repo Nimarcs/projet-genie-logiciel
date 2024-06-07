@@ -7,12 +7,14 @@ import java.util.Scanner;
 
 public class MenuService {
 
-    public int welcomeMenu(Scanner input) {
-        int selection = -1;
+    private static final String LINE_OF_DASH = "-------------------------";
 
-        System.out.println("\n-------------------------");
+    public int welcomeMenu(Scanner input) {
+        int selection;
+
+        System.out.println("\n" + LINE_OF_DASH);
         System.out.println("          WELCOME         ");
-        System.out.println("-------------------------");
+        System.out.println(LINE_OF_DASH);
         System.out.println("1 - Login");
         System.out.println("2 - Create Account");
         System.out.println("3 - Quit");
@@ -22,11 +24,11 @@ public class MenuService {
     }
 
     public void mainMenu(Scanner input, ChargingStationList chargingStations, ClientList clients, ReservationService reservationService, reservationList reservations) {
-        int selection = -1;
+        int selection;
 
-        System.out.println("\n-------------------------");
+        System.out.println("\n" + LINE_OF_DASH);
         System.out.println("         MAIN MENU         ");
-        System.out.println("-------------------------");
+        System.out.println(LINE_OF_DASH);
 
         System.out.println("Please enter your license number or reservation number.");
         System.out.println("1 - License number");
@@ -75,9 +77,9 @@ public class MenuService {
 
         int selection;
         do {
-            System.out.println("\n-------------------------");
+            System.out.println("\n" + LINE_OF_DASH);
             System.out.println("         USER MENU         ");
-            System.out.println("-------------------------");
+            System.out.println(LINE_OF_DASH);
             System.out.println("1 - Reserve a charging station");
             System.out.println("2 - Check reservation status");
             System.out.println("3 - View available stations");
@@ -86,20 +88,11 @@ public class MenuService {
             selection = checkInputMenu(input, 4);
 
             switch (selection) {
-                case 1:
-                    reservationService.reserveChargingStation(input, chargingStations, clients);
-                    break;
-                case 2:
-                    viewReservationStatus(input, client, chargingStations, reservationManager, reservations);
-                    break;
-                case 3:
-                    viewAvailableStations(input, chargingStations, reservationService, clients);
-                    break;
-                case 4:
-                    System.out.println("Signing out...  ---");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                case 1 -> reservationService.reserveChargingStation(input, chargingStations, clients);
+                case 2 -> viewReservationStatus(input, client, chargingStations, reservationManager, reservations);
+                case 3 -> viewAvailableStations(input, chargingStations, reservationService, clients);
+                case 4 -> System.out.println("Signing out...  ---");
+                default -> System.out.println("Invalid choice. Please enter a number between 1 and 4.");
             }
         } while (selection != 4);
     }
@@ -108,36 +101,40 @@ public class MenuService {
         LocalDateTime currentTime = LocalDateTime.now();
         ChargingStation station = chargingStations.findChargingStationByClient(client);
 
-        if (station != null) {
-            Reservation reservation = reservations.findReservationByClient(client);
+        if (station == null) {
+            System.out.println("No active reservation found.");
+            return;
+        }
 
-            if (reservation != null) {
-                if (reservation.isConfirmed) {
-                    System.out.println("Reservation is currently active.");
-                    System.out.println("Time remaining: " + ChronoUnit.MINUTES.between(currentTime, reservation.endTime) + " minutes.");
-                    System.out.println("1 - Check out");
-                    System.out.println("2 - Back to user menu");
+        Reservation reservation = reservations.findReservationByClient(client);
 
-                    int choice = checkInputMenu(input, 2);
-                    if (choice == 1) {
-                        reservationManager.checkOut(station, client, currentTime);
-                    }
-                } else {
-                    System.out.println("Reservation is not active.");
-                    System.out.println("1 - Check in");
-                    System.out.println("2 - Back to user menu");
+        if (reservation == null) {
+            System.out.println("No active reservation found.");
+            return;
+        }
 
-                    int choice = checkInputMenu(input, 2);
-                    if (choice == 1) {
-                        reservationManager.checkIn(station, client, currentTime);
-                    }
-                }
-            } else {
-                System.out.println("No active reservation found.");
+
+        if (reservation.isConfirmed) {
+            System.out.println("Reservation is currently active.");
+            System.out.printf("Time remaining: %d minutes.%n", ChronoUnit.MINUTES.between(currentTime, reservation.endTime));
+            System.out.println("1 - Check out");
+            System.out.println("2 - Back to user menu");
+
+            int choice = checkInputMenu(input, 2);
+            if (choice == 1) {
+                reservationManager.checkOut(station, client, currentTime);
             }
         } else {
-            System.out.println("No active reservation found.");
+            System.out.println("Reservation is not active.");
+            System.out.println("1 - Check in");
+            System.out.println("2 - Back to user menu");
+
+            int choice = checkInputMenu(input, 2);
+            if (choice == 1) {
+                reservationManager.checkIn(station, client, currentTime);
+            }
         }
+
     }
 
     private void viewAvailableStations(Scanner input, ChargingStationList chargingStations, ReservationService reservationService, ClientList clients) {
