@@ -104,19 +104,4 @@ public class ClientList {
 
     }
 
-    /**
-     * Find a client by their reservation number.
-     *
-     * @param reservationNumber the reservation number to search for
-     * @return the client with the specified reservation number, or null if not found
-     * @see Client#getReservationNumber()
-     */
-//    public Client findClientByReservationNumber(String reservationNumber) {
-//        for (Client client : clients) {
-//            if (client.getReservationNumber().equals(reservationNumber)) {
-//                return client;
-//            }
-//        }
-//        return null;
-//    }
 }
