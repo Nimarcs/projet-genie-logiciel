@@ -20,6 +20,9 @@ public class ReservationManager {
         reservations.add(reservation);
         reservation.confirmReservation();
         clientNotifier.sendNotification(reservation.client, "Reservation confirmed for " + reservation.startTime);
+        List<Reservation> reservationsStation = new ArrayList<>(station.getReservations());
+        reservationsStation.add(reservation);
+        station.setReservations(reservationsStation);
     }
 
     /**

@@ -78,7 +78,7 @@ public class ChargingStationList {
      */
     public ChargingStation findChargingStationByClient(Client client) {
         for (ChargingStation station : stations) {
-            for (Reservation reservation : station.reservations) {
+            for (Reservation reservation : station.getReservations()) {
                 if (reservation.client.equals(client) && reservation.isConfirmed) {
                     return station;
                 }

@@ -1,7 +1,6 @@
 package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -12,7 +11,7 @@ public class ChargingStation {
     // === General info of charging station ===
     private int idStation;
     private boolean isDisponible;
-    public List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations = new ArrayList<>();
 
     /**
      * Constructs a new ChargingStation with the specified id and availability status.
@@ -22,14 +21,14 @@ public class ChargingStation {
      */
     public ChargingStation(int idStation, boolean isDisponible) {
         setIdStation(idStation);
-        setDispobnible(isDisponible);
+        setDisponible(isDisponible);
     }
 
     // === GETTERS and SETTERS ===
     public int getIdStation() { return idStation; }
     public void setIdStation(int id) { this.idStation = id; }
     public boolean getDisponible() { return isDisponible; }
-    public void setDispobnible(boolean disponible) { isDisponible = disponible; }
+    public void setDisponible(boolean disponible) { isDisponible = disponible; }
 
 
     /**
@@ -57,4 +56,11 @@ public class ChargingStation {
         return true;
     }
 
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public List<Reservation> getReservations() {
+        return Collections.unmodifiableList(reservations);
+    }
 }
