@@ -123,7 +123,7 @@ public class ReservationManager {
 
                 LocalDateTime newEndTime = currentTime.plusHours(additionalHours);
 
-                if (station.isStationAvailableDuringInterval(station, currentTime, newEndTime)) {
+                if (station.isStationAvailableDuringInterval(currentTime, newEndTime)) {
                     reservation.setEndTime(newEndTime);
                     double newChargeAmount = clientCharger.calculateNormalCharge(reservation);
                     clientCharger.chargeClient(client, newChargeAmount);
