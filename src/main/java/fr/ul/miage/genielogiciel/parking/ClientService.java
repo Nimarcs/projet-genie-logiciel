@@ -5,10 +5,13 @@ import java.util.Objects;
 
 public class ClientService {
 
+    private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]+$";
+    private static final String LINE_OF_DASH = "-------------------------";
+
     public boolean loginForm(Scanner input, Client client) {
-        System.out.println("\n-------------------------");
+        System.out.println("\n" + LINE_OF_DASH);
         System.out.println("        LOGIN FORM         ");
-        System.out.println("-------------------------");
+        System.out.println(LINE_OF_DASH);
 
         System.out.println("Enter your credentials:");
         System.out.println("Expected username: " + client.getUsername());
@@ -19,7 +22,7 @@ public class ClientService {
 
         if (Objects.equals(client.getUsername(), username)) {
             for (int i = 0; i < 3; i++) {
-                String password = validInput(input, "Password: ", "^[a-zA-Z0-9]+$",
+                String password = validInput(input, "Password: ", PASSWORD_REGEX,
                         "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20);
                 if (Objects.equals(client.getPassword(), password)) {
                     System.out.println("Login successful!");
@@ -36,9 +39,9 @@ public class ClientService {
     }
 
     public void registrationForm(Scanner input, Client client) {
-        System.out.println("\n-------------------------");
+        System.out.println("\n" + LINE_OF_DASH);
         System.out.println("     REGISTRATION FORM     ");
-        System.out.println("-------------------------");
+        System.out.println(LINE_OF_DASH);
 
         System.out.println("Enter your credentials");
 
