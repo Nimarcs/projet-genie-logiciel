@@ -13,7 +13,8 @@ public class ClientCharger {
      * @param amount the amount to charge
      */
     public void chargeClient(Client client, double amount) {
-        System.out.println("Charged: $" + amount);
+        //TODO add the real payment system
+        System.out.println("Charged: $" + amount + " to client : " + client.getName());
     }
 
 
