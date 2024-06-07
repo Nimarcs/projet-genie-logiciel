@@ -83,6 +83,7 @@ public class ReservationService {
         }
     }
 
+
     private int checkInputMenu(Scanner input, int maxPointsMenu) {
         int selection = -1;
 
