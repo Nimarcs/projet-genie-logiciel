@@ -3,6 +3,7 @@ package fr.ul.miage.genielogiciel.parking;
 import java.time.LocalDateTime;
 import java.util.*;
 
+
 /**
  * Represents a charging station for electric vehicles.
  */
@@ -11,12 +12,16 @@ public class ChargingStation {
     // === General info of charging station ===
     private int idStation;
     private boolean isDisponible;
+    private boolean isTechnicalProblem;
     private List<Reservation> reservations = new ArrayList<>();
+
+    private ReservationManager reservationManager;
+
 
     /**
      * Constructs a new ChargingStation with the specified id and availability status.
      *
-     * @param idStation the unique identifier of the charging station
+     * @param idStation    the unique identifier of the charging station
      * @param isDisponible the availability status of the charging station
      */
     public ChargingStation(int idStation, boolean isDisponible) {
@@ -25,10 +30,33 @@ public class ChargingStation {
     }
 
     // === GETTERS and SETTERS ===
-    public int getIdStation() { return idStation; }
-    public void setIdStation(int id) { this.idStation = id; }
-    public boolean getDisponible() { return isDisponible; }
-    public void setDisponible(boolean disponible) { isDisponible = disponible; }
+    public int getIdStation() {
+        return idStation;
+    }
+
+    public void setIdStation(int id) {
+        this.idStation = id;
+    }
+
+    public boolean getDisponible() {
+        return isDisponible;
+    }
+
+    public void setDisponible(boolean disponible) {
+        isDisponible = disponible;
+    }
+
+    public boolean getTechnicalProblem() {
+        return isTechnicalProblem;
+    }
+
+    public void setTechnicalProblem(boolean technicalProblem) {
+        this.isTechnicalProblem = technicalProblem;
+        if (technicalProblem) {
+            setDisponible(false);
+            reservationManager.notifyClientsOfTechnicalProblem();
+        }
+    }
 
 
     /**
@@ -63,4 +91,6 @@ public class ChargingStation {
     public List<Reservation> getReservations() {
         return Collections.unmodifiableList(reservations);
     }
+
+
 }

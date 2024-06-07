@@ -138,4 +138,10 @@ public class ReservationManager {
         clientNotifier.sendNotification(client, "Late arrival handling failed or reservation not found.");
     }
 
+     public void notifyClientsOfTechnicalProblem() {
+        for (Reservation reservation : reservations) {
+            clientNotifier.sendNotification(reservation.client, "Terminal is currently unavailable due to technical issues. Your reservation may be affected.");
+        }
+    }
+
 }
