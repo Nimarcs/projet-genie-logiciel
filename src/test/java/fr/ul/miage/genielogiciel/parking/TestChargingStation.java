@@ -1,4 +1,4 @@
-package parking;
+package fr.ul.miage.genielogiciel.parking;
 import static org.junit.jupiter.api.Assertions.*;
 
 import fr.ul.miage.genielogiciel.parking.ChargingStation;

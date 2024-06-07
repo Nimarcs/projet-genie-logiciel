@@ -114,11 +114,9 @@ public class ChargingStation {
      */
     public void offerExtension(Client client, LocalDateTime currentTime) {
         for (Reservation reservation : reservations) {
-            if (reservation.client.equals(client) && !reservation.isConfirmed &&
-                currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
+            if (reservation.client.equals(client) && currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
                 if (isStationAvailable(reservation, currentTime)) {
                     sendNotification(reservation.client, "Would you like to extend your reservation? Additional charges apply.");
-                    //TODO add logic for client interaction with the offer
                 }
             }
         }
@@ -163,7 +161,6 @@ public class ChargingStation {
      */
     private void chargeClient(Client client, double amount) {
         sendNotification(client, "Charged: $" + amount);
-        //TODO add logic to charge client if needed
     }
 
     /**
@@ -174,7 +171,6 @@ public class ChargingStation {
      */
     private void sendNotification(Client client, String message) {
         System.out.println("Notification to " + client.getPhoneNumber() + ": " + message);
-        //TODO add logic to send notification to a client if needed
     }
 
     /**
