@@ -1,6 +1,7 @@
 package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
+import java.util.List;
 //import java.util.Date;
 
 /**
@@ -70,6 +71,34 @@ public class Reservation {
     public void setEndTime(LocalDateTime newEndTime) {
         this.endTime = newEndTime;
     }
+
+
+
+    public Reservation findReservation(int idReservation, List<Reservation> reservations){
+        for (Reservation reservation: reservations){
+            if (reservation.getIdStation() == idReservation) return reservation;
+        }
+        return null;
+    }
+
+
+    /**
+     *
+     *
+     *
+     *
+     */
+    public Reservation findReservationByClient(Client client, List<Reservation> reservations) {
+
+        for (Reservation reservation : reservations) {
+            if (reservation.client.equals(client) && reservation.isConfirmed) {
+                return reservation;
+            }
+
+        }
+        return null;
+    }
+
 
 
     /**

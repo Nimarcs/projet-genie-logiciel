@@ -51,7 +51,7 @@ public class MenuService {
                 break;
             case 3:
                 System.out.print("Waiting...");
-                reservationService.reserveChargingStation(input, chargingStations, clients);
+                reservationService.reserveChargingStation(input, chargingStations, clients, reservations);
                 break;
             case 4:
                 System.out.println("Returning back...  ---");
@@ -88,9 +88,9 @@ public class MenuService {
             selection = checkInputMenu(input, 4);
 
             switch (selection) {
-                case 1 -> reservationService.reserveChargingStation(input, chargingStations, clients);
+                case 1 -> reservationService.reserveChargingStation(input, chargingStations, clients, reservations);
                 case 2 -> viewReservationStatus(input, client, chargingStations, reservationManager, reservations);
-                case 3 -> viewAvailableStations(input, chargingStations, reservationService, clients);
+                case 3 -> viewAvailableStations(input, chargingStations, reservationService, clients, reservations);
                 case 4 -> System.out.println("Signing out...  ---");
                 default -> System.out.println("Invalid choice. Please enter a number between 1 and 4.");
             }
@@ -137,7 +137,7 @@ public class MenuService {
 
     }
 
-    private void viewAvailableStations(Scanner input, ChargingStationList chargingStations, ReservationService reservationService, ClientList clients) {
+    private void viewAvailableStations(Scanner input, ChargingStationList chargingStations, ReservationService reservationService, ClientList clients, reservationList reservations) {
         List<ChargingStation> availableStations = chargingStations.findAvailableStations();
 
         if (!availableStations.isEmpty()) {
@@ -149,7 +149,7 @@ public class MenuService {
             System.out.println("Would you like to reserve a station? (yes/no)");
             String choice = input.nextLine().trim().toLowerCase();
             if (choice.equals("yes")) {
-                reservationService.reserveChargingStation(input, chargingStations, clients);
+                reservationService.reserveChargingStation(input, chargingStations, clients, reservations);
             }
         } else {
             System.out.println("No available stations at the moment.");

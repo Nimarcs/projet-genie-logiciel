@@ -1,43 +1,81 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.Objects;
 
 public class ClientService {
 
-    private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]+$";
+
     private static final String LINE_OF_DASH = "-------------------------";
 
-    public boolean loginForm(Scanner input, Client client) {
+    /**
+     * Handles the login form for the client
+     *
+     * @param input  the scanner object to read user input
+     * @param clients the list of client objects containing login credentials
+     * @return true if login is successful, false otherwise
+     */
+    public boolean loginForm(Scanner input, ClientList clients) {
         System.out.println("\n" + LINE_OF_DASH);
         System.out.println("        LOGIN FORM         ");
         System.out.println(LINE_OF_DASH);
 
         System.out.println("Enter your credentials:");
-        System.out.println("Expected username: " + client.getUsername());
 
-        // Use a less restrictive regex to capture all alphanumeric usernames
-        String username = validInput(input, "Username: ", "^[a-zA-Z0-9._]+$",
-                "Invalid input. Please enter a valid username (letters, numbers, ., _).", 4, 15);
-
-        if (Objects.equals(client.getUsername(), username)) {
-            for (int i = 0; i < 3; i++) {
-                String password = validInput(input, "Password: ", PASSWORD_REGEX,
-                        "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20);
-                if (Objects.equals(client.getPassword(), password)) {
-                    System.out.println("Login successful!");
-                    return true;
-                } else {
-                    System.out.println("Invalid password. Please try again. (" + (2 - i) + " attempts remaining)");
-                }
+        Client client = null;
+        for (int i = 0; i < 3; i++) {
+            String username = input.nextLine();
+//            client = checkLogin(username, clients);
+            client = clients.findClientByUsername(username);
+            if (client != null) {
+                break;
+            } else {
+                System.out.println("Invalid username. Please try again. (" + (2 - i) + " attempts remaining)");
             }
-            System.out.println("Too many failed attempts. Login failed.");
-        } else {
-            System.out.println("Invalid username. Please try again.");
         }
+
+        if (client == null) {
+            System.out.println("Too many invalid attempts. Login failed.");
+            return false;
+        }
+
+        for (int i = 0; i < 3; i++) {
+            String password = input.nextLine();
+            if (checkPassword(password, client)) {
+                System.out.println("Login successful!");
+                return true;
+            } else {
+                System.out.println("Invalid password. Please try again. (" + (2 - i) + " attempts remaining)");
+            }
+        }
+
+        System.out.println("Too many failed attempts. Login failed.");
         return false;
     }
 
+
+
+    /**
+     * Checks the password by comparing it with the client's password
+     *
+     * @param password the password to validate
+     * @param client   the client object to compare the password with
+     * @return true if the password matches, false otherwise
+     */
+    private boolean checkPassword(String password, Client client) {
+        return password.matches("^[a-zA-Z0-9]+$") && Objects.equals(client.getPassword(), password);
+    }
+
+
+
+
+    /**
+     * Handles the registration form for the client
+     *
+     * @param input  the scanner object to read user input
+     * @param client the client object to register
+     */
     public void registrationForm(Scanner input, Client client) {
         System.out.println("\n" + LINE_OF_DASH);
         System.out.println("     REGISTRATION FORM     ");
@@ -45,23 +83,28 @@ public class ClientService {
 
         System.out.println("Enter your credentials");
 
-        client.setName(validInput(input, "Name: ", "^[a-zA-Z\\s]+$", "Invalid input. Please enter a valid name without numbers or special characters.", 2, 20));
-        client.setSurname(validInput(input, "Surname: ", "^[a-zA-Z\\s]+$", "Invalid input. Please enter a valid surname without numbers or special characters.", 2, 20));
-        client.setAdresse(validInput(input, "Address: ", "^[a-zA-Z0-9\\s,]+$", "Invalid input. Please enter a valid address without special characters.", 5, 40));
-        client.setPhoneNumber(validInput(input, "Phone Number: ", "^[+]?\\d+$", "Invalid input. Please enter a valid phone number. It may contain only numbers and an optional leading +.", 10, 12));
-        client.setEmail(validInput(input, "Email: ", "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", "Invalid input. Please enter a valid email address.", 5, 50));
-        client.setCreditCard(validInput(input, "Credit Card Number: ", "^[0-9]+$", "Invalid input. Please enter a valid credit card number.", 10, 16));
-        String plateNumbers = validInput(input, "License Plate Numbers (optional - press enter to skip): ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid license plate number.", 0, 12);
-        if (!plateNumbers.trim().isEmpty() && plateNumbers.length() >= 6) {
-            client.setPlateNumbers(plateNumbers);
-        }
-        client.setUsername(validInput(input, "Username: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid username (letters, numbers, ., _).", 5, 15));
-        client.setPassword(validInput(input, "Password: ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20));
+        promptAndValidate(input, "Name: ",  client::setName);
+        promptAndValidate(input, "Surname: ",  client::setSurname);
+        promptAndValidate(input, "Address: ", client::setAdresse);
+        promptAndValidate(input, "Phone Number: ",  client::setPhoneNumber);
+        promptAndValidate(input, "Email: ",  client::setEmail);
+        promptAndValidate(input, "Credit Card Number: ",  client::setCreditCard);
+        promptAndValidate(input, "License Plate Numbers (optional - press enter to skip): ",  client::setPlateNumbers);
+        promptAndValidate(input, "Username: ",  client::setUsername);
+        promptAndValidate(input, "Password: ", client::setPassword);
 
         System.out.println("Registration completed successfully!");
     }
 
-    private String validInput(Scanner input, String prompt, String regex, String errorMessage, int minLength, int maxLength) {
+    /**
+     * Prompts the user for input and validates it using the given setter method
+     *
+     * @param input    the scanner object to read user input
+     * @param prompt   the prompt message
+     * @param setter   the setter method to validate and set the input
+     * @return the validated input
+     */
+    private String promptAndValidate(Scanner input, String prompt, ValueSetter setter) {
         String userInput;
         int attempts = 0;
         int maxAttempts = 3;
@@ -69,13 +112,31 @@ public class ClientService {
         while (attempts < maxAttempts) {
             System.out.print(prompt);
             userInput = input.nextLine().trim();
-            if (userInput.length() >= minLength && userInput.length() <= maxLength && userInput.matches(regex)) {
+            try {
+                setter.set(userInput);
                 return userInput;
-            } else {
-                System.out.println(errorMessage);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
                 attempts++;
             }
         }
+        System.out.println("Too many invalid attempts. Bye!");
         throw new IllegalArgumentException("Too many invalid attempts.");
     }
+
+
+
+
+    // 1 - [TO MARCUS]
+    // I remade the registration form and don't want to check if the input is okay again
+    // (we've already did it in Client class).
+    // So I want to use it and call setters from Client
+    @FunctionalInterface
+    private interface ValueSetter {
+        void set(String value) throws IllegalArgumentException;
+    }
+
+
+
+
 }

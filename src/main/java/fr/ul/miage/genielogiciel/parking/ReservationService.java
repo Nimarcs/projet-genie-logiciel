@@ -14,7 +14,7 @@ public class ReservationService {
      * @param chargingStations charging station to reserve
      * @param clients list of current clients
      */
-    public void reserveChargingStation(Scanner input, ChargingStationList chargingStations, ClientList clients) {
+    public void reserveChargingStation(Scanner input, ChargingStationList chargingStations, ClientList clients, reservationList reservations) {
         List<ChargingStation> availableStations = chargingStations.findAvailableStations();
 
         if (availableStations.isEmpty()) {
@@ -50,7 +50,7 @@ public class ReservationService {
             if (client != null) {
                 manageClientAndReserve(input, selectedStation, client);
             } else {
-                findClientAndReserve(input, chargingStations, clients, selectedStation);
+                findClientAndReserve(input, chargingStations, clients, selectedStation, reservations);
             }
     }
 
@@ -104,7 +104,7 @@ public class ReservationService {
      * @param clients list of all the clients
      * @param selectedStation charging station selected by the user
      */
-    private void findClientAndReserve(Scanner input, ChargingStationList chargingStations, ClientList clients, ChargingStation selectedStation) {
+    private void findClientAndReserve(Scanner input, ChargingStationList chargingStations, ClientList clients, ChargingStation selectedStation, reservationList reservations) {
         System.out.print("License number not recognized. Please enter your mobile number: ");
         String mobileNumber = input.nextLine();
 
@@ -119,7 +119,7 @@ public class ReservationService {
             reservationManager.addReservation(selectedStation, reservation);
         } else {
             System.out.println("We didn't find the account associated with this number. Please create a new one: ");
-            new CommandLine().run(input, null, clients, chargingStations);
+            new CommandLine().run(input, null, clients, chargingStations, reservations);
         }
     }
 
