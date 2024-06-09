@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 public class MenuService {
 
-    private static final String LINE_OF_DASH = "-------------------------";
 
     private final Displayer displayer;
     private final Scanner scanner;
@@ -19,71 +18,91 @@ public class MenuService {
         this.displayer = displayer;
     }
 
-    public int welcomeMenu(Scanner input) {
+    /**
+     * Display the first menu
+     * Displayed to a not connected user
+     * @return selection made from the menu
+     */
+    public int welcomeMenu() {
         int selection;
+        String[] options = new String[]{"Login", "Create Account", "Quit"};
+        displayer.displayMenu(options, "WELCOME");
 
-        System.out.println("\n" + LINE_OF_DASH);
-        System.out.println("          WELCOME         ");
-        System.out.println(LINE_OF_DASH);
-        System.out.println("1 - Login");
-        System.out.println("2 - Create Account");
-        System.out.println("3 - Quit");
-
-        selection = checkInputMenu(input, 3);
+        selection = checkInputMenu(options.length);
         return selection;
     }
 
-    public void mainMenu(Scanner input, ChargingStationList chargingStations, ClientList clients, ReservationService reservationService, ReservationList reservations) {
+    /**
+     * Display the main menu of someone connected
+     * @param facadeInterface link to the datas
+     * @param reservationService service to manage the reservations
+     */
+    public void mainMenu(FacadeInterface facadeInterface, ReservationService reservationService) {
         int selection;
 
-        System.out.println("\n" + LINE_OF_DASH);
-        System.out.println("         MAIN MENU         ");
-        System.out.println(LINE_OF_DASH);
+        String[] options = new String[]{"Find with license number", "Find with reservation number", "I don't have the reservation", "Disconnect"};
+        displayer.displayMenu(options, "MAIN MENU");
 
-        System.out.println("Please enter your license number or reservation number.");
-        System.out.println("1 - License number");
-        System.out.println("2 - Reservation number");
-        System.out.println("3 - I don't have the reservation");
-        System.out.println("4 - Back");
-
-        selection = checkInputMenu(input, 4);
+        selection = checkInputMenu(options.length);
 
         switch (selection) {
-            case 1:
-                System.out.print("Please, enter your license number: ");
-                String licenseNumber = input.nextLine();
-                handleUserMenu(input, licenseNumber, clients, chargingStations, reservations);
-                break;
-            case 2:
-                System.out.print("Please, enter your reservation number: ");
-                String reservationNumber = input.nextLine();
-                handleUserMenu(input, reservationNumber, clients, chargingStations, reservations);
-                break;
-            case 3:
-                System.out.print("Waiting...");
-                reservationService.reserveChargingStation(input, chargingStations, clients);
-                break;
-            case 4:
-                System.out.println("Returning back...  ---");
-                break;
-            default:
-                System.out.println("Invalid choice. Please enter a number between 1 and 3.");
+            case 1 -> handleWithLicenseNumber(facadeInterface, reservationService);
+            case 2 -> handleWithReservationNumber(facadeInterface, reservationService);
+            case 3 -> {
+                displayer.displayMessage("Waiting...");
+                reservationService.reserveChargingStation(facadeInterface);
+            }
+            case 4 -> {
+                facadeInterface.setCurrentClient(null);
+                displayer.displayImportantMessage("Disconnection sucessfull. Returning back");
+            }
+            default -> displayer.displayErrorMessage("Invalid choice. Please enter a number between 1 and 3.");
         }
     }
 
-    private void handleUserMenu(Scanner input, String identifier, ClientList clients, ChargingStationList chargingStations, ReservationList reservations) {
-        ReservationManager reservationManager = new ReservationManager();
-        ReservationService reservationService = new ReservationService();
+    /**
+     * Handle the choice of the license number
+     * @param facadeInterface link to the data
+     * @param reservationService service to display reservation linked interface
+     */
+    private void handleWithLicenseNumber(FacadeInterface facadeInterface, ReservationService reservationService){
+        System.out.print("Please, enter your license number: ");
+        String licenseNumber = scanner.nextLine();
+        Client client = facadeInterface.findClientByLicense(licenseNumber);
 
-        Client client = clients.findClientByLicense(identifier);
         if (client == null) {
-            client = clients.findClientByReservationNumber(identifier);
-        }
-
-        if (client == null) {
-            System.out.println("Client not found.");
+            displayer.displayErrorMessage("Client not found.");
             return;
         }
+
+        handleUserMenu(facadeInterface, reservationService, client);
+    }
+
+    /**
+     * Handle the choice of the reservation number
+     * @param facadeInterface link to the data
+     * @param reservationService service to display reservation linked interfaces
+     */
+    private void handleWithReservationNumber(FacadeInterface facadeInterface, ReservationService reservationService){
+        System.out.print("Please, enter your reservation number: ");
+        String reservationNumber = scanner.nextLine();
+        Client client = facadeInterface.findClientByReservationNumber(reservationNumber);
+
+        if (client == null) {
+            displayer.displayErrorMessage("Client not found.");
+            return;
+        }
+
+        handleUserMenu(facadeInterface, reservationService, client);
+    }
+
+    /**
+     * Handle the display of the menu linked to the user
+     * @param facadeInterface link to the data
+     * @param reservationService service to display reservation linked interfaces
+     * @param client client of which we want to display the menu
+     */
+    private void handleUserMenu(FacadeInterface facadeInterface, ReservationService reservationService, Client client) {
 
         int selection;
         do {

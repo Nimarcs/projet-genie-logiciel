@@ -58,6 +58,24 @@ public class FacadeInterface {
     }
 
     /**
+     * Return the client with the corresponding licenseNumber or null
+     * @param licenseNumber licenseNumber of the client
+     * @return Client or null
+     */
+    public Client findClientByLicense(String licenseNumber) {
+        return clients.findClientByLicense(licenseNumber);
+    }
+
+    /**
+     * Return the client with the corresponding reservationNumber or null
+     * @param reservationNumber reservationNumber of the client
+     * @return Client or null
+     */
+    public Client findClientByReservationNumber(String reservationNumber) {
+        return clients.findClientByReservationNumber(reservationNumber);
+    }
+
+    /**
      * Check if someone is connected
      * @return true if someone is connected, else false
      */
