@@ -21,23 +21,24 @@ public class CommandLine {
 
         displayer.displayMessage("Welcome to the FastBorne!");
         int userChoice;
-        boolean successLogin;
 
-        do {
-            userChoice = menuService.welcomeMenu(scanner);
+        userChoice = menuService.welcomeMenu();
+        while (userChoice != 3) {
 
-            switch (userChoice) {
-                case 1 -> {
-                    successLogin = clientService.loginForm(facadeInterface);
-                    if (successLogin) {
-                        menuService.mainMenu(facadeInterface, reservationService);
-                    }
+            if (facadeInterface.isConnected()){
+                menuService.mainMenu(facadeInterface, reservationService)
+            } else {
+                // Not login choices
+                switch (userChoice) {
+                    case 1 -> clientService.loginForm(facadeInterface);
+                    case 2 -> clientService.registrationForm(facadeInterface);
+                    case 3 -> displayer.displayImportantMessage("Bye!");
+                    default -> displayer.displayErrorMessage("Invalid choice. Please enter a number between 1 and 3.");
                 }
-                case 2 -> clientService.registrationForm(facadeInterface);
-                case 3 -> System.out.println("--- Bye! ---");
-                default -> System.out.println("Invalid choice. Please enter a number between 1 and 3.");
+
+                userChoice = menuService.welcomeMenu();
             }
-        } while (userChoice != 3);
+        }
 
         scanner.close();
     }

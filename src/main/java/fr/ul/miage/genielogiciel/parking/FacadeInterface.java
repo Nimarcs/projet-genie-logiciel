@@ -9,6 +9,11 @@ public class FacadeInterface {
     private ReservationList reservationList;
 
     /**
+     * Current client, should be delegated to a connexion specific class inside the business
+     */
+    private Client currentClient;
+
+    /**
      * Constructor of FacadeInterface
      * Create a totally empty parking
      */
@@ -16,6 +21,7 @@ public class FacadeInterface {
         clients = new ClientList();
         chargingStations = new ChargingStationList();
         reservationList = new ReservationList();
+        currentClient = null;
     }
 
     /**
@@ -42,5 +48,36 @@ public class FacadeInterface {
 
     }
 
+    /**
+     * Return the client with the corresponding username or null
+     * @param username username of the client
+     * @return Client or null
+     */
+    public Client findClientByUsername(String username) {
+        return clients.findClientByUsername(username);
+    }
 
+    /**
+     * Getter of the current Client
+     * @return current client of the app
+     */
+    public Client getCurrentClient() {
+        return currentClient;
+    }
+
+    /**
+     * Set the current connected client
+     * @param currentClient currently connected client
+     */
+    public void setCurrentClient(Client currentClient) {
+        this.currentClient = currentClient;
+    }
+
+    /**
+     * Check if someone is connected
+     * @return true if someone is connected, else false
+     */
+    public boolean isConnected() {
+        return currentClient != null;
+    }
 }

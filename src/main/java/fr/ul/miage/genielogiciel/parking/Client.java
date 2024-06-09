@@ -1,6 +1,8 @@
 package fr.ul.miage.genielogiciel.parking;
 
 
+import java.util.Objects;
+
 /**
  * Represents a client in the parking system.
  *
@@ -107,4 +109,17 @@ public class Client {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Client client = (Client) o;
+        return Objects.equals(phoneNumber, client.phoneNumber) || Objects.equals(email, client.email) || Objects.equals(username, client.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
+    }
 }
