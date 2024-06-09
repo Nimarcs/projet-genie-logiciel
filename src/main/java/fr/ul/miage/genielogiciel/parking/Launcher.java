@@ -31,10 +31,10 @@ public class Launcher {
         // Create charging station list
         ArrayList<ChargingStation> chargingStations = new ArrayList<>();
 
-        chargingStations.add(new ChargingStation(123, true));
-        chargingStations.add(new ChargingStation(456, true));
-        chargingStations.add(new ChargingStation(789, false));
-        chargingStations.add(new ChargingStation(12, false));
+        chargingStations.add(new ChargingStation(123456, true));
+        chargingStations.add(new ChargingStation(456321, true));
+        chargingStations.add(new ChargingStation(789752, false));
+        chargingStations.add(new ChargingStation(125632, false));
 
         // Define reservation times
         LocalDateTime startTime = LocalDateTime.of(2023, 6, 10, 10, 0); // Example start time
