@@ -2,27 +2,23 @@ package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
-public class ReservationManager {
+public class ReservationManager extends ArrayList<Reservation> {
 
-    private List<Reservation> reservations = new ArrayList<>();
     private final ClientNotifier clientNotifier = new ClientNotifier();
     private final ClientCharger clientCharger = new ClientCharger();
 
     /**
-     * Adds a reservation to the charging station and confirms it.
+     * Adds a reservation to the charging station and confirms it
      *
      * @param reservation the reservation to add
      */
     public void addReservation(ChargingStation station, Reservation reservation) {
-        reservations.add(reservation);
+        this.add(reservation);
         reservation.confirmReservation();
         clientNotifier.sendNotification(reservation.client, "Reservation confirmed for " + reservation.startTime);
-        List<Reservation> reservationsStation = new ArrayList<>(station.getReservations());
-        reservationsStation.add(reservation);
-        station.setReservations(reservationsStation);
+        station.getReservations().add(reservation);
     }
 
     /**
@@ -32,7 +28,7 @@ public class ReservationManager {
      * @param currentTime the current time
      */
     public void checkIn(ChargingStation station, Client client, LocalDateTime currentTime) {
-        for (Reservation reservation : reservations) {
+        for (Reservation reservation : this) {
             if (reservation.client.equals(client) && !reservation.isNoShow &&
                     currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
                 reservation.confirmReservation();
@@ -47,13 +43,13 @@ public class ReservationManager {
     }
 
     /**
-     * Checks out a client from their reservation and handles overstay charges if applicable.
+     * Checks out a client from their reservation and handles overstay charges if applicable
      *
      * @param client the client to check out
      * @param currentTime the current time
      */
     public void checkOut(ChargingStation station, Client client, LocalDateTime currentTime) {
-        for (Reservation reservation : reservations) {
+        for (Reservation reservation : this) {
             if (reservation.client.equals(client) && reservation.isConfirmed) {
                 double chargeAmount;
                 if (currentTime.isAfter(reservation.endTime)) {
@@ -74,12 +70,12 @@ public class ReservationManager {
     }
 
     /**
-     * Processes reservations where the client did not show up within the waiting period.
+     * Processes reservations where the client did not show up within the waiting period
      *
      * @param currentTime the current time
      */
     public void processNoShowReservations(LocalDateTime currentTime) {
-        for (Reservation reservation : reservations) {
+        for (Reservation reservation : this) {
             if (currentTime.isAfter(reservation.startTime.plusMinutes(10))) {
                 reservation.markNoShow();
                 double chargeAmount = clientCharger.calculateNormalCharge(reservation);
@@ -97,7 +93,7 @@ public class ReservationManager {
      * @param currentTime the current time
      */
     public void offerExtension(ChargingStation station, Client client, LocalDateTime currentTime) {
-        for (Reservation reservation : reservations) {
+        for (Reservation reservation : this) {
             if (reservation.client.equals(client) && currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
                 if (station.isStationAvailable(reservation, currentTime)) {
                     clientNotifier.sendNotification(reservation.client, "Would you like to extend your reservation? Additional charges apply.");
@@ -113,7 +109,7 @@ public class ReservationManager {
      * @param currentTime the current time
      */
     public void handleLateArrival(ChargingStation station, Client client, LocalDateTime currentTime, Scanner input) {
-        for (Reservation reservation : reservations) {
+        for (Reservation reservation : this) {
             if (reservation.client.equals(client) && currentTime.isAfter(reservation.startTime.plusMinutes(10))) {
                 System.out.println("You have arrived beyond the waiting period after the start of your booked period.");
 
@@ -137,5 +133,4 @@ public class ReservationManager {
         }
         clientNotifier.sendNotification(client, "Late arrival handling failed or reservation not found.");
     }
-
 }

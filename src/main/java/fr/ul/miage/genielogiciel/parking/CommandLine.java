@@ -1,15 +1,15 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class CommandLine {
 
 
-    public void run(Scanner scanner, Client client, ClientList clients, ChargingStationList chargingStations, reservationList reservations) {
+    public void run(Scanner scanner, Client client, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
         ClientService clientService = new ClientService();
         MenuService menuService = new MenuService();
-        ReservationService reservationService = new ReservationService();
 
         System.out.println("Welcome to the FastBorne!");
         int userChoice;
@@ -22,7 +22,7 @@ public class CommandLine {
                 case 1 -> {
                     successLogin = clientService.loginForm(scanner, clients);
                     if (successLogin) {
-                        menuService.mainMenu(scanner, chargingStations, clients, reservationService, reservations);
+                        menuService.mainMenu(scanner, chargingStations, clients, reservations);
                     }
                 }
                 case 2 -> clientService.registrationForm(scanner, client);

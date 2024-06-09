@@ -1,80 +1,245 @@
 package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
+/**
+ * This service class provides functionalities for managing reservations
+ * of charging stations in a parking lot.
+ */
 public class ReservationService {
 
     private final ReservationManager reservationManager = new ReservationManager();
 
     /**
-     * Create a reservation for a charging station
-     * @param input input of the user
-     * @param chargingStations charging station to reserve
-     * @param clients list of current clients
+     * Create a reservation for a charging station.
+     *
+     * @param input the input scanner for user interaction
+     * @param chargingStations the list of charging stations to reserve
+     * @param clients the list of current clients
+     * @param reservations the list of current reservations
      */
-    public void reserveChargingStation(Scanner input, ChargingStationList chargingStations, ClientList clients, reservationList reservations) {
-        List<ChargingStation> availableStations = chargingStations.findAvailableStations();
+    public void reserveChargingStation(Scanner input, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
+        List<ChargingStation> availableStations = findAvailableStations(chargingStations);
 
         if (availableStations.isEmpty()) {
             System.out.println("No available stations at the moment. Please try again later.");
             return;
         }
 
-        System.out.println("Available station found: ");
-
-        int i = 1;
-        int selection;
-
-        for (ChargingStation station : availableStations) {
-            System.out.println(i + ". ID: " + station.getIdStation());
-            i++;
+        System.out.println("Available stations found: ");
+        for (int i = 0; i < availableStations.size(); i++) {
+            System.out.println((i + 1) + ". ID: " + availableStations.get(i).getIdStation());
         }
 
         System.out.print("Please enter the ID of the station you want to reserve: ");
-        selection = input.nextInt();
-        input.nextLine(); // clear the newline character
+        int selection = input.nextInt();
+        input.nextLine();
 
-        ChargingStation selectedStation = chargingStations.findChargingStation(selection);
+        Optional<ChargingStation> selectedStationOpt = findChargingStation(chargingStations, selection);
 
-        if (!(selectedStation != null && selectedStation.getDisponible())) {
+        if (selectedStationOpt.isEmpty() || !selectedStationOpt.get().getDisponible()) {
             System.out.println("Selected station is not available.");
             return;
         }
-            System.out.print("Please enter your license number: ");
-            String licenseNumber = input.nextLine();
 
-            Client client = clients.findClientByLicense(licenseNumber);
-
-            if (client != null) {
-                manageClientAndReserve(input, selectedStation, client);
-            } else {
-                findClientAndReserve(input, chargingStations, clients, selectedStation, reservations);
-            }
-    }
-
-    public void handleLateArrival(Scanner input, ChargingStationList chargingStations, ClientList clients) {
+        ChargingStation selectedStation = selectedStationOpt.get();
         System.out.print("Please enter your license number: ");
         String licenseNumber = input.nextLine();
 
-        Client client = clients.findClientByLicense(licenseNumber);
+        Optional<Client> clientOpt = findClientByLicense(clients, licenseNumber);
 
-        if (client != null) {
-            LocalDateTime currentTime = LocalDateTime.now();
-            ChargingStation station = chargingStations.findChargingStationByClient(client);
-            if (station != null) {
-                reservationManager.handleLateArrival(station, client, currentTime, input);
-            } else {
-                System.out.println("No active reservation found for this client.");
+        if (clientOpt.isPresent()) {
+            manageClientAndReserve(input, selectedStation, clientOpt.get(), reservations);
+        } else {
+            findClientAndReserve(input, chargingStations, clients, selectedStation, reservations);
+        }
+    }
+
+    /**
+     * View the reservation status of a client.
+     *
+     * @param input the input scanner for user interaction
+     * @param client the client whose reservation status is to be viewed
+     * @param chargingStations the list of charging stations
+     * @param reservationManager the manager responsible for reservations
+     * @param reservations the list of current reservations
+     */
+    public void viewReservationStatus(Scanner input, Client client, ArrayList<ChargingStation> chargingStations, ReservationManager reservationManager, ArrayList<Reservation> reservations) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        Optional<ChargingStation> stationOpt = findChargingStationByClient(chargingStations, client);
+
+        if (stationOpt.isEmpty()) {
+            System.out.println("No active reservation found.");
+            return;
+        }
+
+        ChargingStation station = stationOpt.get();
+        Optional<Reservation> reservationOpt = findReservationByClient(reservations, client);
+
+        if (reservationOpt.isEmpty()) {
+            System.out.println("No active reservation found.");
+            return;
+        }
+
+        Reservation reservation = reservationOpt.get();
+
+        if (reservation.isConfirmed) {
+            System.out.println("Reservation is currently active.");
+            System.out.printf("Time remaining: %d minutes.%n", ChronoUnit.MINUTES.between(currentTime, reservation.endTime));
+            System.out.println("1 - Check out");
+            System.out.println("2 - Back to user menu");
+
+            int choice = checkInputMenu(input, 2);
+            if (choice == 1) {
+                reservationManager.checkOut(station, client, currentTime);
             }
         } else {
-            System.out.println("Client not found.");
+            System.out.println("Reservation is not active.");
+            System.out.println("1 - Check in");
+            System.out.println("2 - Back to user menu");
+
+            int choice = checkInputMenu(input, 2);
+            if (choice == 1) {
+                reservationManager.checkIn(station, client, currentTime);
+            }
+        }
+    }
+
+    /**
+     * View the available charging stations and optionally reserve one.
+     *
+     * @param input the input scanner for user interaction
+     * @param chargingStations the list of charging stations
+     * @param reservationService the service responsible for reservations
+     * @param clients the list of current clients
+     * @param reservations the list of current reservations
+     */
+    public void viewAvailableStations(Scanner input, ArrayList<ChargingStation> chargingStations, ReservationService reservationService, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
+        List<ChargingStation> availableStations = findAvailableStations(chargingStations);
+
+        if (!availableStations.isEmpty()) {
+            System.out.println("Available stations:");
+            for (ChargingStation station : availableStations) {
+                System.out.println("ID: " + station.getIdStation());
+            }
+
+            System.out.println("Would you like to reserve a station? (yes/no)");
+            String choice = input.nextLine().trim().toLowerCase();
+            if (choice.equals("yes")) {
+                reservationService.reserveChargingStation(input, chargingStations, clients, reservations);
+            }
+        } else {
+            System.out.println("No available stations at the moment.");
         }
     }
 
 
 
+
+
+
+
+
+
+
+    // ======= MARCUS - don't know what do to with it ==========
+
+    /**
+     * Find available charging stations.
+     *
+     * @param chargingStations the list of charging stations
+     * @return the list of available charging stations
+     */
+    private List<ChargingStation> findAvailableStations(ArrayList<ChargingStation> chargingStations) {
+        List<ChargingStation> availableStations = new ArrayList<>();
+        for (ChargingStation station : chargingStations) {
+            if (station.getDisponible()) {
+                availableStations.add(station);
+            }
+        }
+        return availableStations;
+    }
+
+    /**
+     * Find a charging station by its ID.
+     *
+     * @param chargingStations the list of charging stations
+     * @param idStation the ID of the charging station
+     * @return an optional containing the charging station if found, otherwise empty
+     */
+    private Optional<ChargingStation> findChargingStation(ArrayList<ChargingStation> chargingStations, int idStation) {
+        return chargingStations.stream()
+                .filter(station -> station.getIdStation() == idStation)
+                .findFirst();
+    }
+
+    /**
+     * Find a client by their license number.
+     *
+     * @param clients the list of clients
+     * @param licenseNumber the license number of the client
+     * @return an optional containing the client if found, otherwise empty
+     */
+    private Optional<Client> findClientByLicense(ArrayList<Client> clients, String licenseNumber) {
+        return clients.stream()
+                .filter(client -> client.getPlateNumbers().equals(licenseNumber))
+                .findFirst();
+    }
+
+    /**
+     * Find a charging station reserved by a client.
+     *
+     * @param chargingStations the list of charging stations
+     * @param client the client who reserved the charging station
+     * @return an optional containing the charging station if found, otherwise empty
+     */
+    private Optional<ChargingStation> findChargingStationByClient(ArrayList<ChargingStation> chargingStations, Client client) {
+        return chargingStations.stream()
+                .filter(station -> station.getReservations().stream()
+                        .anyMatch(reservation -> reservation.client.equals(client) && reservation.isConfirmed))
+                .findFirst();
+    }
+
+    /**
+     * Find a reservation by a client.
+     *
+     * @param reservations the list of reservations
+     * @param client the client whose reservation is to be found
+     * @return an optional containing the reservation if found, otherwise empty
+     */
+    private Optional<Reservation> findReservationByClient(ArrayList<Reservation> reservations, Client client) {
+        return reservations.stream()
+                .filter(reservation -> reservation.client.equals(client) && reservation.isConfirmed)
+                .findFirst();
+    }
+
+    // =====================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Check the input from the menu.
+     *
+     * @param input the input scanner for user interaction
+     * @param maxPointsMenu the maximum number of menu points
+     * @return the selected menu option
+     */
     private int checkInputMenu(Scanner input, int maxPointsMenu) {
         int selection;
 
@@ -98,62 +263,73 @@ public class ReservationService {
     }
 
     /**
-     * Find the client and reserve the charging station
-     * @param input input of the user
-     * @param chargingStations list of all the charging stations
-     * @param clients list of all the clients
-     * @param selectedStation charging station selected by the user
+     * Manage the reservation for an existing client.
+     *
+     * @param input the input scanner for user interaction
+     * @param selectedStation the selected charging station
+     * @param client the client making the reservation
+     * @param reservations the list of current reservations
      */
-    private void findClientAndReserve(Scanner input, ChargingStationList chargingStations, ClientList clients, ChargingStation selectedStation, reservationList reservations) {
-        System.out.print("License number not recognized. Please enter your mobile number: ");
-        String mobileNumber = input.nextLine();
-
-        Client client2 = clients.findByMobilePhone(mobileNumber);
-
-        if (client2 != null) {
-            System.out.print("Please enter the expected charging duration (in hours): ");
-            int duration = input.nextInt();
-
-            System.out.println("Temporary reservation made for mobile number " + mobileNumber + " with duration " + duration + " hours.");
-            Reservation reservation = new Reservation(client2, LocalDateTime.now(), LocalDateTime.now().plusHours(duration));
-            reservationManager.addReservation(selectedStation, reservation);
-        } else {
-            System.out.println("We didn't find the account associated with this number. Please create a new one: ");
-            new CommandLine().run(input, null, clients, chargingStations, reservations);
-        }
-    }
-
-    /**
-     * Manage a client that want to reserve a charging station
-     * @param input input of the user
-     * @param selectedStation charging station selected by the user
-     * @param client current client
-     */
-    private void manageClientAndReserve(Scanner input, ChargingStation selectedStation, Client client) {
+    private void manageClientAndReserve(Scanner input, ChargingStation selectedStation, Client client, ArrayList<Reservation> reservations) {
         int selection;
         LocalDateTime endTime;
         System.out.println("Choose what to enter: ");
         System.out.println("1. Expected duration ");
         System.out.println("2. Departure time ");
 
-        selection = checkInputMenu(input, 3);
+        selection = checkInputMenu(input, 2);
 
         switch (selection) {
             case 1 -> {
-                System.out.println("Enter expected duration: ");
+                System.out.print("Enter expected duration (hours): ");
                 int duration = input.nextInt();
                 endTime = LocalDateTime.now().plusHours(duration);
             }
             case 2 -> {
-                System.out.println("Enter departure time: ");
+                System.out.print("Enter departure time (hour): ");
                 int hour = input.nextInt();
                 endTime = LocalDateTime.now().withHour(hour);
             }
-            default -> endTime = LocalDateTime.now().plusHours(1);
+            default -> throw new IllegalStateException("Unexpected value: " + selection);
         }
 
         Reservation reservation = new Reservation(client, LocalDateTime.now(), endTime);
         reservationManager.addReservation(selectedStation, reservation);
+        reservations.add(reservation);
     }
 
+    /**
+     * Find a client by their mobile phone number and reserve a station for them.
+     *
+     * @param input the input scanner for user interaction
+     * @param chargingStations the list of charging stations
+     * @param clients the list of clients
+     * @param selectedStation the selected charging station
+     * @param reservations the list of current reservations
+     */
+    private void findClientAndReserve(Scanner input, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ChargingStation selectedStation, ArrayList<Reservation> reservations) {
+        System.out.print("License number not recognized. Please enter your mobile number: ");
+        String mobileNumber = input.nextLine();
+
+        Optional<Client> clientOpt = findClientByPhone(clients, mobileNumber);
+
+        if (clientOpt.isPresent()) {
+            manageClientAndReserve(input, selectedStation, clientOpt.get(), reservations);
+        } else {
+            System.out.println("We didn't find the account associated with this number. Please create a new one.");
+        }
+    }
+
+    /**
+     * Find a client by their mobile phone number.
+     *
+     * @param clients the list of clients
+     * @param phone the phone number of the client
+     * @return an optional containing the client if found, otherwise empty
+     */
+    private Optional<Client> findClientByPhone(ArrayList<Client> clients, String phone) {
+        return clients.stream()
+                .filter(client -> client.getPhoneNumber().equals(phone))
+                .findFirst();
+    }
 }

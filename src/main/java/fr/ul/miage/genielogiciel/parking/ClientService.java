@@ -1,11 +1,11 @@
 package fr.ul.miage.genielogiciel.parking;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Objects;
 
 public class ClientService {
-
 
     private static final String LINE_OF_DASH = "-------------------------";
 
@@ -16,7 +16,7 @@ public class ClientService {
      * @param clients the list of client objects containing login credentials
      * @return true if login is successful, false otherwise
      */
-    public boolean loginForm(Scanner input, ClientList clients) {
+    public boolean loginForm(Scanner input, ArrayList<Client> clients) {
         System.out.println("\n" + LINE_OF_DASH);
         System.out.println("        LOGIN FORM         ");
         System.out.println(LINE_OF_DASH);
@@ -26,9 +26,11 @@ public class ClientService {
         Client client = null;
         for (int i = 0; i < 3; i++) {
             String username = input.nextLine();
-//            client = checkLogin(username, clients);
-            client = clients.findClientByUsername(username);
-            if (client != null) {
+
+            Optional<Client> clientOpt = checkLogin(username, clients);
+
+            if (clientOpt.isPresent()) {
+                client = clientOpt.get();
                 break;
             } else {
                 System.out.println("Invalid username. Please try again. (" + (2 - i) + " attempts remaining)");
@@ -41,6 +43,7 @@ public class ClientService {
         }
 
         for (int i = 0; i < 3; i++) {
+            System.out.print("Password: ");
             String password = input.nextLine();
             if (checkPassword(password, client)) {
                 System.out.println("Login successful!");
@@ -55,6 +58,18 @@ public class ClientService {
     }
 
 
+    /**
+     * Checks the login credentials and returns an Optional<Client>
+     *
+     * @param username the username to search for
+     * @param clients  the list of clients
+     * @return an Optional<Client> if a matching client is found, otherwise Optional.empty()
+     */
+    private Optional<Client> checkLogin(String username, ArrayList<Client> clients) {
+        return clients.stream()
+                .filter(client -> client.getUsername().equals(username))
+                .findFirst();
+    }
 
     /**
      * Checks the password by comparing it with the client's password
@@ -66,8 +81,6 @@ public class ClientService {
     private boolean checkPassword(String password, Client client) {
         return password.matches("^[a-zA-Z0-9]+$") && Objects.equals(client.getPassword(), password);
     }
-
-
 
 
     /**
@@ -83,14 +96,14 @@ public class ClientService {
 
         System.out.println("Enter your credentials");
 
-        promptAndValidate(input, "Name: ",  client::setName);
-        promptAndValidate(input, "Surname: ",  client::setSurname);
+        promptAndValidate(input, "Name: ", client::setName);
+        promptAndValidate(input, "Surname: ", client::setSurname);
         promptAndValidate(input, "Address: ", client::setAdresse);
-        promptAndValidate(input, "Phone Number: ",  client::setPhoneNumber);
-        promptAndValidate(input, "Email: ",  client::setEmail);
-        promptAndValidate(input, "Credit Card Number: ",  client::setCreditCard);
-        promptAndValidate(input, "License Plate Numbers (optional - press enter to skip): ",  client::setPlateNumbers);
-        promptAndValidate(input, "Username: ",  client::setUsername);
+        promptAndValidate(input, "Phone Number: ", client::setPhoneNumber);
+        promptAndValidate(input, "Email: ", client::setEmail);
+        promptAndValidate(input, "Credit Card Number: ", client::setCreditCard);
+        promptAndValidate(input, "License Plate Numbers (optional - press enter to skip): ", client::setPlateNumbers);
+        promptAndValidate(input, "Username: ", client::setUsername);
         promptAndValidate(input, "Password: ", client::setPassword);
 
         System.out.println("Registration completed successfully!");
@@ -124,19 +137,12 @@ public class ClientService {
         throw new IllegalArgumentException("Too many invalid attempts.");
     }
 
-
-
-
     // 1 - [TO MARCUS]
     // I remade the registration form and don't want to check if the input is okay again
     // (we've already did it in Client class).
     // So I want to use it and call setters from Client
     @FunctionalInterface
-    private interface ValueSetter {
+    public interface ValueSetter {
         void set(String value) throws IllegalArgumentException;
     }
-
-
-
-
 }
