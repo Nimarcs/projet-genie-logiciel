@@ -1,4 +1,7 @@
-package fr.ul.miage.genielogiciel.parking;
+package fr.ul.miage.genielogiciel.parking.commandLine;
+
+import fr.ul.miage.genielogiciel.parking.*;
+import fr.ul.miage.genielogiciel.parking.commandLine.CommandLine;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,6 +10,14 @@ import java.util.Scanner;
 public class ReservationService {
 
     private final ReservationManager reservationManager = new ReservationManager();
+
+    private final Displayer displayer;
+    private final Scanner scanner;
+
+    public ReservationService(Scanner scanner, Displayer displayer){
+        this.scanner = scanner;
+        this.displayer = displayer;
+    }
 
     /**
      * Create a reservation for a charging station

@@ -1,4 +1,6 @@
-package fr.ul.miage.genielogiciel.parking;
+package fr.ul.miage.genielogiciel.parking.commandLine;
+
+import fr.ul.miage.genielogiciel.parking.Client;
 
 import java.util.Scanner;
 import java.util.Objects;
@@ -7,6 +9,14 @@ public class ClientService {
 
     private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]+$";
     private static final String LINE_OF_DASH = "-------------------------";
+
+    private final Displayer displayer;
+    private final Scanner scanner;
+
+    public ClientService(Scanner scanner, Displayer displayer) {
+        this.scanner = scanner;
+        this.displayer = displayer;
+    }
 
     public boolean loginForm(Scanner input, Client client) {
         System.out.println("\n" + LINE_OF_DASH);

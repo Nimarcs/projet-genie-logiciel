@@ -1,4 +1,6 @@
-package fr.ul.miage.genielogiciel.parking;
+package fr.ul.miage.genielogiciel.parking.commandLine;
+
+import fr.ul.miage.genielogiciel.parking.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -8,6 +10,14 @@ import java.util.Scanner;
 public class MenuService {
 
     private static final String LINE_OF_DASH = "-------------------------";
+
+    private final Displayer displayer;
+    private final Scanner scanner;
+
+    public MenuService (Scanner scanner ,Displayer displayer){
+        this.scanner = scanner;
+        this.displayer = displayer;
+    }
 
     public int welcomeMenu(Scanner input) {
         int selection;
@@ -23,7 +33,7 @@ public class MenuService {
         return selection;
     }
 
-    public void mainMenu(Scanner input, ChargingStationList chargingStations, ClientList clients, ReservationService reservationService, reservationList reservations) {
+    public void mainMenu(Scanner input, ChargingStationList chargingStations, ClientList clients, ReservationService reservationService, ReservationList reservations) {
         int selection;
 
         System.out.println("\n" + LINE_OF_DASH);
@@ -61,7 +71,7 @@ public class MenuService {
         }
     }
 
-    private void handleUserMenu(Scanner input, String identifier, ClientList clients, ChargingStationList chargingStations, reservationList reservations) {
+    private void handleUserMenu(Scanner input, String identifier, ClientList clients, ChargingStationList chargingStations, ReservationList reservations) {
         ReservationManager reservationManager = new ReservationManager();
         ReservationService reservationService = new ReservationService();
 
@@ -97,7 +107,7 @@ public class MenuService {
         } while (selection != 4);
     }
 
-    private void viewReservationStatus(Scanner input, Client client, ChargingStationList chargingStations, ReservationManager reservationManager, reservationList reservations) {
+    private void viewReservationStatus(Scanner input, Client client, ChargingStationList chargingStations, ReservationManager reservationManager, ReservationList reservations) {
         LocalDateTime currentTime = LocalDateTime.now();
         ChargingStation station = chargingStations.findChargingStationByClient(client);
 
