@@ -54,8 +54,8 @@ public class ClientService {
 
         //3 tries to write correct password and connect
         for (int i = 0; i < 3; i++) {
-            String password = validInput("Password: ", PASSWORD_REGEX,
-                    "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20);
+
+            String password = scanner.nextLine().trim();
 
             if (Objects.equals(client.getPassword(), password)) {
                 displayer.displayMessage("Login successful!");
@@ -64,6 +64,7 @@ public class ClientService {
             } else {
                 displayer.displayErrorMessage("Invalid password. Please try again. (" + (2 - i) + " attempts remaining)");
             }
+
         }
         displayer.displayErrorMessage("Too many failed attempts. Login failed.");
         return false;
