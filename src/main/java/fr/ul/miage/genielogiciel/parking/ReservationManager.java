@@ -119,7 +119,7 @@ public class ReservationManager extends ArrayList<Reservation> {
 
                 LocalDateTime newEndTime = currentTime.plusHours(additionalHours);
 
-                if (station.isStationAvailableDuringInterval(currentTime, newEndTime)) {
+                if (station.isStationAvailable(reservation, newEndTime)) {
                     reservation.setEndTime(newEndTime);
                     double newChargeAmount = clientCharger.calculateNormalCharge(reservation);
                     clientCharger.chargeClient(client, newChargeAmount);
@@ -133,4 +133,5 @@ public class ReservationManager extends ArrayList<Reservation> {
         }
         clientNotifier.sendNotification(client, "Late arrival handling failed or reservation not found.");
     }
+
 }

@@ -23,6 +23,8 @@ public class ChargingStation {
         setIdStation(idStation);
         setDisponible(isDisponible);
     }
+    
+    public ChargingStation() {}
 
     // === GETTERS and SETTERS ===
     public int getIdStation() { return idStation; }
@@ -41,15 +43,6 @@ public class ChargingStation {
     public boolean isStationAvailable(Reservation reservation, LocalDateTime currentTime) {
         for (Reservation res : reservations) {
             if (res != reservation && res.startTime.isBefore(currentTime.plusMinutes(10)) && res.endTime.isAfter(currentTime)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean isStationAvailableDuringInterval(LocalDateTime start, LocalDateTime end) {
-        for (Reservation reservation : reservations) {
-            if (reservation.startTime.isBefore(end) && reservation.endTime.isAfter(start)) {
                 return false;
             }
         }

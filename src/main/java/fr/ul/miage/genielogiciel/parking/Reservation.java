@@ -61,6 +61,8 @@ public class Reservation {
         this.isNoShow = false;
     }
 
+    public Reservation(){}
+
     /**
      * Sets the end time of the reservation.
      *
@@ -136,4 +138,16 @@ public class Reservation {
      * @param plateNumbers the plate numbers to set
      */
     public void setPlateNumbers(String plateNumbers) { this.plateNumbers = plateNumbers; }
+
+    public Client getClient() {
+        return this.client;
+    }
+
+    public LocalDateTime getStartTime() {
+        return this.startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return this.endTime;
+    }
 }
