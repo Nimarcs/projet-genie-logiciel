@@ -49,7 +49,7 @@ public class Launcher {
 
 
         CommandLine commandLine = new CommandLine();
-        commandLine.run(scanner, client2, chargingStations, clients, reservations);
+        commandLine.run(scanner, chargingStations, clients, reservations);
     }
 
 

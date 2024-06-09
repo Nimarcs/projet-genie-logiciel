@@ -17,8 +17,8 @@ public class ReservationManager extends ArrayList<Reservation> {
     public void addReservation(ChargingStation station, Reservation reservation) {
         this.add(reservation);
         reservation.confirmReservation();
-        clientNotifier.sendNotification(reservation.client, "Reservation confirmed for " + reservation.startTime);
-        station.getReservations().add(reservation);
+        clientNotifier.sendNotification(reservation.client, "Reservation confirmed");
+//        station.getReservations().add(reservation);
     }
 
     /**

@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class CommandLine {
 
 
-    public void run(Scanner scanner, Client client, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
+    public void run(Scanner scanner, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
         ClientService clientService = new ClientService();
         MenuService menuService = new MenuService();
 
@@ -15,17 +15,19 @@ public class CommandLine {
         int userChoice;
         boolean successLogin;
 
+
+
         do {
             userChoice = menuService.welcomeMenu(scanner);
-
+            Client client = new Client();
             switch (userChoice) {
                 case 1 -> {
-                    successLogin = clientService.loginForm(scanner, clients);
-                    if (successLogin) {
-                        menuService.mainMenu(scanner, chargingStations, clients, reservations);
+                    client = clientService.loginForm(scanner, clients);
+                    if (client != null) {
+                        menuService.mainMenu(scanner, client, chargingStations, clients, reservations);
                     }
                 }
-                case 2 -> clientService.registrationForm(scanner, client);
+                case 2 -> clientService.registrationForm(scanner, clients);
                 case 3 -> System.out.println("--- Bye! ---");
                 default -> System.out.println("Invalid choice. Please enter a number between 1 and 3.");
             }

@@ -40,6 +40,7 @@ public class Reservation {
         this.isOverstayed = false;
         this.isConfirmed = false;
         this.isNoShow = false;
+
     }
 
     /**

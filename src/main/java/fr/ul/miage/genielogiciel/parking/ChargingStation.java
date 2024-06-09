@@ -8,6 +8,7 @@ import java.util.*;
  */
 public class ChargingStation {
 
+
     // === General info of charging station ===
     private int idStation;
     private boolean isDisponible;
@@ -57,53 +58,7 @@ public class ChargingStation {
         return Collections.unmodifiableList(reservations);
     }
 
-    /**
-     * Find a charging station by its ID
-     *
-     * @param idStation the ID of the charging station to search for
-     * @return the charging station with the specified ID, or null if not found
-     * @see ChargingStation#getIdStation()
-     */
-    public ChargingStation findChargingStation(int idStation, List<ChargingStation> stations){
-        for (ChargingStation station: stations){
-            if (station.getIdStation() == idStation) return station;
-        }
-        return null;
-    }
 
-    /**
-     * Finds all available charging stations.
-     *
-     * @return a list of available charging stations
-     * @see ChargingStation#getDisponible()
-     */
-    public List<ChargingStation> findAvailableStations(List<ChargingStation> stations) {
-        List<ChargingStation> availableStations = new ArrayList<>();
-        for (ChargingStation station : stations) {
-            if (station.getDisponible()) {
-                availableStations.add(station);
-            }
-        }
-        return availableStations;
-    }
-
-
-    /**
-     * Finds the charging station that has a reservation for the given client.
-     *
-     * @param client the client to find the charging station for
-     * @return the charging station with a reservation for the client, or null if not found
-     */
-    public ChargingStation findChargingStationByClient(Client client, List<ChargingStation> stations) {
-        for (ChargingStation station : stations) {
-            for (Reservation reservation : station.getReservations()) {
-                if (reservation.client.equals(client) && reservation.isConfirmed) {
-                    return station;
-                }
-            }
-        }
-        return null; // No station found for the given client
-    }
 
 
 

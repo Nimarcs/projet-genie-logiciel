@@ -1,11 +1,6 @@
 package fr.ul.miage.genielogiciel.parking;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class MenuService {
 
@@ -26,7 +21,7 @@ public class MenuService {
         return selection;
     }
 
-    public void mainMenu(Scanner input, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
+    public void mainMenu(Scanner input, Client client, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
         int selection;
 
         System.out.println("\n" + LINE_OF_DASH);
@@ -40,21 +35,30 @@ public class MenuService {
         System.out.println("4 - Back");
 
         selection = checkInputMenu(input, 4);
-
+        System.out.println();
         switch (selection) {
             case 1:
                 System.out.print("Please, enter your license number: ");
                 String licenseNumber = input.nextLine();
-                handleUserMenu(input, licenseNumber,  chargingStations, clients, reservations);
+
+                if (Objects.equals(client.getPlateNumbers(), licenseNumber)) {
+                    handleUserMenu(input, client, chargingStations, clients, reservations);
+                } else {
+                    System.out.println("Invalid license number");
+                }
                 break;
             case 2:
                 System.out.print("Please, enter your reservation number: ");
                 String reservationNumber = input.nextLine();
-                handleUserMenu(input, reservationNumber, chargingStations, clients,  reservations);
+                if (Objects.equals(client.getReservationNumber(), reservationNumber)) {
+                    handleUserMenu(input, client, chargingStations, clients, reservations);
+                } else {
+                    System.out.println("Invalid reservation number");
+                }
                 break;
             case 3:
                 System.out.print("Waiting...");
-                reservationService.reserveChargingStation(input, chargingStations, clients, reservations);
+                reservationService.reserveChargingStation(input, client, chargingStations, clients, reservations);
                 break;
             case 4:
                 System.out.println("Returning back...  ---");
@@ -64,20 +68,10 @@ public class MenuService {
         }
     }
 
-    private void handleUserMenu(Scanner input, String identifier, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
+    private void handleUserMenu(Scanner input,Client client, ArrayList <ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
         ReservationManager reservationManager = new ReservationManager();
 
-        Optional<Client> clientOpt = clients.stream()
-                .filter(client -> client.getPlateNumbers().equals(identifier) ||
-                        String.valueOf(client.getReservationNumber()).equals(identifier))
-                .findFirst();
 
-        if (clientOpt.isEmpty()) {
-            System.out.println("Client not found.");
-            return;
-        }
-
-        Client client = clientOpt.get();
 
         int selection;
         do {
@@ -92,9 +86,9 @@ public class MenuService {
             selection = checkInputMenu(input, 4);
 
             switch (selection) {
-                case 1 -> reservationService.reserveChargingStation(input, chargingStations, clients, reservations);
+                case 1 -> reservationService.reserveChargingStation(input, client, chargingStations, clients, reservations);
                 case 2 -> reservationService.viewReservationStatus(input, client, chargingStations, reservationManager, reservations);
-                case 3 -> reservationService.viewAvailableStations(input, chargingStations, reservationService, clients, reservations);
+                case 3 -> reservationService.viewAvailableStations(input, client, chargingStations, reservationService, clients, reservations);
                 case 4 -> System.out.println("Signing out...  ---");
                 default -> System.out.println("Invalid choice. Please enter a number between 1 and 4.");
             }

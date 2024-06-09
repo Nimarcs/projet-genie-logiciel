@@ -18,12 +18,13 @@ public class ReservationService {
     /**
      * Create a reservation for a charging station.
      *
-     * @param input the input scanner for user interaction
+     * @param input            the input scanner for user interaction
+     * @param client           the client making the reservation
      * @param chargingStations the list of charging stations to reserve
-     * @param clients the list of current clients
-     * @param reservations the list of current reservations
+     * @param clients
+     * @param reservations     the list of current reservations
      */
-    public void reserveChargingStation(Scanner input, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
+    public void reserveChargingStation(Scanner input, Client client, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
         List<ChargingStation> availableStations = findAvailableStations(chargingStations);
 
         if (availableStations.isEmpty()) {
@@ -36,7 +37,7 @@ public class ReservationService {
             System.out.println((i + 1) + ". ID: " + availableStations.get(i).getIdStation());
         }
 
-        System.out.print("Please enter the ID of the station you want to reserve: ");
+        System.out.print("Please enter the ID of the station you want to reserve (ex. 123 or 456): ");
         int selection = input.nextInt();
         input.nextLine();
 
@@ -48,18 +49,18 @@ public class ReservationService {
         }
 
         ChargingStation selectedStation = selectedStationOpt.get();
-        System.out.print("Please enter your license number: ");
-        String licenseNumber = input.nextLine();
 
-        Optional<Client> clientOpt = findClientByLicense(clients, licenseNumber);
+        Optional<Reservation> existingReservationOpt = reservations.stream()
+                .filter(reservation -> reservation.client.getPlateNumbers().equals(client.getPlateNumbers()))
+                .findFirst();
 
-        if (clientOpt.isPresent()) {
-            manageClientAndReserve(input, selectedStation, clientOpt.get(), reservations);
-        } else {
-            findClientAndReserve(input, chargingStations, clients, selectedStation, reservations);
+        if (existingReservationOpt.isPresent()) {
+            System.out.println("You already have an existing reservation.");
+            return;
         }
-    }
 
+        manageClientAndReserve(input, selectedStation, client, reservations);
+    }
     /**
      * View the reservation status of a client.
      *
@@ -114,12 +115,13 @@ public class ReservationService {
      * View the available charging stations and optionally reserve one.
      *
      * @param input the input scanner for user interaction
+     * @param client the client
      * @param chargingStations the list of charging stations
      * @param reservationService the service responsible for reservations
      * @param clients the list of current clients
      * @param reservations the list of current reservations
      */
-    public void viewAvailableStations(Scanner input, ArrayList<ChargingStation> chargingStations, ReservationService reservationService, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
+    public void viewAvailableStations(Scanner input, Client client, ArrayList <ChargingStation> chargingStations, ReservationService reservationService, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
         List<ChargingStation> availableStations = findAvailableStations(chargingStations);
 
         if (!availableStations.isEmpty()) {
@@ -131,7 +133,7 @@ public class ReservationService {
             System.out.println("Would you like to reserve a station? (yes/no)");
             String choice = input.nextLine().trim().toLowerCase();
             if (choice.equals("yes")) {
-                reservationService.reserveChargingStation(input, chargingStations, clients, reservations);
+                reservationService.reserveChargingStation(input, client, chargingStations, clients, reservations);
             }
         } else {
             System.out.println("No available stations at the moment.");
@@ -294,8 +296,11 @@ public class ReservationService {
         }
 
         Reservation reservation = new Reservation(client, LocalDateTime.now(), endTime);
+        reservation.confirmReservation();  // Confirm the reservation
         reservationManager.addReservation(selectedStation, reservation);
         reservations.add(reservation);
+        selectedStation.setDisponible(false); // Mark station as not available
+        System.out.println("Reservation successful!");
     }
 
     /**

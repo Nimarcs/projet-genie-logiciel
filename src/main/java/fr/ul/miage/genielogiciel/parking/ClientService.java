@@ -14,9 +14,9 @@ public class ClientService {
      *
      * @param input  the scanner object to read user input
      * @param clients the list of client objects containing login credentials
-     * @return true if login is successful, false otherwise
+     * @return client if login is successful, null otherwise
      */
-    public boolean loginForm(Scanner input, ArrayList<Client> clients) {
+    public Client loginForm(Scanner input, ArrayList<Client> clients) {
         System.out.println("\n" + LINE_OF_DASH);
         System.out.println("        LOGIN FORM         ");
         System.out.println(LINE_OF_DASH);
@@ -25,6 +25,7 @@ public class ClientService {
 
         Client client = null;
         for (int i = 0; i < 3; i++) {
+            System.out.print("Username: ");
             String username = input.nextLine();
 
             Optional<Client> clientOpt = checkLogin(username, clients);
@@ -39,22 +40,23 @@ public class ClientService {
 
         if (client == null) {
             System.out.println("Too many invalid attempts. Login failed.");
-            return false;
+            return null;
         }
 
         for (int i = 0; i < 3; i++) {
             System.out.print("Password: ");
             String password = input.nextLine();
+
             if (checkPassword(password, client)) {
                 System.out.println("Login successful!");
-                return true;
+                return client;
             } else {
                 System.out.println("Invalid password. Please try again. (" + (2 - i) + " attempts remaining)");
             }
         }
 
         System.out.println("Too many failed attempts. Login failed.");
-        return false;
+        return null;
     }
 
     /**
@@ -85,14 +87,16 @@ public class ClientService {
      * Handles the registration form for the client
      *
      * @param input  the scanner object to read user input
-     * @param client the client object to register
+     * @param clients the cliens
      */
-    public void registrationForm(Scanner input, Client client) {
+    public void registrationForm(Scanner input, ArrayList<Client> clients) {
         System.out.println("\n" + LINE_OF_DASH);
         System.out.println("     REGISTRATION FORM     ");
         System.out.println(LINE_OF_DASH);
 
         System.out.println("Enter your credentials");
+
+        Client client = new Client();
 
         promptAndValidate(input, "Name: ", client::setName);
         promptAndValidate(input, "Surname: ", client::setSurname);
@@ -104,7 +108,9 @@ public class ClientService {
         promptAndValidate(input, "Username: ", client::setUsername);
         promptAndValidate(input, "Password: ", client::setPassword);
 
+        clients.add(client);
         System.out.println("Registration completed successfully!");
+
     }
 
     /**
