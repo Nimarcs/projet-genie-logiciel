@@ -57,7 +57,6 @@ public class ClientService {
         return false;
     }
 
-
     /**
      * Checks the login credentials and returns an Optional<Client>
      *
@@ -67,7 +66,7 @@ public class ClientService {
      */
     private Optional<Client> checkLogin(String username, ArrayList<Client> clients) {
         return clients.stream()
-                .filter(client -> client.getUsername().equals(username))
+                .filter(client -> username.equals(client.getUsername())) // Updated to handle null
                 .findFirst();
     }
 
@@ -81,7 +80,6 @@ public class ClientService {
     private boolean checkPassword(String password, Client client) {
         return password.matches("^[a-zA-Z0-9]+$") && Objects.equals(client.getPassword(), password);
     }
-
 
     /**
      * Handles the registration form for the client

@@ -2,89 +2,134 @@ package fr.ul.miage.genielogiciel.parking;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class ClientServiceTest {
+@ExtendWith(MockitoExtension.class)
+class ClientServiceTest {
 
     private ClientService clientService;
+    private ArrayList<Client> clients;
+    private Scanner input;
     private Client client;
-    private ClientList clients;
-
-    @Mock
-    private Scanner scannerMock;
 
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
         clientService = new ClientService();
-        client = new Client("john", "doe", "123 Main St", "+12345678901", "john.doe@example.com",
-                "1234567812345678", "ABC123", "johndoe", "securePass123");
-
-        clients = new ClientList();
-        clients.addClient(client);
-    }
-
-    // Tests for loginForm
-
-    @Test
-    public void testLoginFormSuccess() {
-        when(scannerMock.nextLine()).thenReturn("johndoe", "securePass123");
-
-        assertTrue(clientService.loginForm(scannerMock, clients));
-        verify(scannerMock, times(2)).nextLine(); // One for username, one for password
-    }
-
-//    @Test
-//    public void testLoginFormInvalidUsername() {
-//        when(scannerMock.nextLine()).thenReturn("wrongusername");
-//
-//        assertFalse(clientService.loginForm(scannerMock, clients));
-//        verify(scannerMock, times(1)).nextLine(); // One for username
-//    }
-
-    @Test
-    public void testLoginFormInvalidPassword() {
-        when(scannerMock.nextLine()).thenReturn("johndoe", "wrongpassword", "wrongpassword", "wrongpassword");
-
-        assertFalse(clientService.loginForm(scannerMock, clients));
-        verify(scannerMock, times(4)).nextLine(); // One for username, three for password attempts
-    }
-
-    // Tests for registrationForm
-
-    @Test
-    public void testRegistrationFormSuccess() {
-        when(scannerMock.nextLine()).thenReturn("Jane", "Doe", "456 elm st", "+12345678901", "jane.doe@example.com",
-                "8765432187654321", "DEF456", "janedoe", "securePass456");
-
-        Client newClient = new Client();
-        clientService.registrationForm(scannerMock, newClient);
-
-        assertEquals("Jane", newClient.getName());
-        assertEquals("Doe", newClient.getSurname());
-        assertEquals("456 elm st", newClient.getAdresse());
-        assertEquals("+12345678901", newClient.getPhoneNumber());
-        assertEquals("jane.doe@example.com", newClient.getEmail());
-        assertEquals("8765432187654321", newClient.getCreditCard());
-        assertEquals("DEF456", newClient.getPlateNumbers());
-        assertEquals("janedoe", newClient.getUsername());
-        assertEquals("securePass456", newClient.getPassword());
+        clients = new ArrayList<>();
+        input = mock(Scanner.class);
+        client = new Client();
+        client.setUsername("testUser");
+        client.setPassword("testPassword");
+        clients.add(client);
     }
 
     @Test
-    public void testRegistrationFormInvalidName() {
-        when(scannerMock.nextLine()).thenReturn("J", "Doe", "456 Elm St", "+12345678901", "jane.doe@example.com",
-                "8765432187654321", "DEF456", "jane_doe", "securePass456");
+    void testLoginFormSuccessful() {
+        when(input.nextLine()).thenReturn("testUser", "testPassword");
 
-        Client newClient = new Client();
-        assertThrows(IllegalArgumentException.class, () -> clientService.registrationForm(scannerMock, newClient));
+        boolean result = clientService.loginForm(input, clients);
+
+        assertTrue(result);
+        verify(input, times(2)).nextLine(); // Verifies that nextLine() is called twice
     }
 
+    @Test
+    void testLoginFormInvalidUsername() {
+        when(input.nextLine()).thenReturn("wrongUser", "wrongUser", "wrongUser");
 
+        boolean result = clientService.loginForm(input, clients);
+
+        assertFalse(result);
+        verify(input, times(3)).nextLine();
+    }
+
+    @Test
+    void testLoginFormInvalidPassword() {
+        when(input.nextLine()).thenReturn("testUser", "wrongPassword", "wrongPassword", "wrongPassword");
+
+        boolean result = clientService.loginForm(input, clients);
+
+        assertFalse(result);
+        verify(input, times(4)).nextLine();
+    }
+
+    @Test
+    void testRegistrationFormSuccessful() {
+        when(input.nextLine())
+                .thenReturn("John")
+                .thenReturn("Doe")
+                .thenReturn("123 street")
+                .thenReturn("0786656273")
+                .thenReturn("john.doe@example.com")
+                .thenReturn("1111222233334444")
+                .thenReturn("ABC123")
+                .thenReturn("newUser")
+                .thenReturn("newPassword");
+
+        clientService.registrationForm(input, client);
+
+        assertEquals("John", client.getName());
+        assertEquals("Doe", client.getSurname());
+        assertEquals("123 street", client.getAdresse());
+        assertEquals("0786656273", client.getPhoneNumber());
+        assertEquals("john.doe@example.com", client.getEmail());
+        assertEquals("1111222233334444", client.getCreditCard());
+        assertEquals("ABC123", client.getPlateNumbers());
+        assertEquals("newUser", client.getUsername());
+        assertEquals("newPassword", client.getPassword());
+    }
+
+    @Test
+    void testRegistrationFormInvalidName() {
+        when(input.nextLine())
+                .thenReturn("", "John") // Invalid then valid input
+                .thenReturn("Doe")
+                .thenReturn("123 street")
+                .thenReturn("0786656273")
+                .thenReturn("john.doe@example.com")
+                .thenReturn("1111222233334444")
+                .thenReturn("ABC123")
+                .thenReturn("newUser")
+                .thenReturn("newPassword");
+
+        clientService.registrationForm(input, client);
+
+        assertEquals("John", client.getName());
+        assertEquals("Doe", client.getSurname());
+        assertEquals("123 street", client.getAdresse());
+        assertEquals("0786656273", client.getPhoneNumber());
+        assertEquals("john.doe@example.com", client.getEmail());
+        assertEquals("1111222233334444", client.getCreditCard());
+        assertEquals("ABC123", client.getPlateNumbers());
+        assertEquals("newUser", client.getUsername());
+        assertEquals("newPassword", client.getPassword());
+    }
+
+    @Test
+    void testRegistrationFormTooManyInvalidAttempts() {
+        when(input.nextLine())
+                .thenReturn("", "", "", "") // Invalid inputs
+                .thenReturn("Doe")
+                .thenReturn("123 street")
+                .thenReturn("0786656273")
+                .thenReturn("john.doe@example.com")
+                .thenReturn("1111222233334444")
+                .thenReturn("ABC123")
+                .thenReturn("newUser")
+                .thenReturn("newPassword");
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            clientService.registrationForm(input, client);
+        });
+
+        assertEquals("Too many invalid attempts.", exception.getMessage());
+    }
 }
