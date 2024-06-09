@@ -58,6 +58,22 @@ public class FacadeInterface {
     }
 
     /**
+     * Check if someone is connected
+     * @return true if someone is connected, else false
+     */
+    public boolean isConnected() {
+        return currentClient != null;
+    }
+
+    /**
+     * Add a new client to the system
+     * @param client client to add
+     */
+    public void addClient(Client client) {
+        clients.addClient(client);
+    }
+
+    /**
      * Getter of the current Client
      * @return current client of the app
      */
@@ -71,13 +87,5 @@ public class FacadeInterface {
      */
     public void setCurrentClient(Client currentClient) {
         this.currentClient = currentClient;
-    }
-
-    /**
-     * Check if someone is connected
-     * @return true if someone is connected, else false
-     */
-    public boolean isConnected() {
-        return currentClient != null;
     }
 }
