@@ -17,7 +17,7 @@ public class ReservationManager extends ArrayList<Reservation> {
     public void addReservation(ChargingStation station, Reservation reservation) {
         this.add(reservation);
         reservation.confirmReservation();
-        clientNotifier.sendNotification(reservation.client, "Reservation confirmed for " + reservation.startTime);
+        clientNotifier.sendNotification(reservation.getClient(), "Reservation confirmed for " + reservation.getStartTime());
         station.getReservations().add(reservation);
     }
 
@@ -29,8 +29,8 @@ public class ReservationManager extends ArrayList<Reservation> {
      */
     public void checkIn(ChargingStation station, Client client, LocalDateTime currentTime) {
         for (Reservation reservation : this) {
-            if (reservation.client.equals(client) && !reservation.isNoShow &&
-                    currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
+            if (reservation.getClient().equals(client) && !reservation.isNoShow() &&
+                    currentTime.isAfter(reservation.getStartTime()) && currentTime.isBefore(reservation.getStartTime().plusMinutes(10))) {
                 reservation.confirmReservation();
                 double chargeAmount = clientCharger.calculateNormalCharge(reservation);
                 clientCharger.chargeClient(client, chargeAmount);
@@ -50,10 +50,10 @@ public class ReservationManager extends ArrayList<Reservation> {
      */
     public void checkOut(ChargingStation station, Client client, LocalDateTime currentTime) {
         for (Reservation reservation : this) {
-            if (reservation.client.equals(client) && reservation.isConfirmed) {
+            if (reservation.getClient().equals(client) && reservation.isConfirmed()) {
                 double chargeAmount;
-                if (currentTime.isAfter(reservation.endTime)) {
-                    reservation.isOverstayed = true;
+                if (currentTime.isAfter(reservation.getEndTime())) {
+                    reservation.setOverstayed(true);
                     chargeAmount = clientCharger.calculateOverstayCharge(reservation, currentTime);
                     clientNotifier.sendNotification(client, "Charged for the full reservation period and overstay charge of $" + chargeAmount);
                 } else {
@@ -76,11 +76,11 @@ public class ReservationManager extends ArrayList<Reservation> {
      */
     public void processNoShowReservations(LocalDateTime currentTime) {
         for (Reservation reservation : this) {
-            if (currentTime.isAfter(reservation.startTime.plusMinutes(10))) {
+            if (currentTime.isAfter(reservation.getStartTime().plusMinutes(10))) {
                 reservation.markNoShow();
                 double chargeAmount = clientCharger.calculateNormalCharge(reservation);
-                clientCharger.chargeClient(reservation.client, chargeAmount);
-                clientNotifier.sendNotification(reservation.client, "You did not show up. Charged for the full reservation period of $" + chargeAmount);
+                clientCharger.chargeClient(reservation.getClient(), chargeAmount);
+                clientNotifier.sendNotification(reservation.getClient(), "You did not show up. Charged for the full reservation period of $" + chargeAmount);
                 reservation.cancelReservation();
             }
         }
@@ -94,9 +94,9 @@ public class ReservationManager extends ArrayList<Reservation> {
      */
     public void offerExtension(ChargingStation station, Client client, LocalDateTime currentTime) {
         for (Reservation reservation : this) {
-            if (reservation.client.equals(client) && currentTime.isAfter(reservation.startTime) && currentTime.isBefore(reservation.startTime.plusMinutes(10))) {
+            if (reservation.getClient().equals(client) && currentTime.isAfter(reservation.getStartTime()) && currentTime.isBefore(reservation.getStartTime().plusMinutes(10))) {
                 if (station.isStationAvailable(reservation, currentTime)) {
-                    clientNotifier.sendNotification(reservation.client, "Would you like to extend your reservation? Additional charges apply.");
+                    clientNotifier.sendNotification(reservation.getClient(), "Would you like to extend your reservation? Additional charges apply.");
                 }
             }
         }
@@ -110,7 +110,7 @@ public class ReservationManager extends ArrayList<Reservation> {
      */
     public void handleLateArrival(ChargingStation station, Client client, LocalDateTime currentTime, Scanner input) {
         for (Reservation reservation : this) {
-            if (reservation.client.equals(client) && currentTime.isAfter(reservation.startTime.plusMinutes(10))) {
+            if (reservation.getClient().equals(client) && currentTime.isAfter(reservation.getStartTime().plusMinutes(10))) {
                 System.out.println("You have arrived beyond the waiting period after the start of your booked period.");
 
                 System.out.print("Please enter how many hours you plan to stay: ");

@@ -8,15 +8,15 @@ import java.util.List;
  */
 public class Reservation {
 
-    public Client client;
-    public LocalDateTime startTime;
-    public LocalDateTime endTime;
-    public int duration;
-    public boolean isOverstayed;
-    public double normalRate;
-    public double overstayRate;
-    public boolean isConfirmed;
-    public boolean isNoShow;
+    private Client client;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private int duration;
+    private boolean isOverstayed;
+    private double normalRate;
+    private double overstayRate;
+    private boolean isConfirmed;
+    private boolean isNoShow;
 
     private int idReservation;
     private String plateNumbers;
@@ -136,4 +136,64 @@ public class Reservation {
      * @param plateNumbers the plate numbers to set
      */
     public void setPlateNumbers(String plateNumbers) { this.plateNumbers = plateNumbers; }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public boolean isOverstayed() {
+        return isOverstayed;
+    }
+
+    public void setOverstayed(boolean overstayed) {
+        isOverstayed = overstayed;
+    }
+
+    public double getNormalRate() {
+        return normalRate;
+    }
+
+    public void setNormalRate(double normalRate) {
+        this.normalRate = normalRate;
+    }
+
+    public double getOverstayRate() {
+        return overstayRate;
+    }
+
+    public void setOverstayRate(double overstayRate) {
+        this.overstayRate = overstayRate;
+    }
+
+    public boolean isConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        isConfirmed = confirmed;
+    }
+
+    public boolean isNoShow() {
+        return isNoShow;
+    }
+
+    public void setNoShow(boolean noShow) {
+        isNoShow = noShow;
+    }
 }

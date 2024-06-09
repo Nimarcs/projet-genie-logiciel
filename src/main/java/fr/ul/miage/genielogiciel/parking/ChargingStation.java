@@ -40,7 +40,7 @@ public class ChargingStation {
      */
     public boolean isStationAvailable(Reservation reservation, LocalDateTime currentTime) {
         for (Reservation res : reservations) {
-            if (res != reservation && res.startTime.isBefore(currentTime.plusMinutes(10)) && res.endTime.isAfter(currentTime)) {
+            if (res != reservation && res.getStartTime().isBefore(currentTime.plusMinutes(10)) && res.getEndTime().isAfter(currentTime)) {
                 return false;
             }
         }
@@ -49,7 +49,7 @@ public class ChargingStation {
 
     public boolean isStationAvailableDuringInterval(LocalDateTime start, LocalDateTime end) {
         for (Reservation reservation : reservations) {
-            if (reservation.startTime.isBefore(end) && reservation.endTime.isAfter(start)) {
+            if (reservation.getStartTime().isBefore(end) && reservation.getEndTime().isAfter(start)) {
                 return false;
             }
         }
@@ -104,7 +104,7 @@ public class ChargingStation {
     public ChargingStation findChargingStationByClient(Client client, List<ChargingStation> stations) {
         for (ChargingStation station : stations) {
             for (Reservation reservation : station.getReservations()) {
-                if (reservation.client.equals(client) && reservation.isConfirmed) {
+                if (reservation.getClient().equals(client) && reservation.isConfirmed()) {
                     return station;
                 }
             }

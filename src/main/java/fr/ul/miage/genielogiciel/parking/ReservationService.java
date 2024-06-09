@@ -88,9 +88,9 @@ public class ReservationService {
 
         Reservation reservation = reservationOpt.get();
 
-        if (reservation.isConfirmed) {
+        if (reservation.isConfirmed()) {
             System.out.println("Reservation is currently active.");
-            System.out.printf("Time remaining: %d minutes.%n", ChronoUnit.MINUTES.between(currentTime, reservation.endTime));
+            System.out.printf("Time remaining: %d minutes.%n", ChronoUnit.MINUTES.between(currentTime, reservation.getEndTime()));
             System.out.println("1 - Check out");
             System.out.println("2 - Back to user menu");
 
@@ -201,7 +201,7 @@ public class ReservationService {
     private Optional<ChargingStation> findChargingStationByClient(ArrayList<ChargingStation> chargingStations, Client client) {
         return chargingStations.stream()
                 .filter(station -> station.getReservations().stream()
-                        .anyMatch(reservation -> reservation.client.equals(client) && reservation.isConfirmed))
+                        .anyMatch(reservation -> reservation.getClient().equals(client) && reservation.isConfirmed()))
                 .findFirst();
     }
 
@@ -214,7 +214,7 @@ public class ReservationService {
      */
     private Optional<Reservation> findReservationByClient(ArrayList<Reservation> reservations, Client client) {
         return reservations.stream()
-                .filter(reservation -> reservation.client.equals(client) && reservation.isConfirmed)
+                .filter(reservation -> reservation.getClient().equals(client) && reservation.isConfirmed())
                 .findFirst();
     }
 

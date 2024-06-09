@@ -25,8 +25,8 @@ public class ClientCharger {
      * @return the normal charge for the reservation
      */
     public double calculateNormalCharge(Reservation reservation) {
-        long duration = reservation.startTime.until(reservation.endTime, ChronoUnit.HOURS);
-        return duration * reservation.normalRate;
+        long duration = reservation.getStartTime().until(reservation.getEndTime(), ChronoUnit.HOURS);
+        return duration * reservation.getNormalRate();
     }
 
 
@@ -38,9 +38,9 @@ public class ClientCharger {
      * @return the overstay charge for the reservation
      */
     public double calculateOverstayCharge(Reservation reservation, LocalDateTime currentTime) {
-        long overstayDuration = reservation.endTime.until(currentTime, ChronoUnit.HOURS);
+        long overstayDuration = reservation.getEndTime().until(currentTime, ChronoUnit.HOURS);
         double totalOverstayCharge = 0.0;
-        double currentOverstayRate = reservation.overstayRate;
+        double currentOverstayRate = reservation.getOverstayRate();
 
         for (int i = 0; i < overstayDuration; i++) {
             totalOverstayCharge += currentOverstayRate;
