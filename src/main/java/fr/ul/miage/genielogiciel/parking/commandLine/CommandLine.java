@@ -22,8 +22,8 @@ public class CommandLine {
         displayer.displayMessage("Welcome to the FastBorne!");
         int userChoice;
 
-        userChoice = menuService.welcomeMenu();
-        while (userChoice != 3) {
+        do {
+            userChoice = menuService.welcomeMenu();
 
             if (facadeInterface.isConnected()){
                 menuService.mainMenu(facadeInterface, reservationService)
@@ -36,9 +36,8 @@ public class CommandLine {
                     default -> displayer.displayErrorMessage("Invalid choice. Please enter a number between 1 and 3.");
                 }
 
-                userChoice = menuService.welcomeMenu();
             }
-        }
+        } while (userChoice != 3);
 
         scanner.close();
     }
