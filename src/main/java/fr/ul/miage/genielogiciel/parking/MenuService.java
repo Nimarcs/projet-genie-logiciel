@@ -2,11 +2,21 @@ package fr.ul.miage.genielogiciel.parking;
 
 import java.util.*;
 
+/**
+ * This service class provides functionalities for displaying menus
+ * and handling user interactions in the FastBorne application.
+ */
 public class MenuService {
 
     private static final String LINE_OF_DASH = "-------------------------";
     private final ReservationService reservationService = new ReservationService();
 
+    /**
+     * Displays the welcome menu and returns the user's selection.
+     *
+     * @param input the scanner object to read user input
+     * @return the user's menu selection
+     */
     public int welcomeMenu(Scanner input) {
         int selection;
 
@@ -21,6 +31,15 @@ public class MenuService {
         return selection;
     }
 
+    /**
+     * Displays the main menu and handles user interactions based on their selection.
+     *
+     * @param input the scanner object to read user input
+     * @param client the client object representing the logged-in user
+     * @param chargingStations the list of charging stations
+     * @param clients the list of clients
+     * @param reservations the list of reservations
+     */
     public void mainMenu(Scanner input, Client client, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
         int selection;
 
@@ -68,10 +87,18 @@ public class MenuService {
         }
     }
 
-    private void handleUserMenu(Scanner input,Client client, ArrayList <ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
+    /**
+     * Handles the user menu and manages interactions for reserving charging stations,
+     * checking reservation status, viewing available stations, and signing out.
+     *
+     * @param input the scanner object to read user input
+     * @param client the client object representing the logged-in user
+     * @param chargingStations the list of charging stations
+     * @param clients the list of clients
+     * @param reservations the list of reservations
+     */
+    private void handleUserMenu(Scanner input, Client client, ArrayList<ChargingStation> chargingStations, ArrayList<Client> clients, ArrayList<Reservation> reservations) {
         ReservationManager reservationManager = new ReservationManager();
-
-
 
         int selection;
         do {
@@ -95,6 +122,13 @@ public class MenuService {
         } while (selection != 4);
     }
 
+    /**
+     * Checks the user input for menu selections and ensures it is a valid number within the specified range.
+     *
+     * @param input the scanner object to read user input
+     * @param maxPointsMenu the maximum number of menu points
+     * @return the validated menu selection
+     */
     private int checkInputMenu(Scanner input, int maxPointsMenu) {
         int selection = -1;
 
