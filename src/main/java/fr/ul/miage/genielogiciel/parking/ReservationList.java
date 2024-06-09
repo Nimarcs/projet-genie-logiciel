@@ -3,7 +3,7 @@ package fr.ul.miage.genielogiciel.parking;
 import java.util.ArrayList;
 import java.util.List;
 
-public class reservationList {
+public class ReservationList {
 
 
     private final List<Reservation> reservations;
@@ -11,7 +11,7 @@ public class reservationList {
     /**
      * Create a new list of reservations.
      */
-    public reservationList() {
+    public ReservationList() {
         reservations = new ArrayList<>();
     }
 
