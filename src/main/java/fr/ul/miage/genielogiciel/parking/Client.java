@@ -1,5 +1,8 @@
 package fr.ul.miage.genielogiciel.parking;
 
+
+import java.util.Objects;
+
 /**
  * Represents a client in the parking system
  *
@@ -41,16 +44,16 @@ public class Client {
 
     /**
      * Constructor for creating a new client with the specified details
-     *
-     * @param name first name
-     * @param surname surname
-     * @param adresse living address
-     * @param phoneNumber phone number
-     * @param email email address
-     * @param creditCard credit card number
-     * @param plateNumbers vehicle license plate numbers
-     * @param username username for the system
-     * @param password password for the system
+     * (using for registration of new clients)
+     * @param name the client's first name
+     * @param surname the client's surname
+     * @param adresse the client's address
+     * @param phoneNumber the client's phone number
+     * @param email the client's email address
+     * @param creditCard the client's credit card number
+     * @param plateNumbers the client's vehicle license plate numbers
+     * @param username the client's username for the system
+     * @param password the client's password for the system
      */
     public Client(String name, String surname, String adresse, String phoneNumber, String email, String creditCard, String plateNumbers, String username, String password) {
         setName(name);
@@ -293,5 +296,18 @@ public class Client {
             return input;
         }
         return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Client client = (Client) o;
+        return Objects.equals(phoneNumber, client.phoneNumber) || Objects.equals(email, client.email) || Objects.equals(username, client.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
     }
 }

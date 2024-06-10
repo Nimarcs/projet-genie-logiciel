@@ -134,4 +134,8 @@ public class ReservationManager extends ArrayList<Reservation> {
         clientNotifier.sendNotification(client, "Late arrival handling failed or reservation not found.");
     }
 
+    public void askExtention(Reservation reservation) {
+        //TODO
+        throw new IllegalStateException("Fonctionnalité non traité");
+    }
 }
