@@ -70,7 +70,7 @@ public class DisplayerSout implements Displayer {
 
         //Display all the option
         for (int i = 0; i < options.length; i++) {
-            System.out.println(StringUtils.center(StringUtils.center(i + " - " + options[i], headerWidth - 2), headerWidth, "|"));
+            System.out.println(StringUtils.center(StringUtils.center((i+1) + " - " + options[i], headerWidth - 2), headerWidth, "|"));
         }
 
         //End the box
