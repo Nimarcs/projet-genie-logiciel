@@ -184,7 +184,7 @@ public class FacadeInterface {
      * @param client client to add
      */
     public void addClient(Client client) {
-        clients.addClient(client);
+        clients.add(client);
     }
 
     /**
