@@ -3,6 +3,7 @@ package fr.ul.miage.genielogiciel.parking.commandLine;
 import fr.ul.miage.genielogiciel.parking.Client;
 import fr.ul.miage.genielogiciel.parking.FacadeInterface;
 
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Objects;
 
@@ -46,18 +47,21 @@ public class ClientDisplayService {
                 "Invalid input. Please enter a valid username (letters, numbers, ., _).", 4, 15);
 
         //If the client is not created
-        Client client = facadeInterface.findClientByUsername(username);
-        if (client == null){
+        Optional<Client> optionalClient = facadeInterface.findClientByUsername(username);
+
+        if (optionalClient.isEmpty()){
             displayer.displayErrorMessage("Username unknown. Going back.");
             return false;
         }
+
+        Client client = optionalClient.get();
 
         //3 tries to write correct password and connect
         for (int i = 0; i < 3; i++) {
 
             String password = scanner.nextLine().trim();
 
-            if (Objects.equals(client.getPassword(), password)) {
+            if (facadeInterface.checkPassword(password, client)) {
                 displayer.displayMessage("Login successful!");
                 facadeInterface.setCurrentClient(client);
                 return true;

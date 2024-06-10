@@ -1,16 +1,17 @@
 package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class FacadeInterface {
 
-    private ClientList clients;
+    private Collection<Client> clients;
 
-    private ChargingStationList chargingStations;
+    private Collection<ChargingStation> chargingStations;
 
-    private ReservationList reservationList;
+    private Collection<Reservation> reservations;
+
+    private ClientService clientService;
 
     private ReservationManager reservationManager;
 
@@ -24,9 +25,10 @@ public class FacadeInterface {
      * Create a totally empty parking
      */
     public FacadeInterface(){
-        clients = new ClientList();
-        chargingStations = new ChargingStationList();
-        reservationList = new ReservationList();
+        clients = new HashSet<>();
+        chargingStations = new HashSet<>();
+        reservations = new HashSet<>();
+        clientService = new ClientService();
         reservationManager = new ReservationManager();
         currentClient = null;
     }
@@ -37,21 +39,30 @@ public class FacadeInterface {
      */
     public void initializeParking(){
         //TODO ClientList and ChargingStationList could have a clear function
-        clients = new ClientList();
-        chargingStations = new ChargingStationList();
-        reservationList = new ReservationList();
+        clients = new HashSet<>();
+        chargingStations = new HashSet<>();
+        reservations = new HashSet<>();
 
-        //set default values
         Client client1 = new Client();
-        Client client2 = new Client("Lara", "Mara", "39 rue Paris, 54000 Nancy", "+33785546942", "test@gmail.com", "00012342", "LICENSE123", "test", "test2test");
+        Client client2 = new Client("Lara", "Mara", "39 rue Paris, 54000 Nancy", "+33785546942", "test@gmail.com", "0001234223415435", "LIC123", "test", "test2test");
 
-        clients.addClient(client1);
-        clients.addClient(client2);
+        // Create lists
+        clients.add(client1);
+        clients.add(client2);
 
-        chargingStations.addStation(new ChargingStation(123, true));
-        chargingStations.addStation(new ChargingStation(456, true));
-        chargingStations.addStation(new ChargingStation(789, false));
-        chargingStations.addStation(new ChargingStation(12, false));
+        // Create charging station list
+        chargingStations.add(new ChargingStation(123456, true));
+        chargingStations.add(new ChargingStation(456321, true));
+        chargingStations.add(new ChargingStation(789752, false));
+        chargingStations.add(new ChargingStation(125632, false));
+
+        // Define reservation times
+        LocalDateTime startTime = LocalDateTime.of(2023, 6, 10, 10, 0); // Example start time
+        LocalDateTime endTime = LocalDateTime.of(2023, 6, 10, 12, 0);
+
+        // Create reservation list
+        reservations.add(new Reservation(client2, startTime, endTime));
+
 
     }
 
@@ -60,8 +71,18 @@ public class FacadeInterface {
      * @param username username of the client
      * @return Client or null
      */
-    public Client findClientByUsername(String username) {
-        return clients.findClientByUsername(username);
+    public Optional<Client> findClientByUsername(String username) {
+        return clientService.findByUsername(username, clients);
+    }
+
+    /**
+     * Check if the password is correct one for the client
+     * @param password password of the client
+     * @param client client that is supposed to have that password
+     * @return true if the password is correct, else false
+     */
+    public boolean checkPassword(String password, Client client){
+        return clientService.checkPassword(password, client);
     }
 
     /**
@@ -97,7 +118,7 @@ public class FacadeInterface {
      * @return Reservation or null
      */
     public Reservation findReservationByClient(Client client) {
-        return reservationList.findReservationByClient(client);
+        return reservations.findReservationByClient(client);
     }
 
     /**
