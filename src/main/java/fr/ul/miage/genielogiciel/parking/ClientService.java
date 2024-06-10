@@ -28,32 +28,5 @@ public class ClientService {
         return password.matches("^[a-zA-Z0-9]+$") && Objects.equals(client.getPassword(), password);
     }
 
-    /**
-     * Prompts the user for input and validates it using the given setter method
-     *
-     * @param input    the scanner object to read user input
-     * @param prompt   the prompt message
-     * @param setter   the setter method to validate and set the input
-     * @return the validated input
-     */
-    private String promptAndValidate(Scanner input, String prompt, ValueSetter setter) {
-        String userInput;
-        int attempts = 0;
-        int maxAttempts = 3;
-
-        while (attempts < maxAttempts) {
-            System.out.print(prompt);
-            userInput = input.nextLine().trim();
-            try {
-                setter.set(userInput);
-                return userInput;
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                attempts++;
-            }
-        }
-        System.out.println("Too many invalid attempts. Bye!");
-        throw new IllegalArgumentException("Too many invalid attempts.");
-    }
 
 }
