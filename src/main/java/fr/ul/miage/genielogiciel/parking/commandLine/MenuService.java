@@ -106,101 +106,119 @@ public class MenuService {
 
         int selection;
         do {
-            System.out.println("\n" + LINE_OF_DASH);
-            System.out.println("         USER MENU         ");
-            System.out.println(LINE_OF_DASH);
-            System.out.println("1 - Reserve a charging station");
-            System.out.println("2 - Check reservation status");
-            System.out.println("3 - View available stations");
-            System.out.println("4 - Sign out");
+            String[] options = new String[]{"Reserve a charging station", "Check reservation status", "View available stations", "Sign out"};
+            displayer.displayMenu(options, "USER MENU");
 
-            selection = checkInputMenu(input, 4);
+            selection = checkInputMenu(options.length);
 
             switch (selection) {
-                case 1 -> reservationService.reserveChargingStation(input, chargingStations, clients);
-                case 2 -> viewReservationStatus(input, client, chargingStations, reservationManager, reservations);
-                case 3 -> viewAvailableStations(input, chargingStations, reservationService, clients);
-                case 4 -> System.out.println("Signing out...  ---");
-                default -> System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                case 1 -> reservationService.reserveChargingStation(facadeInterface);
+                case 2 -> viewReservationStatus(client, facadeInterface);
+                case 3 -> viewAvailableStations(facadeInterface, reservationService);
+                case 4 -> displayer.displayImportantMessage("Going back");
+                default -> displayer.displayErrorMessage("Invalid choice. Please enter a number between 1 and 4.");
             }
         } while (selection != 4);
     }
 
-    private void viewReservationStatus(Scanner input, Client client, ChargingStationList chargingStations, ReservationManager reservationManager, ReservationList reservations) {
-        LocalDateTime currentTime = LocalDateTime.now();
-        ChargingStation station = chargingStations.findChargingStationByClient(client);
+    /**
+     * Display the reservation status
+     * @param client client that made the connection
+     * @param facadeInterface link to the data
+     */
+    private void viewReservationStatus(Client client, FacadeInterface facadeInterface) {
+        ChargingStation station = facadeInterface.findChargingStationByClient(client);
 
         if (station == null) {
-            System.out.println("No active reservation found.");
+            displayer.displayErrorMessage("No active reservation found.");
             return;
         }
 
-        Reservation reservation = reservations.findReservationByClient(client);
+        Reservation reservation = facadeInterface.findReservationByClient(client);
 
         if (reservation == null) {
-            System.out.println("No active reservation found.");
+            displayer.displayErrorMessage("No active reservation found.");
             return;
         }
 
 
-        if (reservation.isConfirmed) {
-            System.out.println("Reservation is currently active.");
-            System.out.printf("Time remaining: %d minutes.%n", ChronoUnit.MINUTES.between(currentTime, reservation.endTime));
-            System.out.println("1 - Check out");
-            System.out.println("2 - Back to user menu");
+        LocalDateTime currentTime = LocalDateTime.now();
 
-            int choice = checkInputMenu(input, 2);
+        if (reservation.isConfirmed) {
+            displayer.displayMessage("Reservation is currently active.");
+            displayer.displayMessage(String.format("Time remaining: %d minutes.%n", ChronoUnit.MINUTES.between(currentTime, reservation.endTime)));
+            String[] options = new String[]{"Check out", "Back to user menu"};
+            displayer.displayMenu(options, "ACTIVE RESERVATION");
+
+            int choice = checkInputMenu(options.length);
             if (choice == 1) {
-                reservationManager.checkOut(station, client, currentTime);
+                facadeInterface.checkOutFromReservation(reservation);
             }
         } else {
-            System.out.println("Reservation is not active.");
-            System.out.println("1 - Check in");
-            System.out.println("2 - Back to user menu");
+            String[] options = new String[]{"Check in", "Back to user menu"};
+            displayer.displayMenu(options, "NO ACTIVE RESERVATION");
 
-            int choice = checkInputMenu(input, 2);
+            int choice = checkInputMenu(options.length);
             if (choice == 1) {
-                reservationManager.checkIn(station, client, currentTime);
+                facadeInterface.checkInFromReservation(reservation);
             }
         }
 
     }
 
-    private void viewAvailableStations(Scanner input, ChargingStationList chargingStations, ReservationService reservationService, ClientList clients) {
-        List<ChargingStation> availableStations = chargingStations.findAvailableStations();
+    /**
+     * Display the availible Charging station
+     * @param facadeInterface link to the data
+     * @param reservationService display service of the reservation
+     */
+    private void viewAvailableStations(FacadeInterface facadeInterface, ReservationService reservationService) {
+        List<ChargingStation> availableStations = facadeInterface.findAvailableStations();
 
         if (!availableStations.isEmpty()) {
-            System.out.println("Available stations:");
+            displayer.displayMessage("Available stations:");
             for (ChargingStation station : availableStations) {
-                System.out.println("ID: " + station.getIdStation());
+                displayer.displayMessage("ID: " + station.getIdStation());
             }
 
-            System.out.println("Would you like to reserve a station? (yes/no)");
-            String choice = input.nextLine().trim().toLowerCase();
-            if (choice.equals("yes")) {
-                reservationService.reserveChargingStation(input, chargingStations, clients);
+            displayer.displayMessage("Would you like to reserve a station? (yes/no)");
+            String choice = "";
+
+            //While the solution is invalid
+            while (!choice.equals("yes") && !choice.equals("no")) {
+                choice = scanner.nextLine().trim().toLowerCase();
+                switch (choice) {
+                    case "yes", "y" -> {
+                        choice = "yes";
+                        reservationService.reserveChargingStation(facadeInterface);
+                    }
+                    case "no", "n" -> choice = "no";
+                    default -> displayer.displayErrorMessage("Entry invalid (yes/no expected). Try again :");
+                }
             }
         } else {
-            System.out.println("No available stations at the moment.");
+            displayer.displayMessage("No available stations at the moment.");
         }
     }
 
-    private int checkInputMenu(Scanner input, int maxPointsMenu) {
+    /**
+     * Check the input of the user
+     * @param maxPointsMenu maximum point of the menu
+     * @return number of the selection or -1
+     */
+    private int checkInputMenu(int maxPointsMenu) {
         int selection = -1;
 
-        while (true) {
-            System.out.print("Enter the number of your choice: ");
-            if (input.hasNextInt()) {
-                selection = input.nextInt();
-                input.nextLine();
-                if (selection >= 1 && selection <= maxPointsMenu) {
-                    break;
-                } else {
-                    System.out.println("Invalid input. Please enter a number between 1 and " + maxPointsMenu);
+        while (!(selection >= 1 && selection <= maxPointsMenu)) {
+            displayer.displayMessage("Enter the number of your choice: ");
+            if (scanner.hasNextInt()) {
+                selection = scanner.nextInt();
+                scanner.nextLine();
+                if (!(selection >= 1 && selection <= maxPointsMenu)) {
+                   displayer.displayErrorMessage("Invalid input. Please enter a number between 1 and " + maxPointsMenu);
                 }
             } else {
-                System.out.println("Invalid input. Please enter a number.");
-                input.next();
+                displayer.displayErrorMessage("Invalid input. Please enter a number.");
+                scanner.next();
             }
         }
 

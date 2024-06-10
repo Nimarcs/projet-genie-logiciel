@@ -1,5 +1,9 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+
 public class FacadeInterface {
 
     private ClientList clients;
@@ -73,6 +77,48 @@ public class FacadeInterface {
      */
     public Client findClientByReservationNumber(String reservationNumber) {
         return clients.findClientByReservationNumber(reservationNumber);
+    }
+
+    /**
+     * Return charging station that the client given use or null
+     * @param client client given
+     * @return Charging station or null
+     */
+    public ChargingStation findChargingStationByClient(Client client) {
+        return chargingStations.findChargingStationByClient(client);
+    }
+
+    /**
+     * Return the Reservation of the client or null if not found
+     * @param client client given
+     * @return Reservation or null
+     */
+    public Reservation findReservationByClient(Client client) {
+        return reservationList.findReservationByClient(client);
+    }
+
+    /**
+     * Return an unmodifiable list of the available station inside the parking
+     * @return List of the available station
+     */
+    public List<ChargingStation> findAvailableStations() {
+        return Collections.unmodifiableList(chargingStations.findAvailableStations());
+    }
+
+    /**
+     * Check out from reservation
+     * @param reservation reservation to check out from
+     */
+    public void checkOutFromReservation(Reservation reservation) {
+        //TODO
+    }
+
+    /**
+     * Check in for the reservation
+     * @param reservation reservation to check in
+     */
+    public void checkInFromReservation(Reservation reservation) {
+        //TODO
     }
 
     /**
