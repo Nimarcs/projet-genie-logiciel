@@ -2,6 +2,8 @@ package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class ReservationManager extends ArrayList<Reservation> {
@@ -17,8 +19,12 @@ public class ReservationManager extends ArrayList<Reservation> {
     public void addReservation(ChargingStation station, Reservation reservation) {
         this.add(reservation);
         reservation.confirmReservation();
-        clientNotifier.sendNotification(reservation.getClient(), "Reservation confirmed for " + reservation.getStartTime());
-        station.getReservations().add(reservation);
+        if (reservation.getStartTime().isBefore(LocalDateTime.now().plusMinutes(1)) && reservation.getEndTime().isAfter(LocalDateTime.now()))
+            station.setDisponible(false);
+        clientNotifier.sendNotification(reservation.getClient(), "Reservation confirmed");
+        Collection<Reservation> currentReservation = new HashSet<>(station.getReservations());
+        currentReservation.add(reservation);
+        station.setReservations(currentReservation);
     }
 
     /**
@@ -132,5 +138,10 @@ public class ReservationManager extends ArrayList<Reservation> {
             }
         }
         clientNotifier.sendNotification(client, "Late arrival handling failed or reservation not found.");
+    }
+
+    public void askExtention(Reservation reservation) {
+        //TODO
+        throw new IllegalStateException("Fonctionnalité non traité");
     }
 }

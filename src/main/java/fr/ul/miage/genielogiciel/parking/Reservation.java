@@ -2,6 +2,7 @@ package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a reservation for a charging station.
@@ -195,5 +196,18 @@ public class Reservation {
 
     public void setNoShow(boolean noShow) {
         isNoShow = noShow;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return idReservation == that.idReservation && idStation == that.idStation && startTime.equals(that.startTime) && endTime.equals(that.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startTime, endTime, idReservation, idStation);
     }
 }
