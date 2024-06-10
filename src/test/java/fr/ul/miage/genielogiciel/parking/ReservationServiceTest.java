@@ -77,7 +77,7 @@ public class ReservationServiceTest {
 
         assertEquals(1, reservations.size());
         Reservation reservation = reservations.get(0);
-        assertEquals("LIC123", reservation.client.getPlateNumbers());
+        assertEquals("LIC123", reservation.getClient().getPlateNumbers());
         assertFalse(chargingStations.get(0).getDisponible()); // Ensure the station is now reserved
     }
 
