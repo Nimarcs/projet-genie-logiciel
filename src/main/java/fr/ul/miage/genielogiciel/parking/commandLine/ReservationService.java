@@ -21,47 +21,45 @@ public class ReservationService {
 
     /**
      * Create a reservation for a charging station
-     * @param input input of the user
-     * @param chargingStations charging station to reserve
-     * @param clients list of current clients
+     * @param facadeInterface link to the data
      */
-    public void reserveChargingStation(Scanner input, ChargingStationList chargingStations, ClientList clients) {
-        List<ChargingStation> availableStations = chargingStations.findAvailableStations();
+    public void reserveChargingStation(FacadeInterface facadeInterface) {
+        List<ChargingStation> availableStations = facadeInterface.findAvailableStations();
 
         if (availableStations.isEmpty()) {
-            System.out.println("No available stations at the moment. Please try again later.");
+            displayer.displayErrorMessage("No available stations at the moment. Please try again later.");
             return;
         }
 
-        System.out.println("Available station found: ");
+        displayer.displayMessage("Available station found: ");
 
         int i = 1;
         int selection;
 
         for (ChargingStation station : availableStations) {
-            System.out.println(i + ". ID: " + station.getIdStation());
+            displayer.displayMessage(i + ". ID: " + station.getIdStation());
             i++;
         }
 
-        System.out.print("Please enter the ID of the station you want to reserve: ");
-        selection = input.nextInt();
-        input.nextLine(); // clear the newline character
+        displayer.displayMessage("Please enter the ID of the station you want to reserve: ");
+        selection = scanner.nextInt();
+        scanner.nextLine(); // clear the newline character
 
-        ChargingStation selectedStation = chargingStations.findChargingStation(selection);
+        ChargingStation selectedStation = facadeInterface.findChargingStationById(selection);
 
         if (!(selectedStation != null && selectedStation.getDisponible())) {
-            System.out.println("Selected station is not available.");
+            displayer.displayErrorMessage("Selected station is not available.");
             return;
         }
-            System.out.print("Please enter your license number: ");
-            String licenseNumber = input.nextLine();
+            displayer.displayMessage("Please enter your license number: ");
+            String licenseNumber = scanner.nextLine();
 
-            Client client = clients.findClientByLicense(licenseNumber);
+            Client client = facadeInterface.findClientByLicense(licenseNumber);
 
             if (client != null) {
-                manageClientAndReserve(input, selectedStation, client);
+                manageClientAndReserve(selectedStation, client);
             } else {
-                findClientAndReserve(input, chargingStations, clients, selectedStation);
+                findClientAndReserve(facadeInterface, selectedStation);
             }
     }
 

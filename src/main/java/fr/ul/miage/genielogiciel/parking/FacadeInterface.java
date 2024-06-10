@@ -106,6 +106,15 @@ public class FacadeInterface {
     }
 
     /**
+     * Return the charging station with this id or null
+     * @param id id of the charging station
+     * @return charging station or null
+     */
+    public ChargingStation findChargingStationById(int id) {
+        return chargingStations.findChargingStation(id);
+    }
+
+    /**
      * Check out from reservation
      * @param reservation reservation to check out from
      */
