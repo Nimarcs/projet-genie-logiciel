@@ -3,7 +3,9 @@ package fr.ul.miage.genielogiciel.parking.commandLine;
 import fr.ul.miage.genielogiciel.parking.*;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ReservationDisplayService {
@@ -23,7 +25,7 @@ public class ReservationDisplayService {
      * @param facadeInterface link to the data
      */
     public void reserveChargingStation(FacadeInterface facadeInterface, ClientDisplayService clientDisplayService) {
-        List<ChargingStation> availableStations = facadeInterface.findAvailableStations();
+        Collection<ChargingStation> availableStations = facadeInterface.findAvailableStations();
 
         if (availableStations.isEmpty()) {
             displayer.displayErrorMessage("No available stations at the moment. Please try again later.");
@@ -44,22 +46,30 @@ public class ReservationDisplayService {
         selection = scanner.nextInt();
         scanner.nextLine(); // clear the newline character
 
-        ChargingStation selectedStation = facadeInterface.findChargingStationById(selection);
+        Optional<ChargingStation> optionalChargingStation = facadeInterface.findChargingStation(selection);
 
-        if (!(selectedStation != null && selectedStation.getDisponible())) {
+        if (optionalChargingStation.isEmpty()){
+            displayer.displayErrorMessage("Selected station is unknown");
+            return;
+        }
+
+        ChargingStation selectedStation = optionalChargingStation.get();
+
+        if (!selectedStation.getDisponible()) {
             displayer.displayErrorMessage("Selected station is not available.");
             return;
         }
-            displayer.displayMessage("Please enter your license number: ");
-            String licenseNumber = scanner.nextLine();
 
-            Client client = facadeInterface.findClientByLicense(licenseNumber);
+        displayer.displayMessage("Please enter your license number: ");
+        String licenseNumber = scanner.nextLine();
 
-            if (client != null) {
-                manageClientAndReserve(facadeInterface,selectedStation, client);
-            } else {
-                findClientAndReserve(facadeInterface, selectedStation, clientDisplayService);
-            }
+        Optional<Client> clientOptional = facadeInterface.findClientByLicense(licenseNumber);
+
+        if (clientOptional.isPresent()) {
+            manageClientAndReserve(facadeInterface,selectedStation, clientOptional.get());
+        } else {
+            findClientAndReserve(facadeInterface, selectedStation, clientDisplayService);
+        }
     }
 
     /**
@@ -70,13 +80,13 @@ public class ReservationDisplayService {
         displayer.displayMessage("Please enter your license number: ");
         String licenseNumber = scanner.nextLine();
 
-        Client client = facadeInterface.findClientByLicense(licenseNumber);
+        Optional<Client> optionalClient = facadeInterface.findClientByLicense(licenseNumber);
 
-        if (client != null) {
-            Reservation reservation = facadeInterface.findReservationByClient(client);
-            if (reservation != null) {
+        if (optionalClient.isPresent()) {
+            Optional<Reservation> optionalReservation = facadeInterface.findReservationByClient(optionalClient.get());
+            if (optionalReservation.isPresent()) {
                 //TODO
-                facadeInterface.askExtention(reservation);
+                facadeInterface.askExtention(optionalReservation.get());
             } else {
                 displayer.displayErrorMessage("No active reservation found for this client.");
             }
@@ -95,15 +105,15 @@ public class ReservationDisplayService {
         displayer.displayMessage("License number not recognized. Please enter your mobile number: ");
         String mobileNumber = scanner.nextLine();
 
-        Client client = facadeInterface.findByMobilePhone(mobileNumber);
+        Optional<Client> clientOptional = facadeInterface.findClientByPhone(mobileNumber);
 
-        if (client != null) {
+        if (clientOptional.isPresent()) {
             displayer.displayMessage("Please enter the expected charging duration (in hours): ");
             int duration = scanner.nextInt();
             //TODO manage miss input
 
             displayer.displayMessage("Temporary reservation made for mobile number " + mobileNumber + " with duration " + duration + " hours.");
-            Reservation reservation = new Reservation(client, LocalDateTime.now(), LocalDateTime.now().plusHours(duration));
+            Reservation reservation = new Reservation(clientOptional.get(), LocalDateTime.now(), LocalDateTime.now().plusHours(duration));
             facadeInterface.addReservation(selectedStation, reservation);
         } else {
             displayer.displayErrorMessage("We didn't find the account associated with this number.\n Please create a new one: ");

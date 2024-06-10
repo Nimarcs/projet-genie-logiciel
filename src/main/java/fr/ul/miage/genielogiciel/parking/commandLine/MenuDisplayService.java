@@ -4,7 +4,9 @@ import fr.ul.miage.genielogiciel.parking.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class MenuDisplayService {
@@ -70,14 +72,13 @@ public class MenuDisplayService {
     private void handleWithLicenseNumber(FacadeInterface facadeInterface, ReservationDisplayService reservationDisplayService, ClientDisplayService clientDisplayService){
         System.out.print("Please, enter your license number: ");
         String licenseNumber = scanner.nextLine();
-        Client client = facadeInterface.findClientByLicense(licenseNumber);
 
-        if (client == null) {
-            displayer.displayErrorMessage("Client not found.");
+        if (!licenseNumber.equalsIgnoreCase(facadeInterface.getCurrentClient().getPlateNumbers())) {
+            displayer.displayErrorMessage("Invalid license number");
             return;
         }
 
-        handleUserMenu(facadeInterface, reservationDisplayService, client, clientDisplayService);
+        handleUserMenu(facadeInterface, reservationDisplayService, facadeInterface.getCurrentClient(), clientDisplayService);
     }
 
     /**
@@ -88,14 +89,13 @@ public class MenuDisplayService {
     private void handleWithReservationNumber(FacadeInterface facadeInterface, ReservationDisplayService reservationDisplayService, ClientDisplayService clientDisplayService){
         System.out.print("Please, enter your reservation number: ");
         String reservationNumber = scanner.nextLine();
-        Client client = facadeInterface.findClientByReservationNumber(reservationNumber);
 
-        if (client == null) {
-            displayer.displayErrorMessage("Client not found.");
+        if (reservationNumber.equals(String.valueOf(facadeInterface.getCurrentClient().getReservationNumber()))) {
+            displayer.displayErrorMessage("Invalid reservation number");
             return;
         }
 
-        handleUserMenu(facadeInterface, reservationDisplayService, client, clientDisplayService);
+        handleUserMenu(facadeInterface, reservationDisplayService, facadeInterface.getCurrentClient(), clientDisplayService);
     }
 
     /**
@@ -129,21 +129,15 @@ public class MenuDisplayService {
      * @param facadeInterface link to the data
      */
     private void viewReservationStatus(Client client, FacadeInterface facadeInterface) {
-        ChargingStation station = facadeInterface.findChargingStationByClient(client);
 
-        if (station == null) {
+        Optional<Reservation> optionalReservation = facadeInterface.findReservationByClient(client);
+
+        if (optionalReservation.isEmpty()) {
             displayer.displayErrorMessage("No active reservation found.");
             return;
         }
 
-        Reservation reservation = facadeInterface.findReservationByClient(client);
-
-        if (reservation == null) {
-            displayer.displayErrorMessage("No active reservation found.");
-            return;
-        }
-
-
+        Reservation reservation = optionalReservation.get();
         LocalDateTime currentTime = LocalDateTime.now();
 
         if (reservation.isConfirmed) {
@@ -174,7 +168,7 @@ public class MenuDisplayService {
      * @param reservationDisplayService display service of the reservation
      */
     private void viewAvailableStations(FacadeInterface facadeInterface, ReservationDisplayService reservationDisplayService, ClientDisplayService clientDisplayService) {
-        List<ChargingStation> availableStations = facadeInterface.findAvailableStations();
+        Collection<ChargingStation> availableStations = facadeInterface.findAvailableStations();
 
         if (!availableStations.isEmpty()) {
             displayer.displayMessage("Available stations:");

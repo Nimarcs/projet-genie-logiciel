@@ -11,9 +11,9 @@ public class FacadeInterface {
 
     private Collection<Reservation> reservations;
 
-    private ClientService clientService;
+    private final ClientService clientService;
 
-    private ReservationManager reservationManager;
+    private final ReservationManager reservationManager;
 
     /**
      * Current client, should be delegated to a connexion specific class inside the business
@@ -86,65 +86,66 @@ public class FacadeInterface {
     }
 
     /**
-     * Return the client with the corresponding licenseNumber or null
-     * @param licenseNumber licenseNumber of the client
-     * @return Client or null
+     * Find available charging stations.
+     *
+     * @return the list of available charging stations
      */
-    public Client findClientByLicense(String licenseNumber) {
-        return clients.findClientByLicense(licenseNumber);
+    public Collection<ChargingStation> findAvailableStations() {
+        Collection<ChargingStation> availableStations = new ArrayList<>();
+        for (ChargingStation station : chargingStations) {
+            if (station.getDisponible()) {
+                availableStations.add(station);
+            }
+        }
+        return availableStations;
     }
 
     /**
-     * Return the client with the corresponding reservationNumber or null
-     * @param reservationNumber reservationNumber of the client
-     * @return Client or null
+     * Find a charging station by its ID.
+     *
+     * @param idStation the ID of the charging station
+     * @return an optional containing the charging station if found, otherwise empty
      */
-    public Client findClientByReservationNumber(String reservationNumber) {
-        return clients.findClientByReservationNumber(reservationNumber);
+    public Optional<ChargingStation> findChargingStation(int idStation) {
+        return chargingStations.stream()
+                .filter(station -> station.getIdStation() == idStation)
+                .findFirst();
     }
 
     /**
-     * Return charging station that the client given use or null
-     * @param client client given
-     * @return Charging station or null
+     * Find a client by their license number.
+     *
+     * @param licenseNumber the license number of the client
+     * @return an optional containing the client if found, otherwise empty
      */
-    public ChargingStation findChargingStationByClient(Client client) {
-        return chargingStations.findChargingStationByClient(client);
+    public Optional<Client> findClientByLicense(String licenseNumber) {
+        return clients.stream()
+                .filter(client -> client.getPlateNumbers().equals(licenseNumber))
+                .findFirst();
     }
 
     /**
-     * Return the Reservation of the client or null if not found
-     * @param client client given
-     * @return Reservation or null
+     * Find a reservation by a client.
+     *
+     * @param client the client whose reservation is to be found
+     * @return an optional containing the reservation if found, otherwise empty
      */
-    public Reservation findReservationByClient(Client client) {
-        return reservations.findReservationByClient(client);
+    public Optional<Reservation> findReservationByClient(Client client) {
+        return reservations.stream()
+                .filter(reservation -> reservation.client.equals(client) && reservation.isConfirmed)
+                .findFirst();
     }
 
     /**
-     * Return an unmodifiable list of the available station inside the parking
-     * @return List of the available station
+     * Find a client by their mobile phone number.
+     *
+     * @param phone the phone number of the client
+     * @return an optional containing the client if found, otherwise empty
      */
-    public List<ChargingStation> findAvailableStations() {
-        return Collections.unmodifiableList(chargingStations.findAvailableStations());
-    }
-
-    /**
-     * Return the charging station with this id or null
-     * @param id id of the charging station
-     * @return charging station or null
-     */
-    public ChargingStation findChargingStationById(int id) {
-        return chargingStations.findChargingStation(id);
-    }
-
-    /**
-     * Return the client with this phone number or null
-     * @param mobileNumber mobile number given
-     * @return client with the phone number or null
-     */
-    public Client findByMobilePhone(String mobileNumber) {
-        return clients.findByMobilePhone(mobileNumber);
+    public Optional<Client> findClientByPhone(String phone) {
+        return clients.stream()
+                .filter(client -> client.getPhoneNumber().equals(phone))
+                .findFirst();
     }
 
     /**
