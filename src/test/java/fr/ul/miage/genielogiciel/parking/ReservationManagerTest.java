@@ -104,4 +104,26 @@ class ReservationManagerTest {
         assertEquals(reservation.getEndTime(), currentTime.plusHours(2));
         assertEquals(20.0, clientCharger.calculateNormalCharge(reservation));
     }
+
+
+    // There is no available stations for that hour
+    @Test
+    void testLateArrivalNoAvailableStations() {
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        Scanner input = new Scanner("2\n");
+        // Set the charging station to not be available
+        station.setDisponible(false);
+        reservationManager.handleLateArrival(station, client, currentTime, input);
+        assertNotEquals(currentTime.plusHours(1), reservation.getEndTime());
+
+    }
+
+    @Test
+    void testLateArrivalReservationNotFound() {
+        reservationManager.clear(); // Clear reservations to simulate reservation not found
+        LocalDateTime currentTime = LocalDateTime.now();
+        Scanner input = new Scanner(System.in);
+        reservationManager.handleLateArrival(station, client, currentTime, input);
+    }
 }
