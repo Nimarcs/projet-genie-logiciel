@@ -150,12 +150,12 @@ public class ReservationService {
 
         switch (selection) {
             case 1 -> {
-                System.out.println("Enter expected duration: ");
+                displayer.displayMessage("Enter expected duration: ");
                 int duration = scanner.nextInt();
                 endTime = LocalDateTime.now().plusHours(duration);
             }
             case 2 -> {
-                System.out.println("Enter departure time: ");
+                displayer.displayMessage("Enter departure time: ");
                 int hour = scanner.nextInt();
                 endTime = LocalDateTime.now().withHour(hour);
             }
