@@ -2,6 +2,7 @@ package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a reservation for a charging station.
@@ -95,19 +96,6 @@ public class Reservation {
 
     // === GETTERS and SETTERS ===
 
-    /**
-     * Gets the ID of the reservation.
-     *
-     * @return the reservation ID
-     */
-    public int getIdReservation() { return idReservation; }
-
-    /**
-     * Sets the ID of the reservation.
-     *
-     * @param idReservation the reservation ID to set
-     */
-    public void setIdReservation(int idReservation) { this.idReservation = idReservation; }
 
     /**
      * Gets the ID of the station.
@@ -115,27 +103,6 @@ public class Reservation {
      * @return the station ID
      */
     public int getIdStation() { return idStation; }
-
-    /**
-     * Sets the ID of the station.
-     *
-     * @param idStation the station ID to set
-     */
-    public void setIdStation(int idStation) { this.idStation = idStation; }
-
-    /**
-     * Gets the plate numbers associated with the reservation.
-     *
-     * @return the plate numbers
-     */
-    public String getPlateNumbers() { return plateNumbers; }
-
-    /**
-     * Sets the plate numbers associated with the reservation.
-     *
-     * @param plateNumbers the plate numbers to set
-     */
-    public void setPlateNumbers(String plateNumbers) { this.plateNumbers = plateNumbers; }
 
     public Client getClient() {
         return client;
@@ -147,10 +114,6 @@ public class Reservation {
 
     public LocalDateTime getStartTime() {
         return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
     }
 
     public LocalDateTime getEndTime() {
@@ -169,31 +132,32 @@ public class Reservation {
         return normalRate;
     }
 
-    public void setNormalRate(double normalRate) {
-        this.normalRate = normalRate;
-    }
 
     public double getOverstayRate() {
         return overstayRate;
     }
 
-    public void setOverstayRate(double overstayRate) {
-        this.overstayRate = overstayRate;
-    }
 
     public boolean isConfirmed() {
         return isConfirmed;
     }
 
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
-    }
 
     public boolean isNoShow() {
         return isNoShow;
     }
 
-    public void setNoShow(boolean noShow) {
-        isNoShow = noShow;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return idReservation == that.idReservation && idStation == that.idStation && startTime.equals(that.startTime) && endTime.equals(that.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startTime, endTime, idReservation, idStation);
     }
 }

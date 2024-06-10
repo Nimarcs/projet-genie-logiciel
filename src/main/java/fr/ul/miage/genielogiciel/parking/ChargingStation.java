@@ -8,10 +8,11 @@ import java.util.*;
  */
 public class ChargingStation {
 
+
     // === General info of charging station ===
     private int idStation;
     private boolean isDisponible;
-    private List<Reservation> reservations = new ArrayList<>();
+    private Collection<Reservation> reservations = new HashSet<>();
 
     /**
      * Constructs a new ChargingStation with the specified id and availability status.
@@ -23,11 +24,16 @@ public class ChargingStation {
         setIdStation(idStation);
         setDisponible(isDisponible);
     }
+    
+    public ChargingStation() {}
 
     // === GETTERS and SETTERS ===
     public int getIdStation() { return idStation; }
     public void setIdStation(int id) { this.idStation = id; }
-    public boolean getDisponible() { return isDisponible; }
+    public boolean getDisponible() {
+        return isDisponible;
+        //TODO add the refresh of the is disponible
+    }
     public void setDisponible(boolean disponible) { isDisponible = disponible; }
 
 
@@ -56,63 +62,24 @@ public class ChargingStation {
         return true;
     }
 
-    public void setReservations(List<Reservation> reservations) {
+    public void setReservations(Collection<Reservation> reservations) {
         this.reservations = reservations;
     }
 
-    public List<Reservation> getReservations() {
-        return Collections.unmodifiableList(reservations);
+    public Collection<Reservation> getReservations() {
+        return Collections.unmodifiableCollection(reservations);
     }
 
-    /**
-     * Find a charging station by its ID
-     *
-     * @param idStation the ID of the charging station to search for
-     * @return the charging station with the specified ID, or null if not found
-     * @see ChargingStation#getIdStation()
-     */
-    public ChargingStation findChargingStation(int idStation, List<ChargingStation> stations){
-        for (ChargingStation station: stations){
-            if (station.getIdStation() == idStation) return station;
-        }
-        return null;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChargingStation that = (ChargingStation) o;
+        return idStation == that.idStation;
     }
 
-    /**
-     * Finds all available charging stations.
-     *
-     * @return a list of available charging stations
-     * @see ChargingStation#getDisponible()
-     */
-    public List<ChargingStation> findAvailableStations(List<ChargingStation> stations) {
-        List<ChargingStation> availableStations = new ArrayList<>();
-        for (ChargingStation station : stations) {
-            if (station.getDisponible()) {
-                availableStations.add(station);
-            }
-        }
-        return availableStations;
+    @Override
+    public int hashCode() {
+        return Objects.hash(idStation);
     }
-
-
-    /**
-     * Finds the charging station that has a reservation for the given client.
-     *
-     * @param client the client to find the charging station for
-     * @return the charging station with a reservation for the client, or null if not found
-     */
-    public ChargingStation findChargingStationByClient(Client client, List<ChargingStation> stations) {
-        for (ChargingStation station : stations) {
-            for (Reservation reservation : station.getReservations()) {
-                if (reservation.getClient().equals(client) && reservation.isConfirmed()) {
-                    return station;
-                }
-            }
-        }
-        return null; // No station found for the given client
-    }
-
-
-
-
 }

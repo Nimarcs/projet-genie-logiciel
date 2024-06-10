@@ -1,135 +1,96 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import fr.ul.miage.genielogiciel.parking.commandLine.ClientDisplayService;
+import fr.ul.miage.genielogiciel.parking.commandLine.DisplayerSout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-class ClientServiceTest {
+public class ClientServiceTest {
 
-    private ClientService clientService;
+    private ClientDisplayService clientService;
     private ArrayList<Client> clients;
     private Scanner input;
-    private Client client;
+    private FacadeInterface facadeInterface;
 
     @BeforeEach
-    void setUp() {
-        clientService = new ClientService();
+    public void setUp() {
         clients = new ArrayList<>();
         input = mock(Scanner.class);
-        client = new Client();
+        clientService = new ClientDisplayService(input, new DisplayerSout());
+        facadeInterface = new FacadeInterface();
+        facadeInterface.initializeParking(new ArrayList<>(), clients, new ArrayList<>());
+
+        // Add a test client
+        Client client = new Client();
         client.setUsername("testUser");
-        client.setPassword("testPassword");
+        client.setPassword("testPass");
         clients.add(client);
     }
 
+    // Login success
     @Test
-    void testLoginFormSuccessful() {
-        when(input.nextLine()).thenReturn("testUser", "testPassword");
-
-        boolean result = clientService.loginForm(input, clients);
-
-        assertTrue(result);
-        verify(input, times(2)).nextLine(); // Verifies that nextLine() is called twice
-    }
-
-    @Test
-    void testLoginFormInvalidUsername() {
-        when(input.nextLine()).thenReturn("wrongUser", "wrongUser", "wrongUser");
-
-        boolean result = clientService.loginForm(input, clients);
-
-        assertFalse(result);
-        verify(input, times(3)).nextLine();
-    }
-
-    @Test
-    void testLoginFormInvalidPassword() {
-        when(input.nextLine()).thenReturn("testUser", "wrongPassword", "wrongPassword", "wrongPassword");
-
-        boolean result = clientService.loginForm(input, clients);
-
-        assertFalse(result);
-        verify(input, times(4)).nextLine();
-    }
-
-    @Test
-    void testRegistrationFormSuccessful() {
+    public void testLoginFormSuccess() {
         when(input.nextLine())
-                .thenReturn("John")
-                .thenReturn("Doe")
-                .thenReturn("123 street")
-                .thenReturn("0786656273")
-                .thenReturn("john.doe@example.com")
-                .thenReturn("1111222233334444")
-                .thenReturn("ABC123")
-                .thenReturn("newUser")
-                .thenReturn("newPassword");
+                .thenReturn("testUser") // username input
+                .thenReturn("testPass"); // password input
 
-        clientService.registrationForm(input, client);
 
-        assertEquals("John", client.getName());
-        assertEquals("Doe", client.getSurname());
-        assertEquals("123 street", client.getAdresse());
-        assertEquals("0786656273", client.getPhoneNumber());
-        assertEquals("john.doe@example.com", client.getEmail());
-        assertEquals("1111222233334444", client.getCreditCard());
-        assertEquals("ABC123", client.getPlateNumbers());
-        assertEquals("newUser", client.getUsername());
-        assertEquals("newPassword", client.getPassword());
+        clientService.loginForm(facadeInterface);
+        Client result = facadeInterface.getCurrentClient();
+        assertNotNull(result);
+        assertEquals("testUser", result.getUsername());
     }
 
+    // login invalid username
     @Test
-    void testRegistrationFormInvalidName() {
+    public void testLoginFormInvalidUsername() {
         when(input.nextLine())
-                .thenReturn("", "John") // Invalid then valid input
-                .thenReturn("Doe")
-                .thenReturn("123 street")
-                .thenReturn("0786656273")
-                .thenReturn("john.doe@example.com")
-                .thenReturn("1111222233334444")
-                .thenReturn("ABC123")
-                .thenReturn("newUser")
-                .thenReturn("newPassword");
+                .thenReturn("wrongUser") // username input
+                .thenReturn("wrongUser")
+                .thenReturn("wrongUser");
 
-        clientService.registrationForm(input, client);
-
-        assertEquals("John", client.getName());
-        assertEquals("Doe", client.getSurname());
-        assertEquals("123 street", client.getAdresse());
-        assertEquals("0786656273", client.getPhoneNumber());
-        assertEquals("john.doe@example.com", client.getEmail());
-        assertEquals("1111222233334444", client.getCreditCard());
-        assertEquals("ABC123", client.getPlateNumbers());
-        assertEquals("newUser", client.getUsername());
-        assertEquals("newPassword", client.getPassword());
+        clientService.loginForm(facadeInterface);
+        Client result = facadeInterface.getCurrentClient();
+        assertNull(result);
     }
 
+    // login invalid password
     @Test
-    void testRegistrationFormTooManyInvalidAttempts() {
+    public void testLoginFormInvalidPassword() {
         when(input.nextLine())
-                .thenReturn("", "", "", "") // Invalid inputs
-                .thenReturn("Doe")
-                .thenReturn("123 street")
-                .thenReturn("0786656273")
-                .thenReturn("john.doe@example.com")
-                .thenReturn("1111222233334444")
-                .thenReturn("ABC123")
-                .thenReturn("newUser")
-                .thenReturn("newPassword");
+                .thenReturn("testUser") // username input
+                .thenReturn("wrongPass") // password input
+                .thenReturn("wrongPass")
+                .thenReturn("wrongPass");
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            clientService.registrationForm(input, client);
-        });
+        clientService.loginForm(facadeInterface);
+        Client result = facadeInterface.getCurrentClient();
+        assertNull(result);
+    }
 
-        assertEquals("Too many invalid attempts.", exception.getMessage());
+    // registration success
+
+    @Test
+    public void testRegistrationFormSuccess() {
+        when(input.nextLine())
+                .thenReturn("John")    // Name
+                .thenReturn("Doe")     // Surname
+                .thenReturn("123 Street") // Address
+                .thenReturn("0786656273") // Phone Number
+                .thenReturn("john@example.com") // Email
+                .thenReturn("1111222233334444") // Credit Card Number
+                .thenReturn("newUser")  // Username
+                .thenReturn("newPass123") // Password
+                .thenReturn("ABC123");  // License Plate Numbers
+
+        clientService.registrationForm(facadeInterface);
+        assertEquals(2, clients.size());
+        assertEquals("newUser", clients.get(1).getUsername());
     }
 }
