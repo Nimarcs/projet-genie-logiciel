@@ -84,24 +84,25 @@ public class ReservationService {
         }
     }
 
+    /**
+     * Check the input of the user
+     * @param maxPointsMenu maximum point of the menu
+     * @return number of the selection or -1
+     */
+    private int checkInputMenu(int maxPointsMenu) {
+        int selection = -1;
 
-
-    private int checkInputMenu(Scanner input, int maxPointsMenu) {
-        int selection;
-
-        while (true) {
-            System.out.print("Enter the number of your choice: ");
-            if (input.hasNextInt()) {
-                selection = input.nextInt();
-                input.nextLine();
-                if (selection >= 1 && selection <= maxPointsMenu) {
-                    break;
-                } else {
-                    System.out.println("Invalid input. Please enter a number between 1 and " + maxPointsMenu);
+        while (!(selection >= 1 && selection <= maxPointsMenu)) {
+            displayer.displayMessage("Enter the number of your choice: ");
+            if (scanner.hasNextInt()) {
+                selection = scanner.nextInt();
+                scanner.nextLine();
+                if (!(selection >= 1 && selection <= maxPointsMenu)) {
+                    displayer.displayErrorMessage("Invalid input. Please enter a number between 1 and " + maxPointsMenu);
                 }
             } else {
-                System.out.println("Invalid input. Please enter a number.");
-                input.next();
+                displayer.displayErrorMessage("Invalid input. Please enter a number.");
+                scanner.next();
             }
         }
 
