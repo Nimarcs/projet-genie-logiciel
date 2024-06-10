@@ -43,7 +43,7 @@ public class ReservationList {
     public Reservation findReservationByClient(Client client) {
 
             for (Reservation reservation : reservations) {
-                if (reservation.client.equals(client) && reservation.isConfirmed) {
+                if (reservation.getClient().equals(client) && reservation.isConfirmed()) {
                     return reservation;
                 }
 

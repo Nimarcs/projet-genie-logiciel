@@ -140,9 +140,9 @@ public class MenuDisplayService {
         Reservation reservation = optionalReservation.get();
         LocalDateTime currentTime = LocalDateTime.now();
 
-        if (reservation.isConfirmed) {
+        if (reservation.isConfirmed()) {
             displayer.displayMessage("Reservation is currently active.");
-            displayer.displayMessage(String.format("Time remaining: %d minutes.%n", ChronoUnit.MINUTES.between(currentTime, reservation.endTime)));
+            displayer.displayMessage(String.format("Time remaining: %d minutes.%n", ChronoUnit.MINUTES.between(currentTime, reservation.getEndTime())));
             String[] options = new String[]{"Check out", "Back to user menu"};
             displayer.displayMenu(options, "ACTIVE RESERVATION");
 

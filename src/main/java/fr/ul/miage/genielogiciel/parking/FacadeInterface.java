@@ -144,7 +144,7 @@ public class FacadeInterface {
      */
     public Optional<Reservation> findReservationByClient(Client client) {
         return reservations.stream()
-                .filter(reservation -> reservation.client.equals(client) && reservation.isConfirmed)
+                .filter(reservation -> reservation.getClient().equals(client) && reservation.isConfirmed())
                 .findFirst();
     }
 
