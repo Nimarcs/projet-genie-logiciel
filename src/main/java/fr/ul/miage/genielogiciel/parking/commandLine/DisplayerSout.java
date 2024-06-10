@@ -10,7 +10,7 @@ public class DisplayerSout implements Displayer {
     private int headerWidth;
 
     public DisplayerSout(){
-        headerWidth = 20;
+        headerWidth = 30;
     }
 
     /**

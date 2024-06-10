@@ -21,7 +21,7 @@ class TestChargingStation {
     void setUp() {
         reservationManager = new ReservationManager();
         chargingStation = new ChargingStation(1,true);
-        client = new Client("John","Smith","dfd street","+330000","sd@mail.com","1234567890123456","aa123a", "login", "pass" );
+        client = new Client("John","Smith","123 Street","+33681726450","sd@mail.com","1234567890123456","aa123a", "login", "passwordLong" );
         startTime = LocalDateTime.now();
         endTime = startTime.plusHours(2);
         reservation = new Reservation(client, startTime, endTime, 10.0, 20.0);
@@ -32,7 +32,7 @@ class TestChargingStation {
     void testAddReservation() {
         assertFalse(chargingStation.getReservations().isEmpty());
         assertEquals(1, chargingStation.getReservations().size());
-        assertEquals(client, chargingStation.getReservations().get(0).client);
+        assertEquals(client, chargingStation.getReservations().stream().toList().get(0).client);
     }
 
     @Test

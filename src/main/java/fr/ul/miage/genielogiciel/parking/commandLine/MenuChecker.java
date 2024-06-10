@@ -11,7 +11,7 @@ public class MenuChecker {
 
     private final Scanner scanner;
 
-    public MenuChecker(Displayer displayer, Scanner scanner){
+    public MenuChecker(Scanner scanner, Displayer displayer){
         this.displayer = displayer;
         this.scanner = scanner;
     }

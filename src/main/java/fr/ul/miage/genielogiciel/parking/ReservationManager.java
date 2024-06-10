@@ -2,6 +2,8 @@ package fr.ul.miage.genielogiciel.parking;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class ReservationManager extends ArrayList<Reservation> {
@@ -17,8 +19,12 @@ public class ReservationManager extends ArrayList<Reservation> {
     public void addReservation(ChargingStation station, Reservation reservation) {
         this.add(reservation);
         reservation.confirmReservation();
+        if (reservation.startTime.isBefore(LocalDateTime.now().plusMinutes(1)) && reservation.endTime.isAfter(LocalDateTime.now()))
+            station.setDisponible(false);
         clientNotifier.sendNotification(reservation.client, "Reservation confirmed");
-//        station.getReservations().add(reservation);
+        Collection<Reservation> currentReservation = new HashSet<>(station.getReservations());
+        currentReservation.add(reservation);
+        station.setReservations(currentReservation);
     }
 
     /**

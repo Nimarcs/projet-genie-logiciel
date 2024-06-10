@@ -1,5 +1,6 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import fr.ul.miage.genielogiciel.parking.commandLine.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,14 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ReservationServiceTest {
 
-    private ReservationService reservationService;
+    private ReservationDisplayService reservationService;
     private ArrayList<ChargingStation> chargingStations;
     private ArrayList<Client> clients;
     private ArrayList<Reservation> reservations;
+    private Scanner input;
+    private Displayer displayer;
+    private FacadeInterface facadeInterface;
+    private MenuChecker menuChecker;
 
     @BeforeEach
     public void setUp() {
-        reservationService = new ReservationService();
+        displayer = new DisplayerSout();
         chargingStations = new ArrayList<>();
         clients = new ArrayList<>();
         reservations = new ArrayList<>();
@@ -35,6 +40,9 @@ public class ReservationServiceTest {
         client.setPhoneNumber("0786656273");
         clients.add(client);
 
+        facadeInterface = new FacadeInterface();
+        facadeInterface.initializeParking(chargingStations, clients, reservations);
+
 
     }
 
@@ -46,9 +54,12 @@ public class ReservationServiceTest {
         }
 
         Client client = clients.get(0);
-        Scanner input = new Scanner("123\n");
+        input = new Scanner("123\n");
 
-        reservationService.reserveChargingStation(input, client, chargingStations, clients, reservations);
+        facadeInterface.setCurrentClient(client);
+        menuChecker = new MenuChecker(input, displayer);
+        reservationService = new ReservationDisplayService(input, displayer, menuChecker);
+        reservationService.reserveChargingStation(facadeInterface, new ClientDisplayService(input, displayer));
 
         assertEquals(0, reservations.size());
     }
@@ -57,26 +68,17 @@ public class ReservationServiceTest {
     @Test
     public void testReserveValidClient() {
         Client client = clients.get(0);
-        Scanner input = new Scanner("123\n1\n1\n");
+        input = new Scanner("123\nLIC123\n1\n1\n");
 
-        reservationService.reserveChargingStation(input, client, chargingStations, clients, reservations);
+        facadeInterface.setCurrentClient(client);
+        menuChecker = new MenuChecker(input, displayer);
+        reservationService = new ReservationDisplayService(input, displayer, menuChecker);
+        reservationService.reserveChargingStation(facadeInterface, new ClientDisplayService(input, displayer) );
 
         assertEquals(1, reservations.size());
         Reservation reservation = reservations.get(0);
         assertEquals("LIC123", reservation.client.getPlateNumbers());
         assertFalse(chargingStations.get(0).getDisponible()); // Ensure the station is now reserved
-    }
-
-
-// Client doesn't have reservation
-    @Test
-    public void testNoActiveReservation() {
-        Client client = clients.get(0);
-        Scanner input = new Scanner("");
-
-        ReservationManager reservationManager = new ReservationManager();
-        reservationService.viewReservationStatus(input, client, chargingStations, reservationManager, reservations);
-        // No output is expected here
     }
 
 }

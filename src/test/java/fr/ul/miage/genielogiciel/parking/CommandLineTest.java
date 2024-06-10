@@ -1,5 +1,7 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import fr.ul.miage.genielogiciel.parking.commandLine.CommandLine;
+import fr.ul.miage.genielogiciel.parking.commandLine.DisplayerSout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +36,11 @@ class CommandLineTest {
         client.setPassword("validPassword");
         clients.add(client);
 
-        commandLine.run(scanner, chargingStations, clients, reservations);
+        FacadeInterface facadeInterface = new FacadeInterface();
+        facadeInterface.initializeParking(chargingStations, clients, reservations);
+
+        commandLine = new CommandLine(scanner, new DisplayerSout());
+        commandLine.run(facadeInterface);
 
 
     }
@@ -44,6 +50,10 @@ class CommandLineTest {
         String input = "4\n3\n";
         scanner = new Scanner(input);
 
-        commandLine.run(scanner, chargingStations, clients, reservations);
+        FacadeInterface facadeInterface = new FacadeInterface();
+        facadeInterface.initializeParking(chargingStations, clients, reservations);
+
+        commandLine = new CommandLine(scanner, new DisplayerSout());
+        commandLine.run(facadeInterface);
     }
 }

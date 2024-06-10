@@ -52,6 +52,7 @@ public class ClientDisplayService {
         //3 tries to write correct password and connect
         for (int i = 0; i < 3; i++) {
 
+            displayer.displayMessage("Password : ");
             String password = scanner.nextLine().trim();
 
             if (facadeInterface.checkPassword(password, client)) {

@@ -30,7 +30,10 @@ public class ChargingStation {
     // === GETTERS and SETTERS ===
     public int getIdStation() { return idStation; }
     public void setIdStation(int id) { this.idStation = id; }
-    public boolean getDisponible() { return isDisponible; }
+    public boolean getDisponible() {
+        return isDisponible;
+        //TODO add the refresh of the is disponible
+    }
     public void setDisponible(boolean disponible) { isDisponible = disponible; }
 
 
@@ -50,7 +53,7 @@ public class ChargingStation {
         return true;
     }
 
-    public void setReservations(List<Reservation> reservations) {
+    public void setReservations(Collection<Reservation> reservations) {
         this.reservations = reservations;
     }
 

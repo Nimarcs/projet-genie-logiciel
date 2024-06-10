@@ -1,5 +1,7 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import fr.ul.miage.genielogiciel.parking.commandLine.ClientDisplayService;
+import fr.ul.miage.genielogiciel.parking.commandLine.DisplayerSout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,15 +13,18 @@ import static org.mockito.Mockito.*;
 
 public class ClientServiceTest {
 
-    private ClientService clientService;
+    private ClientDisplayService clientService;
     private ArrayList<Client> clients;
     private Scanner input;
+    private FacadeInterface facadeInterface;
 
     @BeforeEach
     public void setUp() {
-        clientService = new ClientService();
         clients = new ArrayList<>();
         input = mock(Scanner.class);
+        clientService = new ClientDisplayService(input, new DisplayerSout());
+        facadeInterface = new FacadeInterface();
+        facadeInterface.initializeParking(new ArrayList<>(), clients, new ArrayList<>());
 
         // Add a test client
         Client client = new Client();
@@ -35,7 +40,9 @@ public class ClientServiceTest {
                 .thenReturn("testUser") // username input
                 .thenReturn("testPass"); // password input
 
-        Client result = clientService.loginForm(input, clients);
+
+        clientService.loginForm(facadeInterface);
+        Client result = facadeInterface.getCurrentClient();
         assertNotNull(result);
         assertEquals("testUser", result.getUsername());
     }
@@ -48,7 +55,8 @@ public class ClientServiceTest {
                 .thenReturn("wrongUser")
                 .thenReturn("wrongUser");
 
-        Client result = clientService.loginForm(input, clients);
+        clientService.loginForm(facadeInterface);
+        Client result = facadeInterface.getCurrentClient();
         assertNull(result);
     }
 
@@ -61,7 +69,8 @@ public class ClientServiceTest {
                 .thenReturn("wrongPass")
                 .thenReturn("wrongPass");
 
-        Client result = clientService.loginForm(input, clients);
+        clientService.loginForm(facadeInterface);
+        Client result = facadeInterface.getCurrentClient();
         assertNull(result);
     }
 
@@ -76,11 +85,11 @@ public class ClientServiceTest {
                 .thenReturn("0786656273") // Phone Number
                 .thenReturn("john@example.com") // Email
                 .thenReturn("1111222233334444") // Credit Card Number
-                .thenReturn("ABC123")  // License Plate Numbers
                 .thenReturn("newUser")  // Username
-                .thenReturn("newPass123"); // Password
+                .thenReturn("newPass123") // Password
+                .thenReturn("ABC123");  // License Plate Numbers
 
-        clientService.registrationForm(input, clients);
+        clientService.registrationForm(facadeInterface);
         assertEquals(2, clients.size());
         assertEquals("newUser", clients.get(1).getUsername());
     }

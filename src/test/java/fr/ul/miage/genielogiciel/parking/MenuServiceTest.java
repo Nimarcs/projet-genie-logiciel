@@ -1,24 +1,30 @@
 package fr.ul.miage.genielogiciel.parking;
 
+import fr.ul.miage.genielogiciel.parking.commandLine.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 public class MenuServiceTest {
 
-    private MenuService menuService;
+    private MenuDisplayService menuService;
     private ArrayList<ChargingStation> chargingStations;
     private ArrayList<Client> clients;
     private ArrayList<Reservation> reservations;
+    private Scanner input;
+    private FacadeInterface facadeInterface;
 
     @BeforeEach
     public void setUp() {
-        menuService = new MenuService();
+        input = mock(Scanner.class);
+        Displayer displayer = new DisplayerSout();
+        menuService = new MenuDisplayService(input,displayer , new MenuChecker(input, displayer));
         chargingStations = new ArrayList<>();
         clients = new ArrayList<>();
         reservations = new ArrayList<>();
@@ -34,21 +40,38 @@ public class MenuServiceTest {
         client.setPlateNumbers("LIC123");
         client.setPhoneNumber("0786656273");
         clients.add(client);
+
+        facadeInterface = new FacadeInterface();
+        facadeInterface.initializeParking(chargingStations, clients, reservations);
     }
 
     @Test
     public void testWelcomeMenu() {
-        Scanner input = new Scanner("1\n");
-        int selection = menuService.welcomeMenu(input);
+        when(input.nextLine())
+                .thenReturn("");
+        when(input.nextInt())
+                .thenReturn(1);
+        when(input.hasNextInt())
+                .thenReturn(true);
+        int selection = menuService.welcomeMenu();
         assertEquals(1, selection);
     }
 
     @Test
     public void testMainMenuWithLicenseNumber() {
         Client client = clients.get(0);
-        Scanner input = new Scanner("1\nLIC123\n4\n");
+        when(input.nextLine())
+                .thenReturn("")
+                .thenReturn("LIC123")
+                .thenReturn("");
+        when(input.nextInt())
+                .thenReturn(1)
+                .thenReturn(4);
+        when(input.hasNextInt())
+                .thenReturn(true);
 
-        menuService.mainMenu(input, client, chargingStations, clients, reservations);
+        facadeInterface.setCurrentClient(client);
+        menuService.mainMenu(facadeInterface, new ReservationDisplayService(input, new DisplayerSout(), new MenuChecker(input, new DisplayerSout())), new ClientDisplayService(input, new DisplayerSout()));
 
         assertTrue(true);
     }
@@ -56,9 +79,16 @@ public class MenuServiceTest {
     @Test
     public void testMainMenuWithInvalidLicenseNumber() {
         Client client = clients.get(0);
-        Scanner input = new Scanner("1\nINVALID123\n");
+        when(input.nextLine())
+                .thenReturn("")
+                .thenReturn("INVALID123");
+        when(input.nextInt())
+                .thenReturn(1);
+        when(input.hasNextInt())
+                .thenReturn(true);
 
-        menuService.mainMenu(input, client, chargingStations, clients, reservations);
+        facadeInterface.setCurrentClient(client);
+        menuService.mainMenu(facadeInterface, new ReservationDisplayService(input, new DisplayerSout(), new MenuChecker(input, new DisplayerSout())), new ClientDisplayService(input, new DisplayerSout()));
         assertTrue(true);
     }
 
@@ -66,9 +96,18 @@ public class MenuServiceTest {
     public void testMainMenuWithReservationNumber() {
         Client client = clients.get(0);
         client.setReservationNumber(888123);
-        Scanner input = new Scanner("2\n888123\n4\n");
+        when(input.nextLine())
+                .thenReturn("")
+                .thenReturn("888123")
+                .thenReturn("");
+        when(input.nextInt())
+                .thenReturn(2)
+                .thenReturn(4);
+        when(input.hasNextInt())
+                .thenReturn(true);
 
-        menuService.mainMenu(input, client, chargingStations, clients, reservations);
+        facadeInterface.setCurrentClient(client);
+        menuService.mainMenu(facadeInterface, new ReservationDisplayService(input, new DisplayerSout(), new MenuChecker(input, new DisplayerSout())), new ClientDisplayService(input, new DisplayerSout()));
 
         assertTrue(true);
     }
@@ -76,9 +115,18 @@ public class MenuServiceTest {
     @Test
     public void testMainMenuWithInvalidReservationNumber() {
         Client client = clients.get(0);
-        Scanner input = new Scanner("2\nINVALIDRES\n");
+        when(input.nextLine())
+                .thenReturn("")
+                .thenReturn("INVALIDRES")
+                .thenReturn("4");
+        when(input.nextInt())
+                .thenReturn(2)
+                .thenReturn(4);
+        when(input.hasNextInt())
+                .thenReturn(true);
 
-        menuService.mainMenu(input, client, chargingStations, clients, reservations);
+        facadeInterface.setCurrentClient(client);
+        menuService.mainMenu(facadeInterface, new ReservationDisplayService(input, new DisplayerSout(), new MenuChecker(input, new DisplayerSout())), new ClientDisplayService(input, new DisplayerSout()));
 
 
         assertTrue(true);
@@ -87,9 +135,19 @@ public class MenuServiceTest {
     @Test
     public void testUserMenu() {
         Client client = clients.get(0);
-        Scanner input = new Scanner("1\n1\n1\n");
+        when(input.nextLine())
+                .thenReturn("")
+                .thenReturn("")
+                .thenReturn("");
+        when(input.nextInt())
+                .thenReturn(1)
+                .thenReturn(1)
+                .thenReturn(1);
+        when(input.hasNextInt())
+                .thenReturn(true);
 
-        menuService.mainMenu(input, client, chargingStations, clients, reservations);
+        facadeInterface.setCurrentClient(client);
+        menuService.mainMenu(facadeInterface, new ReservationDisplayService(input, new DisplayerSout(), new MenuChecker(input, new DisplayerSout())), new ClientDisplayService(input, new DisplayerSout()));
 
         assertTrue(true);
     }
@@ -97,9 +155,18 @@ public class MenuServiceTest {
     @Test
     public void testHandleUserMenu() {
         Client client = clients.get(0);
-        Scanner input = new Scanner("1\n4\n");
+        when(input.nextLine())
+                .thenReturn("1")
+                .thenReturn("4");
+        when(input.nextInt())
+                .thenReturn(1)
+                .thenReturn(4);
+        when(input.hasNextInt())
+                .thenReturn(true);
 
-        menuService.mainMenu(input, client, chargingStations, clients, reservations);
+
+        facadeInterface.setCurrentClient(client);
+        menuService.mainMenu(facadeInterface, new ReservationDisplayService(input, new DisplayerSout(), new MenuChecker(input, new DisplayerSout())), new ClientDisplayService(input, new DisplayerSout()));
 
         assertTrue(true);
     }

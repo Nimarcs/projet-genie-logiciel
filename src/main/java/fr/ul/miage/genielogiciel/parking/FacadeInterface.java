@@ -67,6 +67,18 @@ public class FacadeInterface {
     }
 
     /**
+     * Initialize the parking with specific values
+     * @param chargingStations Collection of charging station of the parking
+     * @param clients Collection of clients of the parking
+     * @param reservations Collection of reservation of the parking
+     */
+    public void initializeParking(Collection<ChargingStation> chargingStations, Collection<Client> clients,Collection<Reservation> reservations) {
+        this.chargingStations = chargingStations;
+        this.clients = clients;
+        this.reservations = reservations;
+    }
+
+    /**
      * Return the client with the corresponding username or null
      * @param username username of the client
      * @return Client or null
@@ -205,6 +217,7 @@ public class FacadeInterface {
     }
 
     public void addReservation(ChargingStation selectedStation, Reservation reservation) {
+        reservations.add(reservation);
         reservationManager.addReservation(selectedStation, reservation);
     }
 }

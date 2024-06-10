@@ -6,14 +6,23 @@ import java.util.Scanner;
 
 public class CommandLine {
 
+    private Scanner scanner;
+    private Displayer displayer;
+
+    public CommandLine(Scanner scanner, Displayer displayer){
+        this.scanner = scanner;
+        this.displayer = displayer;
+    }
+
+    public CommandLine(){
+        this(new Scanner(System.in), new DisplayerSout());
+    }
 
     public void run(FacadeInterface facadeInterface) {
         //Init in/out
-        Scanner scanner = new Scanner(System.in);
-        Displayer displayer = new DisplayerSout();
 
         //Init checker
-        MenuChecker menuChecker = new MenuChecker(displayer, scanner);
+        MenuChecker menuChecker = new MenuChecker(scanner, displayer);
 
         //Init display services
         ClientDisplayService clientDisplayService = new ClientDisplayService(scanner, displayer);
@@ -22,14 +31,13 @@ public class CommandLine {
 
 
         displayer.displayMessage("Welcome to the FastBorne!");
-        int userChoice;
+        int userChoice = -1;
 
         do {
-            userChoice = menuService.welcomeMenu();
-
             if (facadeInterface.isConnected()){
                 menuService.mainMenu(facadeInterface, reservationDisplayService, clientDisplayService);
             } else {
+                userChoice = menuService.welcomeMenu();
                 // Not login choices
                 switch (userChoice) {
                     case 1 -> clientDisplayService.loginForm(facadeInterface);
