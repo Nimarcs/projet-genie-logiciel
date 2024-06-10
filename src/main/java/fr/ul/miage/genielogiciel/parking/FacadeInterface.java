@@ -12,6 +12,8 @@ public class FacadeInterface {
 
     private ReservationList reservationList;
 
+    private ReservationManager reservationManager;
+
     /**
      * Current client, should be delegated to a connexion specific class inside the business
      */
@@ -25,6 +27,7 @@ public class FacadeInterface {
         clients = new ClientList();
         chargingStations = new ChargingStationList();
         reservationList = new ReservationList();
+        reservationManager = new ReservationManager();
         currentClient = null;
     }
 
@@ -112,6 +115,10 @@ public class FacadeInterface {
      */
     public ChargingStation findChargingStationById(int id) {
         return chargingStations.findChargingStation(id);
+    }
+
+    public void askExtention(Reservation reservation) {
+        reservationManager.askExtention(reservation);
     }
 
     /**

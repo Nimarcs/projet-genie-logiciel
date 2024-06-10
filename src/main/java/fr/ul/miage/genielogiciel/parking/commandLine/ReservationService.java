@@ -9,8 +9,6 @@ import java.util.Scanner;
 
 public class ReservationService {
 
-    private final ReservationManager reservationManager = new ReservationManager();
-
     private final Displayer displayer;
     private final Scanner scanner;
 
@@ -63,22 +61,26 @@ public class ReservationService {
             }
     }
 
-    public void handleLateArrival(Scanner input, ChargingStationList chargingStations, ClientList clients) {
-        System.out.print("Please enter your license number: ");
-        String licenseNumber = input.nextLine();
+    /**
+     * Display the menu to handle late Arrival
+     * @param facadeInterface link to the data
+     */
+    public void handleLateArrival(FacadeInterface facadeInterface) {
+        displayer.displayMessage("Please enter your license number: ");
+        String licenseNumber = scanner.nextLine();
 
-        Client client = clients.findClientByLicense(licenseNumber);
+        Client client = facadeInterface.findClientByLicense(licenseNumber);
 
         if (client != null) {
-            LocalDateTime currentTime = LocalDateTime.now();
-            ChargingStation station = chargingStations.findChargingStationByClient(client);
-            if (station != null) {
-                reservationManager.handleLateArrival(station, client, currentTime, input);
+            Reservation reservation = facadeInterface.findReservationByClient(client);
+            if (reservation != null) {
+                //TODO
+                facadeInterface.askExtention(reservation);
             } else {
-                System.out.println("No active reservation found for this client.");
+                displayer.displayErrorMessage("No active reservation found for this client.");
             }
         } else {
-            System.out.println("Client not found.");
+            displayer.displayErrorMessage("Client not found.");
         }
     }
 
