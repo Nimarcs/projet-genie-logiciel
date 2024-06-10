@@ -21,7 +21,7 @@ public class ReservationService {
      * Create a reservation for a charging station
      * @param facadeInterface link to the data
      */
-    public void reserveChargingStation(FacadeInterface facadeInterface) {
+    public void reserveChargingStation(FacadeInterface facadeInterface, ClientService clientService) {
         List<ChargingStation> availableStations = facadeInterface.findAvailableStations();
 
         if (availableStations.isEmpty()) {
@@ -55,9 +55,9 @@ public class ReservationService {
             Client client = facadeInterface.findClientByLicense(licenseNumber);
 
             if (client != null) {
-                manageClientAndReserve(selectedStation, client);
+                manageClientAndReserve(facadeInterface,selectedStation, client);
             } else {
-                findClientAndReserve(facadeInterface, selectedStation);
+                findClientAndReserve(facadeInterface, selectedStation, clientService);
             }
     }
 
@@ -137,35 +137,33 @@ public class ReservationService {
 
     /**
      * Manage a client that want to reserve a charging station
-     * @param input input of the user
      * @param selectedStation charging station selected by the user
      * @param client current client
      */
-    private void manageClientAndReserve(Scanner input, ChargingStation selectedStation, Client client) {
+    private void manageClientAndReserve(FacadeInterface facadeInterface, ChargingStation selectedStation, Client client) {
         int selection;
         LocalDateTime endTime;
-        System.out.println("Choose what to enter: ");
-        System.out.println("1. Expected duration ");
-        System.out.println("2. Departure time ");
+        String[] options = new String[]{"Expected duration", "Departure time"};
+        displayer.displayMenu(options, "CHOOSE INPUT");
 
-        selection = checkInputMenu(input, 3);
+        selection = checkInputMenu(options.length);
 
         switch (selection) {
             case 1 -> {
                 System.out.println("Enter expected duration: ");
-                int duration = input.nextInt();
+                int duration = scanner.nextInt();
                 endTime = LocalDateTime.now().plusHours(duration);
             }
             case 2 -> {
                 System.out.println("Enter departure time: ");
-                int hour = input.nextInt();
+                int hour = scanner.nextInt();
                 endTime = LocalDateTime.now().withHour(hour);
             }
             default -> endTime = LocalDateTime.now().plusHours(1);
         }
 
         Reservation reservation = new Reservation(client, LocalDateTime.now(), endTime);
-        reservationManager.addReservation(selectedStation, reservation);
+        facadeInterface.addReservation(selectedStation, reservation);
     }
 
 }
