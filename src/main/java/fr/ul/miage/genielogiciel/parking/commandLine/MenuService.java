@@ -12,10 +12,12 @@ public class MenuService {
 
     private final Displayer displayer;
     private final Scanner scanner;
+    private final MenuChecker menuChecker;
 
-    public MenuService (Scanner scanner ,Displayer displayer){
+    public MenuService(Scanner scanner, Displayer displayer, MenuChecker menuChecker){
         this.scanner = scanner;
         this.displayer = displayer;
+        this.menuChecker= menuChecker;
     }
 
     /**
@@ -28,7 +30,7 @@ public class MenuService {
         String[] options = new String[]{"Login", "Create Account", "Quit"};
         displayer.displayMenu(options, "WELCOME");
 
-        selection = checkInputMenu(options.length);
+        selection = menuChecker.checkInputMenu(options.length);
         return selection;
     }
 
@@ -43,7 +45,7 @@ public class MenuService {
         String[] options = new String[]{"Find with license number", "Find with reservation number", "I don't have the reservation", "Disconnect"};
         displayer.displayMenu(options, "MAIN MENU");
 
-        selection = checkInputMenu(options.length);
+        selection = menuChecker.checkInputMenu(options.length);
 
         switch (selection) {
             case 1 -> handleWithLicenseNumber(facadeInterface, reservationService, clientService);
@@ -109,7 +111,7 @@ public class MenuService {
             String[] options = new String[]{"Reserve a charging station", "Check reservation status", "View available stations", "Sign out"};
             displayer.displayMenu(options, "USER MENU");
 
-            selection = checkInputMenu(options.length);
+            selection = menuChecker.checkInputMenu(options.length);
 
             switch (selection) {
                 case 1 -> reservationService.reserveChargingStation(facadeInterface, clientService);
@@ -150,7 +152,7 @@ public class MenuService {
             String[] options = new String[]{"Check out", "Back to user menu"};
             displayer.displayMenu(options, "ACTIVE RESERVATION");
 
-            int choice = checkInputMenu(options.length);
+            int choice = menuChecker.checkInputMenu(options.length);
             if (choice == 1) {
                 facadeInterface.checkOutFromReservation(reservation);
             }
@@ -158,7 +160,7 @@ public class MenuService {
             String[] options = new String[]{"Check in", "Back to user menu"};
             displayer.displayMenu(options, "NO ACTIVE RESERVATION");
 
-            int choice = checkInputMenu(options.length);
+            int choice = menuChecker.checkInputMenu(options.length);
             if (choice == 1) {
                 facadeInterface.checkInFromReservation(reservation);
             }
@@ -198,30 +200,5 @@ public class MenuService {
         } else {
             displayer.displayMessage("No available stations at the moment.");
         }
-    }
-
-    /**
-     * Check the input of the user
-     * @param maxPointsMenu maximum point of the menu
-     * @return number of the selection or -1
-     */
-    private int checkInputMenu(int maxPointsMenu) {
-        int selection = -1;
-
-        while (!(selection >= 1 && selection <= maxPointsMenu)) {
-            displayer.displayMessage("Enter the number of your choice: ");
-            if (scanner.hasNextInt()) {
-                selection = scanner.nextInt();
-                scanner.nextLine();
-                if (!(selection >= 1 && selection <= maxPointsMenu)) {
-                   displayer.displayErrorMessage("Invalid input. Please enter a number between 1 and " + maxPointsMenu);
-                }
-            } else {
-                displayer.displayErrorMessage("Invalid input. Please enter a number.");
-                scanner.next();
-            }
-        }
-
-        return selection;
     }
 }

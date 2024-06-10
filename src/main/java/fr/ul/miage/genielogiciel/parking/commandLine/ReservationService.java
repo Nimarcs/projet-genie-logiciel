@@ -11,10 +11,12 @@ public class ReservationService {
 
     private final Displayer displayer;
     private final Scanner scanner;
+    private final MenuChecker menuChecker;
 
-    public ReservationService(Scanner scanner, Displayer displayer){
+    public ReservationService(Scanner scanner, Displayer displayer, MenuChecker menuChecker){
         this.scanner = scanner;
         this.displayer = displayer;
+        this.menuChecker = menuChecker;
     }
 
     /**
@@ -84,31 +86,6 @@ public class ReservationService {
         }
     }
 
-    /**
-     * Check the input of the user
-     * @param maxPointsMenu maximum point of the menu
-     * @return number of the selection or -1
-     */
-    private int checkInputMenu(int maxPointsMenu) {
-        int selection = -1;
-
-        while (!(selection >= 1 && selection <= maxPointsMenu)) {
-            displayer.displayMessage("Enter the number of your choice: ");
-            if (scanner.hasNextInt()) {
-                selection = scanner.nextInt();
-                scanner.nextLine();
-                if (!(selection >= 1 && selection <= maxPointsMenu)) {
-                    displayer.displayErrorMessage("Invalid input. Please enter a number between 1 and " + maxPointsMenu);
-                }
-            } else {
-                displayer.displayErrorMessage("Invalid input. Please enter a number.");
-                scanner.next();
-            }
-        }
-
-        return selection;
-    }
-
     //TODO make so we can reach this point without an account
     /**
      * Find the client and reserve the charging station
@@ -146,7 +123,7 @@ public class ReservationService {
         String[] options = new String[]{"Expected duration", "Departure time"};
         displayer.displayMenu(options, "CHOOSE INPUT");
 
-        selection = checkInputMenu(options.length);
+        selection = menuChecker.checkInputMenu(options.length);
 
         switch (selection) {
             case 1 -> {

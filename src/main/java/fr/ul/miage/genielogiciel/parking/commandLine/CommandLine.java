@@ -12,11 +12,13 @@ public class CommandLine {
         Scanner scanner = new Scanner(System.in);
         Displayer displayer = new DisplayerSout();
 
+        //Init checker
+        MenuChecker menuChecker = new MenuChecker(displayer, scanner);
 
         //Init display services
         ClientService clientService = new ClientService(scanner, displayer);
-        MenuService menuService = new MenuService(scanner, displayer);
-        ReservationService reservationService = new ReservationService(scanner, displayer);
+        MenuService menuService = new MenuService(scanner, displayer, menuChecker);
+        ReservationService reservationService = new ReservationService(scanner, displayer, menuChecker);
 
 
         displayer.displayMessage("Welcome to the FastBorne!");
