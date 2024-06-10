@@ -26,7 +26,7 @@ public class CommandLine {
             userChoice = menuService.welcomeMenu();
 
             if (facadeInterface.isConnected()){
-                menuService.mainMenu(facadeInterface, reservationService)
+                menuService.mainMenu(facadeInterface, reservationService);
             } else {
                 // Not login choices
                 switch (userChoice) {
