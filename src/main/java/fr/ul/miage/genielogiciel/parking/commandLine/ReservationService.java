@@ -109,29 +109,29 @@ public class ReservationService {
         return selection;
     }
 
+    //TODO make so we can reach this point without an account
     /**
      * Find the client and reserve the charging station
-     * @param input input of the user
-     * @param chargingStations list of all the charging stations
-     * @param clients list of all the clients
+     * @param facadeInterface link to the data
      * @param selectedStation charging station selected by the user
      */
-    private void findClientAndReserve(Scanner input, ChargingStationList chargingStations, ClientList clients, ChargingStation selectedStation) {
-        System.out.print("License number not recognized. Please enter your mobile number: ");
-        String mobileNumber = input.nextLine();
+    private void findClientAndReserve(FacadeInterface facadeInterface, ChargingStation selectedStation, ClientService clientService) {
+        displayer.displayMessage("License number not recognized. Please enter your mobile number: ");
+        String mobileNumber = scanner.nextLine();
 
-        Client client2 = clients.findByMobilePhone(mobileNumber);
+        Client client = facadeInterface.findByMobilePhone(mobileNumber);
 
-        if (client2 != null) {
-            System.out.print("Please enter the expected charging duration (in hours): ");
-            int duration = input.nextInt();
+        if (client != null) {
+            displayer.displayMessage("Please enter the expected charging duration (in hours): ");
+            int duration = scanner.nextInt();
+            //TODO manage miss input
 
-            System.out.println("Temporary reservation made for mobile number " + mobileNumber + " with duration " + duration + " hours.");
-            Reservation reservation = new Reservation(client2, LocalDateTime.now(), LocalDateTime.now().plusHours(duration));
-            reservationManager.addReservation(selectedStation, reservation);
+            displayer.displayMessage("Temporary reservation made for mobile number " + mobileNumber + " with duration " + duration + " hours.");
+            Reservation reservation = new Reservation(client, LocalDateTime.now(), LocalDateTime.now().plusHours(duration));
+            facadeInterface.addReservation(selectedStation, reservation);
         } else {
-            System.out.println("We didn't find the account associated with this number. Please create a new one: ");
-            new CommandLine().run(input, null, clients, chargingStations);
+            displayer.displayErrorMessage("We didn't find the account associated with this number.\n Please create a new one: ");
+            clientService.registrationForm(facadeInterface);
         }
     }
 

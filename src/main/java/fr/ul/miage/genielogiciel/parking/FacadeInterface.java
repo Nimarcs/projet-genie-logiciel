@@ -117,6 +117,19 @@ public class FacadeInterface {
         return chargingStations.findChargingStation(id);
     }
 
+    /**
+     * Return the client with this phone number or null
+     * @param mobileNumber mobile number given
+     * @return client with the phone number or null
+     */
+    public Client findByMobilePhone(String mobileNumber) {
+        return clients.findByMobilePhone(mobileNumber);
+    }
+
+    /**
+     * Ask for an extention of the waiting time
+     * @param reservation reservation to which we want to ask for an extention
+     */
     public void askExtention(Reservation reservation) {
         reservationManager.askExtention(reservation);
     }
@@ -167,5 +180,9 @@ public class FacadeInterface {
      */
     public void setCurrentClient(Client currentClient) {
         this.currentClient = currentClient;
+    }
+
+    public void addReservation(ChargingStation selectedStation, Reservation reservation) {
+        reservationManager.addReservation(selectedStation, reservation);
     }
 }
