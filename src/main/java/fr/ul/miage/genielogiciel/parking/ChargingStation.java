@@ -12,7 +12,7 @@ public class ChargingStation {
     // === General info of charging station ===
     private int idStation;
     private boolean isDisponible;
-    private List<Reservation> reservations = new ArrayList<>();
+    private Collection<Reservation> reservations = new HashSet<>();
 
     /**
      * Constructs a new ChargingStation with the specified id and availability status.
@@ -54,13 +54,20 @@ public class ChargingStation {
         this.reservations = reservations;
     }
 
-    public List<Reservation> getReservations() {
-        return Collections.unmodifiableList(reservations);
+    public Collection<Reservation> getReservations() {
+        return Collections.unmodifiableCollection(reservations);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChargingStation that = (ChargingStation) o;
+        return idStation == that.idStation;
+    }
 
-
-
-
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(idStation);
+    }
 }
