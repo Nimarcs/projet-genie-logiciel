@@ -7,14 +7,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
 
-public class MenuService {
+public class MenuDisplayService {
 
 
     private final Displayer displayer;
     private final Scanner scanner;
     private final MenuChecker menuChecker;
 
-    public MenuService(Scanner scanner, Displayer displayer, MenuChecker menuChecker){
+    public MenuDisplayService(Scanner scanner, Displayer displayer, MenuChecker menuChecker){
         this.scanner = scanner;
         this.displayer = displayer;
         this.menuChecker= menuChecker;
@@ -37,9 +37,9 @@ public class MenuService {
     /**
      * Display the main menu of someone connected
      * @param facadeInterface link to the datas
-     * @param reservationService service to manage the reservations
+     * @param reservationDisplayService service to manage the reservations
      */
-    public void mainMenu(FacadeInterface facadeInterface, ReservationService reservationService, ClientService clientService) {
+    public void mainMenu(FacadeInterface facadeInterface, ReservationDisplayService reservationDisplayService, ClientDisplayService clientDisplayService) {
         int selection;
 
         String[] options = new String[]{"Find with license number", "Find with reservation number", "I don't have the reservation", "Disconnect"};
@@ -48,11 +48,11 @@ public class MenuService {
         selection = menuChecker.checkInputMenu(options.length);
 
         switch (selection) {
-            case 1 -> handleWithLicenseNumber(facadeInterface, reservationService, clientService);
-            case 2 -> handleWithReservationNumber(facadeInterface, reservationService, clientService);
+            case 1 -> handleWithLicenseNumber(facadeInterface, reservationDisplayService, clientDisplayService);
+            case 2 -> handleWithReservationNumber(facadeInterface, reservationDisplayService, clientDisplayService);
             case 3 -> {
                 displayer.displayMessage("Waiting...");
-                reservationService.reserveChargingStation(facadeInterface, clientService);
+                reservationDisplayService.reserveChargingStation(facadeInterface, clientDisplayService);
             }
             case 4 -> {
                 facadeInterface.setCurrentClient(null);
@@ -65,9 +65,9 @@ public class MenuService {
     /**
      * Handle the choice of the license number
      * @param facadeInterface link to the data
-     * @param reservationService service to display reservation linked interface
+     * @param reservationDisplayService service to display reservation linked interface
      */
-    private void handleWithLicenseNumber(FacadeInterface facadeInterface, ReservationService reservationService, ClientService clientService){
+    private void handleWithLicenseNumber(FacadeInterface facadeInterface, ReservationDisplayService reservationDisplayService, ClientDisplayService clientDisplayService){
         System.out.print("Please, enter your license number: ");
         String licenseNumber = scanner.nextLine();
         Client client = facadeInterface.findClientByLicense(licenseNumber);
@@ -77,15 +77,15 @@ public class MenuService {
             return;
         }
 
-        handleUserMenu(facadeInterface, reservationService, client, clientService);
+        handleUserMenu(facadeInterface, reservationDisplayService, client, clientDisplayService);
     }
 
     /**
      * Handle the choice of the reservation number
      * @param facadeInterface link to the data
-     * @param reservationService service to display reservation linked interfaces
+     * @param reservationDisplayService service to display reservation linked interfaces
      */
-    private void handleWithReservationNumber(FacadeInterface facadeInterface, ReservationService reservationService, ClientService clientService){
+    private void handleWithReservationNumber(FacadeInterface facadeInterface, ReservationDisplayService reservationDisplayService, ClientDisplayService clientDisplayService){
         System.out.print("Please, enter your reservation number: ");
         String reservationNumber = scanner.nextLine();
         Client client = facadeInterface.findClientByReservationNumber(reservationNumber);
@@ -95,16 +95,16 @@ public class MenuService {
             return;
         }
 
-        handleUserMenu(facadeInterface, reservationService, client, clientService);
+        handleUserMenu(facadeInterface, reservationDisplayService, client, clientDisplayService);
     }
 
     /**
      * Handle the display of the menu linked to the user
      * @param facadeInterface link to the data
-     * @param reservationService service to display reservation linked interfaces
+     * @param reservationDisplayService service to display reservation linked interfaces
      * @param client client of which we want to display the menu
      */
-    private void handleUserMenu(FacadeInterface facadeInterface, ReservationService reservationService, Client client, ClientService clientService) {
+    private void handleUserMenu(FacadeInterface facadeInterface, ReservationDisplayService reservationDisplayService, Client client, ClientDisplayService clientDisplayService) {
 
         int selection;
         do {
@@ -114,9 +114,9 @@ public class MenuService {
             selection = menuChecker.checkInputMenu(options.length);
 
             switch (selection) {
-                case 1 -> reservationService.reserveChargingStation(facadeInterface, clientService);
+                case 1 -> reservationDisplayService.reserveChargingStation(facadeInterface, clientDisplayService);
                 case 2 -> viewReservationStatus(client, facadeInterface);
-                case 3 -> viewAvailableStations(facadeInterface, reservationService, clientService);
+                case 3 -> viewAvailableStations(facadeInterface, reservationDisplayService, clientDisplayService);
                 case 4 -> displayer.displayImportantMessage("Going back");
                 default -> displayer.displayErrorMessage("Invalid choice. Please enter a number between 1 and 4.");
             }
@@ -171,9 +171,9 @@ public class MenuService {
     /**
      * Display the availible Charging station
      * @param facadeInterface link to the data
-     * @param reservationService display service of the reservation
+     * @param reservationDisplayService display service of the reservation
      */
-    private void viewAvailableStations(FacadeInterface facadeInterface, ReservationService reservationService, ClientService clientService) {
+    private void viewAvailableStations(FacadeInterface facadeInterface, ReservationDisplayService reservationDisplayService, ClientDisplayService clientDisplayService) {
         List<ChargingStation> availableStations = facadeInterface.findAvailableStations();
 
         if (!availableStations.isEmpty()) {
@@ -191,7 +191,7 @@ public class MenuService {
                 switch (choice) {
                     case "yes", "y" -> {
                         choice = "yes";
-                        reservationService.reserveChargingStation(facadeInterface, clientService);
+                        reservationDisplayService.reserveChargingStation(facadeInterface, clientDisplayService);
                     }
                     case "no", "n" -> choice = "no";
                     default -> displayer.displayErrorMessage("Entry invalid (yes/no expected). Try again :");

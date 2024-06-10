@@ -1,19 +1,18 @@
 package fr.ul.miage.genielogiciel.parking.commandLine;
 
 import fr.ul.miage.genielogiciel.parking.*;
-import fr.ul.miage.genielogiciel.parking.commandLine.CommandLine;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
-public class ReservationService {
+public class ReservationDisplayService {
 
     private final Displayer displayer;
     private final Scanner scanner;
     private final MenuChecker menuChecker;
 
-    public ReservationService(Scanner scanner, Displayer displayer, MenuChecker menuChecker){
+    public ReservationDisplayService(Scanner scanner, Displayer displayer, MenuChecker menuChecker){
         this.scanner = scanner;
         this.displayer = displayer;
         this.menuChecker = menuChecker;
@@ -23,7 +22,7 @@ public class ReservationService {
      * Create a reservation for a charging station
      * @param facadeInterface link to the data
      */
-    public void reserveChargingStation(FacadeInterface facadeInterface, ClientService clientService) {
+    public void reserveChargingStation(FacadeInterface facadeInterface, ClientDisplayService clientDisplayService) {
         List<ChargingStation> availableStations = facadeInterface.findAvailableStations();
 
         if (availableStations.isEmpty()) {
@@ -59,7 +58,7 @@ public class ReservationService {
             if (client != null) {
                 manageClientAndReserve(facadeInterface,selectedStation, client);
             } else {
-                findClientAndReserve(facadeInterface, selectedStation, clientService);
+                findClientAndReserve(facadeInterface, selectedStation, clientDisplayService);
             }
     }
 
@@ -92,7 +91,7 @@ public class ReservationService {
      * @param facadeInterface link to the data
      * @param selectedStation charging station selected by the user
      */
-    private void findClientAndReserve(FacadeInterface facadeInterface, ChargingStation selectedStation, ClientService clientService) {
+    private void findClientAndReserve(FacadeInterface facadeInterface, ChargingStation selectedStation, ClientDisplayService clientDisplayService) {
         displayer.displayMessage("License number not recognized. Please enter your mobile number: ");
         String mobileNumber = scanner.nextLine();
 
@@ -108,7 +107,7 @@ public class ReservationService {
             facadeInterface.addReservation(selectedStation, reservation);
         } else {
             displayer.displayErrorMessage("We didn't find the account associated with this number.\n Please create a new one: ");
-            clientService.registrationForm(facadeInterface);
+            clientDisplayService.registrationForm(facadeInterface);
         }
     }
 

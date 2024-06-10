@@ -16,9 +16,9 @@ public class CommandLine {
         MenuChecker menuChecker = new MenuChecker(displayer, scanner);
 
         //Init display services
-        ClientService clientService = new ClientService(scanner, displayer);
-        MenuService menuService = new MenuService(scanner, displayer, menuChecker);
-        ReservationService reservationService = new ReservationService(scanner, displayer, menuChecker);
+        ClientDisplayService clientDisplayService = new ClientDisplayService(scanner, displayer);
+        MenuDisplayService menuService = new MenuDisplayService(scanner, displayer, menuChecker);
+        ReservationDisplayService reservationDisplayService = new ReservationDisplayService(scanner, displayer, menuChecker);
 
 
         displayer.displayMessage("Welcome to the FastBorne!");
@@ -28,12 +28,12 @@ public class CommandLine {
             userChoice = menuService.welcomeMenu();
 
             if (facadeInterface.isConnected()){
-                menuService.mainMenu(facadeInterface, reservationService, clientService);
+                menuService.mainMenu(facadeInterface, reservationDisplayService, clientDisplayService);
             } else {
                 // Not login choices
                 switch (userChoice) {
-                    case 1 -> clientService.loginForm(facadeInterface);
-                    case 2 -> clientService.registrationForm(facadeInterface);
+                    case 1 -> clientDisplayService.loginForm(facadeInterface);
+                    case 2 -> clientDisplayService.registrationForm(facadeInterface);
                     case 3 -> displayer.displayImportantMessage("Bye!");
                     default -> displayer.displayErrorMessage("Invalid choice. Please enter a number between 1 and 3.");
                 }

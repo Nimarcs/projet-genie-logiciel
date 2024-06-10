@@ -6,7 +6,7 @@ import fr.ul.miage.genielogiciel.parking.FacadeInterface;
 import java.util.Scanner;
 import java.util.Objects;
 
-public class ClientService {
+public class ClientDisplayService {
 
     private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]+$";
     private static final String USERNAME_REGEX = "^[a-zA-Z0-9._]+$";
@@ -19,7 +19,7 @@ public class ClientService {
     private final Displayer displayer;
     private final Scanner scanner;
 
-    public ClientService(Scanner scanner, Displayer displayer) {
+    public ClientDisplayService(Scanner scanner, Displayer displayer) {
         this.scanner = scanner;
         this.displayer = displayer;
     }
