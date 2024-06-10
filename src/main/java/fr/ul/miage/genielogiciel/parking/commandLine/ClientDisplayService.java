@@ -5,17 +5,10 @@ import fr.ul.miage.genielogiciel.parking.FacadeInterface;
 
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.Objects;
+
+import static fr.ul.miage.genielogiciel.parking.Client.*;
 
 public class ClientDisplayService {
-
-    private static final String PASSWORD_REGEX = "^[a-zA-Z0-9]+$";
-    private static final String USERNAME_REGEX = "^[a-zA-Z0-9._]+$";
-    private static final String CREDIT_CARD_REGEX = "^[0-9]+$";
-    private static final String EMAIL_REGEX = "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
-    private static final String PHONE_NUMBER_REGEX = "^[+]?\\d+$";
-    private static final String ADRESS_REGEX = "^[a-zA-Z0-9\\s,]+$";
-    private static final String NAME_REGEX = "^[a-zA-Z\\s]+$";
 
     private final Displayer displayer;
     private final Scanner scanner;
@@ -86,16 +79,16 @@ public class ClientDisplayService {
         Client client = new Client();
 
         try {
-            client.setName(validateInput("Name: ", NAME_REGEX, "Invalid input. Please enter a valid name without numbers or special characters.", 2, 20));
-            client.setSurname(validateInput("Surname: ", NAME_REGEX, "Invalid input. Please enter a valid surname without numbers or special characters.", 2, 20));
-            client.setAdresse(validateInput("Address: ", ADRESS_REGEX, "Invalid input. Please enter a valid address without special characters.", 5, 40));
-            client.setPhoneNumber(validateInput("Phone Number: ", PHONE_NUMBER_REGEX, "Invalid input. Please enter a valid phone number. It may contain only numbers and an optional leading +.", 10, 12));
-            client.setEmail(validateInput("Email: ", EMAIL_REGEX, "Invalid input. Please enter a valid email address.", 5, 50));
-            client.setCreditCard(validateInput("Credit Card Number: ", CREDIT_CARD_REGEX, "Invalid input. Please enter a valid credit card number.", 10, 16));
-            client.setUsername(validateInput("Username: ", USERNAME_REGEX, "Invalid input. Please enter a valid username (letters, numbers, ., _).", 5, 15));
-            client.setPassword(validateInput("Password: ", PASSWORD_REGEX, "Invalid input. Please enter a valid password (letters and numbers only).", 8, 20));
+            client.setName(validateInput("Name: ", NAME_REGEX, "Invalid input. Please enter a valid name without numbers or special characters.", MIN_SIZE_NAME, MAX_SIZE_NAME));
+            client.setSurname(validateInput("Surname: ", NAME_REGEX, "Invalid input. Please enter a valid surname without numbers or special characters.", MIN_SIZE_SURNAME, MAX_SIZE_SURNAME));
+            client.setAdresse(validateInput("Address: ", ADDRESS_REGEX, "Invalid input. Please enter a valid address without special characters.", MIN_SIZE_ADRESSE, MAX_SIZE_ADRESSE));
+            client.setPhoneNumber(validateInput("Phone Number: ", PHONE_NUMBER_REGEX, "Invalid input. Please enter a valid phone number. It may contain only numbers and an optional leading +.", MIN_SIZE_PHONE, MAX_SIZE_PHONE));
+            client.setEmail(validateInput("Email: ", EMAIL_REGEX, "Invalid input. Please enter a valid email address.", MIN_SIZE_EMAIL, MAX_SIZE_EMAIL));
+            client.setCreditCard(validateInput("Credit Card Number: ", CREDIT_CARD_REGEX, "Invalid input. Please enter a valid credit card number.", SIZE_CREDIT_CARD, SIZE_CREDIT_CARD));
+            client.setUsername(validateInput("Username: ", USERNAME_REGEX, "Invalid input. Please enter a valid username (letters, numbers, ., _).", MIN_SIZE_USERNAME, MAX_SIZE_USERNAME));
+            client.setPassword(validateInput("Password: ", PASSWORD_REGEX, "Invalid input. Please enter a valid password (letters and numbers only).", MIN_SIZE_PASSWORD, MAX_SIZE_PASSWORD));
 
-            String plateNumbers = validateInput("License Plate Numbers (optional - press enter to skip): ", "^[a-zA-Z0-9]+$", "Invalid input. Please enter a valid license plate number.", 0, 12);
+            String plateNumbers = validateInput("License Plate Numbers (optional - press enter to skip): ", PLATE_NUMBER_REGEX, "Invalid input. Please enter a valid license plate number.", SIZE_PLATE_NUMBERS, SIZE_PLATE_NUMBERS);
             if (plateNumbers.trim().length() >= 6) {
                 client.setPlateNumbers(plateNumbers);
             }

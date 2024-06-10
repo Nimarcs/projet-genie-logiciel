@@ -10,6 +10,36 @@ import java.util.Objects;
  */
 public class Client {
 
+    // REGEX that the value need to match
+    public static final String NAME_REGEX = "[a-zA-Z]+";
+    public static final String SURNAME_REGEX = "[a-zA-Z]+";
+    public static final String ADDRESS_REGEX = ".*"; // Any
+    public static final String PHONE_NUMBER_REGEX = "\\+\\d{11}|0\\d{9}";
+    public static final String EMAIL_REGEX = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
+    public static final String CREDIT_CARD_REGEX = "\\d{16}";
+    public static final String PLATE_NUMBER_REGEX = "[a-zA-Z0-9]{6}";
+    public static final String USERNAME_REGEX = "^[a-zA-Z0-9]+$";
+    public static final String PASSWORD_REGEX = "^[a-zA-Z0-9]+$";
+
+    // MAX and MIN size for the parameters
+    public static final int MAX_SIZE_PASSWORD = 30;
+    public static final int MIN_SIZE_NAME = 2;
+    public static final int MAX_SIZE_NAME = 20;
+    public static final int MIN_SIZE_SURNAME = 2;
+    public static final int MAX_SIZE_SURNAME = 20;
+    public static final int MIN_SIZE_ADRESSE = 0;
+    public static final int MAX_SIZE_ADRESSE = 100;
+    public static final int MIN_SIZE_PHONE = 10;
+    public static final int MAX_SIZE_PHONE = 12;
+    public static final int MIN_SIZE_EMAIL = 5;
+    public static final int MAX_SIZE_EMAIL = 100;
+    public static final int SIZE_CREDIT_CARD = 16;
+    public static final int SIZE_PLATE_NUMBERS = 6;
+    public static final int SIZE_RESERVATION_NUMBER = 6;
+    public static final int MIN_SIZE_USERNAME = 1;
+    public static final int MAX_SIZE_USERNAME = 15;
+    public static final int MIN_SIZE_PASSWORD = 8;
+
     // Client's parameters
     private String name;
     private String surname;
@@ -22,23 +52,6 @@ public class Client {
     private String username;
     private String password;
 
-    // MAX and MIN size for the parameters
-    private final int MIN_SIZE_NAME = 2;
-    private final int MAX_SIZE_NAME = 20;
-    private final int MIN_SIZE_SURNAME = 2;
-    private final int MAX_SIZE_SURNAME = 20;
-    private final int MAX_SIZE_ADRESSE = 100;
-    private final int MIN_SIZE_PHONE = 10;
-    private final int MAX_SIZE_PHONE = 12;
-    private final int MIN_SIZE_EMAIL = 5;
-    private final int MAX_SIZE_EMAIL = 100;
-    private final int SIZE_CREDIT_CARD = 16;
-    private final int SIZE_PLATE_NUMBERS = 6;
-    private final int SIZE_RESERVATION_NUMBER = 6;
-    private final int MIN_SIZE_USERNAME = 1;
-    private final int MAX_SIZE_USERNAME = 15;
-    private final int MIN_SIZE_PASSWORD = 8;
-    private final int MAX_SIZE_PASSWORD = 30;
 
 
 
@@ -148,7 +161,7 @@ public class Client {
      * @param name the new first name
      */
     public void setName(String name) {
-        if (validateFormat(name, MIN_SIZE_NAME, MAX_SIZE_NAME, "[a-zA-Z]+")) {
+        if (validateFormat(name, MIN_SIZE_NAME, MAX_SIZE_NAME, NAME_REGEX)) {
             this.name = capitalizeFirstLetter(name);
         } else {
             throw new IllegalArgumentException("Invalid name format. Only letters are allowed.");
@@ -161,7 +174,7 @@ public class Client {
      * @param surname the new surname
      */
     public void setSurname(String surname) {
-        if (validateFormat(surname, MIN_SIZE_SURNAME, MAX_SIZE_SURNAME, "[a-zA-Z]+")) {
+        if (validateFormat(surname, MIN_SIZE_SURNAME, MAX_SIZE_SURNAME, SURNAME_REGEX)) {
             this.surname = capitalizeFirstLetter(surname);
         } else {
             throw new IllegalArgumentException("Invalid surname format. Only letters are allowed.");
@@ -174,7 +187,7 @@ public class Client {
      * @param adresse the new address
      */
     public void setAdresse(String adresse) {
-        if (adresse.length() <= MAX_SIZE_ADRESSE) {
+        if (validateFormat(adresse, MIN_SIZE_ADRESSE, MAX_SIZE_ADRESSE, ADDRESS_REGEX)) {
             this.adresse = capitalizeFirstLetter(adresse);
         } else {
             throw new IllegalArgumentException("Address length must be less than or equal to 100 characters.");
@@ -187,7 +200,7 @@ public class Client {
      * @param phoneNumber the new phone number
      */
     public void setPhoneNumber(String phoneNumber) {
-        if (validateFormat(phoneNumber, MIN_SIZE_PHONE, MAX_SIZE_PHONE, "\\+\\d{11}|0\\d{9}")) {
+        if (validateFormat(phoneNumber, MIN_SIZE_PHONE, MAX_SIZE_PHONE, PHONE_NUMBER_REGEX)) {
             this.phoneNumber = phoneNumber;
         } else {
             throw new IllegalArgumentException("Invalid phone number format. Use + followed by 11 digits or 0 followed by 9 digits.");
@@ -200,7 +213,7 @@ public class Client {
      * @param email the new email address
      */
     public void setEmail(String email) {
-        if (validateFormat(email, MIN_SIZE_EMAIL, MAX_SIZE_EMAIL, "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+        if (validateFormat(email, MIN_SIZE_EMAIL, MAX_SIZE_EMAIL, EMAIL_REGEX)) {
             this.email = email;
         } else {
             throw new IllegalArgumentException("Invalid email format. The format should be: some.text123@mail.com");
@@ -213,7 +226,7 @@ public class Client {
      * @param creditCard the new credit card number
      */
     public void setCreditCard(String creditCard) {
-        if (validateFormat(creditCard, SIZE_CREDIT_CARD, SIZE_CREDIT_CARD, "\\d{16}")) {
+        if (validateFormat(creditCard, SIZE_CREDIT_CARD, SIZE_CREDIT_CARD, CREDIT_CARD_REGEX)) {
             this.creditCard = creditCard;
         } else {
             throw new IllegalArgumentException("Invalid credit card format. Only 16 digits are allowed.");
@@ -226,7 +239,7 @@ public class Client {
      * @param plateNumbers the new vehicle license plate numbers
      */
     public void setPlateNumbers(String plateNumbers) {
-        if (validateFormat(plateNumbers, SIZE_PLATE_NUMBERS, SIZE_PLATE_NUMBERS, "[a-zA-Z0-9]{6}")) {
+        if (validateFormat(plateNumbers, SIZE_PLATE_NUMBERS, SIZE_PLATE_NUMBERS, PLATE_NUMBER_REGEX)) {
             this.plateNumbers = plateNumbers.toUpperCase();
         } else {
             throw new IllegalArgumentException("Invalid plate numbers format. The plate numbers must be exactly 6 characters long and contain only letters and digits.");
@@ -252,7 +265,7 @@ public class Client {
      * @param username the new username
      */
     public void setUsername(String username) {
-        if (validateFormat(username, MIN_SIZE_USERNAME, MAX_SIZE_USERNAME, "^[a-zA-Z0-9]+$")) {
+        if (validateFormat(username, MIN_SIZE_USERNAME, MAX_SIZE_USERNAME, USERNAME_REGEX)) {
             this.username = username;
         } else {
             throw new IllegalArgumentException("Invalid username format. The username can only contain letters, digits, hyphens (-), underscores (_), and dots (.).");
@@ -265,7 +278,7 @@ public class Client {
      * @param password the new password
      */
     public void setPassword(String password) {
-        if (validateFormat(password, MIN_SIZE_PASSWORD, MAX_SIZE_PASSWORD, "^[a-zA-Z0-9]+$")) {
+        if (validateFormat(password, MIN_SIZE_PASSWORD, MAX_SIZE_PASSWORD, PASSWORD_REGEX)) {
             this.password = password;
         } else {
             throw new IllegalArgumentException("Invalid password format. The password can only contain letters and digits. The length should equal or bigger then 8.");
